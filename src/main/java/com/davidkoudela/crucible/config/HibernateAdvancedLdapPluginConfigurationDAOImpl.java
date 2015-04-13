@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Description: Implementation of {@link HibernateAdvancedLdapOptionsDAO} representing the Data Access Object class
+ * Description: Implementation of {@link HibernateAdvancedLdapPluginConfigurationDAO} representing the Data Access Object class
  *              for {@link AdvancedLdapPluginConfiguration}.
  * Copyright (C) 2015 David Koudela
  *
@@ -20,10 +20,10 @@ import org.springframework.transaction.annotation.Transactional;
  * @since 2015-03-31
  */
 @Component("advancedLdapOptionsDAO")
-public class HibernateAdvancedLdapOptionsDAOImpl implements HibernateAdvancedLdapOptionsDAO {
+public class HibernateAdvancedLdapPluginConfigurationDAOImpl implements HibernateAdvancedLdapPluginConfigurationDAO {
     private SessionFactory sessionFactory;
 
-    public HibernateAdvancedLdapOptionsDAOImpl() {
+    public HibernateAdvancedLdapPluginConfigurationDAOImpl() {
         try {
             DatabaseConfig databaseConfig = new DatabaseConfig(DBType.HSQL, "jdbc:hsqldb:file:" + AppConfig.getInstanceDir().getAbsolutePath() + "/var/data/crudb/crucible", "sa", "", DriverSource.BUNDLED, 5, 20);
             Configuration configuration = new Configuration();
@@ -48,27 +48,27 @@ public class HibernateAdvancedLdapOptionsDAOImpl implements HibernateAdvancedLda
             configuration.addClass(com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration.class);
             this.sessionFactory = configuration.buildSessionFactory();
         } catch (Exception e) {
-            System.out.println("HibernateAdvancedLdapOptionsDAOImpl: Exception: " + e);
+            System.out.println("HibernateAdvancedLdapPluginConfigurationDAOImpl: Exception: " + e);
             StringBuilder sb = new StringBuilder();
             for (StackTraceElement element : e.getCause().getStackTrace()) {
                 sb.append(element.toString());
                 sb.append("\n");
             }
-            System.out.println("HibernateAdvancedLdapOptionsDAOImpl: Exception: " + sb);
+            System.out.println("HibernateAdvancedLdapPluginConfigurationDAOImpl: Exception: " + sb);
         }
     }
 
     @Override
     @Transactional
-    public void store(AdvancedLdapOptions advancedLdapOptions, boolean isUpdate) throws Exception {
+    public void store(AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration, boolean isUpdate) throws Exception {
         Session session = null;
         try {
             session = this.sessionFactory.openSession();
 
             if (isUpdate)
-                session.saveOrUpdate((AdvancedLdapPluginConfiguration) advancedLdapOptions);
+                session.saveOrUpdate(advancedLdapPluginConfiguration);
             else {
-                session.save((AdvancedLdapPluginConfiguration) advancedLdapOptions);
+                session.save(advancedLdapPluginConfiguration);
             }
 
             session.flush();
@@ -90,7 +90,7 @@ public class HibernateAdvancedLdapOptionsDAOImpl implements HibernateAdvancedLda
 
     @Override
     @Transactional
-    public AdvancedLdapOptions get() {
+    public AdvancedLdapPluginConfiguration get() {
         Session session = null;
         AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = null;
         try

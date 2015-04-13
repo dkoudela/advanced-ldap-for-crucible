@@ -1,6 +1,7 @@
 package com.davidkoudela.crucible.ldap.connect;
 
 import com.davidkoudela.crucible.config.AdvancedLdapOptions;
+import com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration;
 import com.unboundid.ldap.sdk.LDAPConnectionOptions;
 import com.unboundid.ldap.sdk.LDAPException;
 import com.unboundid.ldap.sdk.LDAPURL;
@@ -14,19 +15,19 @@ import com.unboundid.ldap.sdk.LDAPURL;
  * @since 2015-03-25
  */
 public class AdvancedLdapConnectionOptionsFactory {
-    private final AdvancedLdapOptions advancedLdapOptions;
+    private final AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration;
     private final LDAPURL ldapurl;
 
-    public AdvancedLdapConnectionOptionsFactory(AdvancedLdapOptions advancedLdapOptions) throws LDAPException {
-        this.advancedLdapOptions = advancedLdapOptions;
-        ldapurl = new LDAPURL(advancedLdapOptions.getLDAPUrl());
+    public AdvancedLdapConnectionOptionsFactory(AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration) throws LDAPException {
+        this.advancedLdapPluginConfiguration = advancedLdapPluginConfiguration;
+        ldapurl = new LDAPURL(advancedLdapPluginConfiguration.getLDAPUrl());
     }
 
-    public LDAPConnectionOptions getConnectionOptions(AdvancedLdapOptions advancedLdapOptions) {
+    public LDAPConnectionOptions getConnectionOptions() {
         LDAPConnectionOptions ldapConnectionOptions = new LDAPConnectionOptions();
         ldapConnectionOptions.setAbandonOnTimeout(true);
-        ldapConnectionOptions.setConnectTimeoutMillis(advancedLdapOptions.getConnectTimeoutMillis());
-        ldapConnectionOptions.setResponseTimeoutMillis(advancedLdapOptions.getResponseTimeoutMillis());
+        ldapConnectionOptions.setConnectTimeoutMillis(this.advancedLdapPluginConfiguration.getConnectTimeoutMillis());
+        ldapConnectionOptions.setResponseTimeoutMillis(this.advancedLdapPluginConfiguration.getResponseTimeoutMillis());
         return ldapConnectionOptions;
     }
 

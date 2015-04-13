@@ -1,6 +1,7 @@
 package com.davidkoudela.crucible.ldap.connect;
 
 import com.davidkoudela.crucible.config.AdvancedLdapOptions;
+import com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration;
 import com.unboundid.asn1.ASN1OctetString;
 import com.unboundid.ldap.sdk.*;
 import com.unboundid.ldap.sdk.controls.SimplePagedResultsControl;
@@ -19,22 +20,22 @@ import java.util.HashSet;
  */
 public class AdvancedLdapConnector {
 
-    public void ldapPagedSearch(AdvancedLdapOptions advancedLdapOptions, SearchRequest searchRequest, AdvancedLdapSearchResultBuilder advancedLdapSearchResultBuilder) {
+    public void ldapPagedSearch(AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration, SearchRequest searchRequest, AdvancedLdapSearchResultBuilder advancedLdapSearchResultBuilder) {
         LDAPConnection connection = null;
         try {
-            AdvancedLdapConnectionOptionsFactory advancedLdapConnectionOptionsFactory = new AdvancedLdapConnectionOptionsFactory(advancedLdapOptions);
+            AdvancedLdapConnectionOptionsFactory advancedLdapConnectionOptionsFactory = new AdvancedLdapConnectionOptionsFactory(advancedLdapPluginConfiguration);
             connection = new LDAPConnection(
-                    advancedLdapConnectionOptionsFactory.getConnectionOptions(advancedLdapOptions),
+                    advancedLdapConnectionOptionsFactory.getConnectionOptions(),
                     advancedLdapConnectionOptionsFactory.getLDAPHost(),
                     advancedLdapConnectionOptionsFactory.getLDAPPort(),
-                    advancedLdapOptions.getLDAPBindDN(),
-                    advancedLdapOptions.getLDAPBindPassword());
+                    advancedLdapPluginConfiguration.getLDAPBindDN(),
+                    advancedLdapPluginConfiguration.getLDAPBindPassword());
 
             int numSearches = 0;
             int totalEntriesReturned = 0;
             ASN1OctetString resumeCookie = null;
             while (true) {
-                searchRequest.setControls(new SimplePagedResultsControl(advancedLdapOptions.getLDAPPageSize(), resumeCookie));
+                searchRequest.setControls(new SimplePagedResultsControl(advancedLdapPluginConfiguration.getLDAPPageSize(), resumeCookie));
                 SearchResult searchResult = connection.search(searchRequest);
                 numSearches++;
                 totalEntriesReturned += searchResult.getEntryCount();

@@ -20,22 +20,22 @@ import java.util.Map;
  */
 public class AdvancedLdapConfigurationServlet extends HttpServlet {
     private final VelocityHelper velocityHelper;
-    private HibernateAdvancedLdapOptionsDAO hibernateAdvancedLdapOptionsDAO;
+    private HibernateAdvancedLdapPluginConfigurationDAO hibernateAdvancedLdapPluginConfigurationDAO;
 
     @org.springframework.beans.factory.annotation.Autowired
     public AdvancedLdapConfigurationServlet(VelocityHelper velocityHelper,
-                                            HibernateAdvancedLdapOptionsDAO hibernateAdvancedLdapOptionsDAO) {
+                                            HibernateAdvancedLdapPluginConfigurationDAO hibernateAdvancedLdapPluginConfigurationDAO) {
         this.velocityHelper = velocityHelper;
-        this.hibernateAdvancedLdapOptionsDAO = hibernateAdvancedLdapOptionsDAO;
+        this.hibernateAdvancedLdapPluginConfigurationDAO = hibernateAdvancedLdapPluginConfigurationDAO;
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        AdvancedLdapOptions advancedLdapOptions = this.hibernateAdvancedLdapOptionsDAO.get();
+        AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = this.hibernateAdvancedLdapPluginConfigurationDAO.get();
 
         Map<String,Object> params = new HashMap<String,Object>();
         req.setAttribute("decorator", "atl.admin");
-        params.put("advancedLdapOptions", advancedLdapOptions);
+        params.put("advancedLdapOptions", advancedLdapPluginConfiguration);
         resp.setContentType("text/html");
         velocityHelper.renderVelocityTemplate("templates/configureView.vm", params, resp.getWriter());
     }
@@ -45,35 +45,35 @@ public class AdvancedLdapConfigurationServlet extends HttpServlet {
         Map<String,Object> params = new HashMap<String,Object>();
         req.setAttribute("decorator", "atl.admin");
         resp.setContentType("text/html");
-        AdvancedLdapOptions advancedLdapOptions = this.hibernateAdvancedLdapOptionsDAO.get();
+        AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = this.hibernateAdvancedLdapPluginConfigurationDAO.get();
         if (req.getPathInfo().contains("/advancedLdapConfigurationServletView.do")) {
-            setParameters(advancedLdapOptions, req);
+            setParameters(advancedLdapPluginConfiguration, req);
 
             try {
-                this.hibernateAdvancedLdapOptionsDAO.store(advancedLdapOptions, true);
+                this.hibernateAdvancedLdapPluginConfigurationDAO.store(advancedLdapPluginConfiguration, true);
             } catch (Exception e) {
-                System.out.println("AdvancedLdapConfigurationServlet.doPost: hibernateAdvancedLdapOptionsDAO.store failed: " + e);
+                System.out.println("AdvancedLdapConfigurationServlet.doPost: hibernateAdvancedLdapPluginConfigurationDAO.store failed: " + e);
             }
-            params.put("advancedLdapOptions", advancedLdapOptions);
+            params.put("advancedLdapOptions", advancedLdapPluginConfiguration);
             velocityHelper.renderVelocityTemplate("templates/configureView.vm", params, resp.getWriter());
         } else {
-            params.put("advancedLdapOptions", advancedLdapOptions);
+            params.put("advancedLdapOptions", advancedLdapPluginConfiguration);
             velocityHelper.renderVelocityTemplate("templates/configureEdit.vm", params, resp.getWriter());
         }
     }
 
-    private void setParameters(AdvancedLdapOptions advancedLdapOptions, HttpServletRequest request) {
-        advancedLdapOptions.setConnectTimeoutMillis(Integer.parseInt(StringUtils.defaultIfEmpty(request.getParameter("ldap.serverTimeout"), "10000")));
-        advancedLdapOptions.setResponseTimeoutMillis(Integer.parseInt(StringUtils.defaultIfEmpty(request.getParameter("ldap.serverTimeout"), "10000")));
-        advancedLdapOptions.setLDAPPageSize(Integer.parseInt(StringUtils.defaultIfEmpty(request.getParameter("ldap.pageSize"), "1000")));
-        advancedLdapOptions.setLDAPSyncPeriod(Integer.parseInt(StringUtils.defaultIfEmpty(request.getParameter("ldap.resyncPeriod"), "3600")));
-        advancedLdapOptions.setLDAPUrl(StringUtils.defaultIfEmpty(request.getParameter("ldap.url"), ""));
-        advancedLdapOptions.setLDAPBindDN(StringUtils.defaultIfEmpty(request.getParameter("ldap.initialDn"), ""));
-        advancedLdapOptions.setLDAPBindPassword(StringUtils.defaultIfEmpty(request.getParameter("ldap.initialSecret"), ""));
-        advancedLdapOptions.setLDAPBaseDN(StringUtils.defaultIfEmpty(request.getParameter("ldap.baseDn"), ""));
-        advancedLdapOptions.setUserFilterKey(StringUtils.defaultIfEmpty(request.getParameter("ldap.filter"), null));
-        advancedLdapOptions.setDisplayNameAttributeKey(StringUtils.defaultIfEmpty(request.getParameter("ldap.displaynameAttr"), ""));
-        advancedLdapOptions.setEmailAttributeKey(StringUtils.defaultIfEmpty(request.getParameter("ldap.emailAttr"), ""));
-        advancedLdapOptions.setUIDAttributeKey(StringUtils.defaultIfEmpty(request.getParameter("ldap.uidAttr"), ""));
+    private void setParameters(AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration, HttpServletRequest request) {
+        advancedLdapPluginConfiguration.setConnectTimeoutMillis(Integer.parseInt(StringUtils.defaultIfEmpty(request.getParameter("ldap.serverTimeout"), "10000")));
+        advancedLdapPluginConfiguration.setResponseTimeoutMillis(Integer.parseInt(StringUtils.defaultIfEmpty(request.getParameter("ldap.serverTimeout"), "10000")));
+        advancedLdapPluginConfiguration.setLDAPPageSize(Integer.parseInt(StringUtils.defaultIfEmpty(request.getParameter("ldap.pageSize"), "1000")));
+        advancedLdapPluginConfiguration.setLDAPSyncPeriod(Integer.parseInt(StringUtils.defaultIfEmpty(request.getParameter("ldap.resyncPeriod"), "3600")));
+        advancedLdapPluginConfiguration.setLDAPUrl(StringUtils.defaultIfEmpty(request.getParameter("ldap.url"), ""));
+        advancedLdapPluginConfiguration.setLDAPBindDN(StringUtils.defaultIfEmpty(request.getParameter("ldap.initialDn"), ""));
+        advancedLdapPluginConfiguration.setLDAPBindPassword(StringUtils.defaultIfEmpty(request.getParameter("ldap.initialSecret"), ""));
+        advancedLdapPluginConfiguration.setLDAPBaseDN(StringUtils.defaultIfEmpty(request.getParameter("ldap.baseDn"), ""));
+        advancedLdapPluginConfiguration.setUserFilterKey(StringUtils.defaultIfEmpty(request.getParameter("ldap.filter"), null));
+        advancedLdapPluginConfiguration.setDisplayNameAttributeKey(StringUtils.defaultIfEmpty(request.getParameter("ldap.displaynameAttr"), ""));
+        advancedLdapPluginConfiguration.setEmailAttributeKey(StringUtils.defaultIfEmpty(request.getParameter("ldap.emailAttr"), ""));
+        advancedLdapPluginConfiguration.setUIDAttributeKey(StringUtils.defaultIfEmpty(request.getParameter("ldap.uidAttr"), ""));
     }
 }

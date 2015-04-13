@@ -7,11 +7,8 @@
         http://www.springframework.org/schema/osgi
         http://www.springframework.org/schema/osgi/spring-osgi.xsd http://atlassian.com/schema/spring/plugin http://atlassian.com/schema/spring/plugin.xsd">
 
-    <bean id="advancedLdapOptions" name="AdvancedLdapOptions" class="com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration">
-        <plugin:interface>com.davidkoudela.crucible.config.AdvancedLdapPluginOptions</plugin:interface>
-    </bean>
-    <bean id="advancedLdapOptionsDAO" name="AdvancedLdapOptionsDAO" class="com.davidkoudela.crucible.config.HibernateAdvancedLdapOptionsDAOImpl">
-        <plugin:interface>com.davidkoudela.crucible.config.HibernateAdvancedLdapOptionsDAO</plugin:interface>
+    <bean id="advancedLdapOptionsDAO" name="AdvancedLdapOptionsDAO" class="com.davidkoudela.crucible.config.HibernateAdvancedLdapPluginConfigurationDAOImpl">
+        <plugin:interface>com.davidkoudela.crucible.config.HibernateAdvancedLdapPluginConfigurationDAO</plugin:interface>
     </bean>
 
     <bean id="advancedLdapUserManager" name="AdvancedLdapUserManagerImpl" class="com.davidkoudela.crucible.admin.AdvancedLdapUserManagerImpl">
@@ -19,7 +16,7 @@
             <ref bean="userManager"/>
         </constructor-arg>
         <constructor-arg>
-            <ref bean="advancedLdapOptions" />
+            <ref bean="advancedLdapOptionsDAO" />
         </constructor-arg>
     </bean>
 

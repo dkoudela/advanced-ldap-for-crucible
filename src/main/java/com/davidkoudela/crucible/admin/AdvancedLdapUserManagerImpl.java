@@ -3,6 +3,8 @@ package com.davidkoudela.crucible.admin;
 import com.atlassian.crucible.spi.data.UserData;
 import com.cenqua.fisheye.user.UserManager;
 import com.davidkoudela.crucible.config.AdvancedLdapOptions;
+import com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration;
+import com.davidkoudela.crucible.config.HibernateAdvancedLdapPluginConfigurationDAO;
 import com.davidkoudela.crucible.ldap.connect.AdvancedLdapConnector;
 import com.davidkoudela.crucible.ldap.connect.AdvancedLdapSearchFilterFactory;
 import com.davidkoudela.crucible.ldap.model.AdvancedLdapGroup;
@@ -22,30 +24,31 @@ import java.util.List;
 @org.springframework.stereotype.Service("advancedLdapUserManager")
 public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
     private UserManager userManager;
-    private AdvancedLdapOptions advancedLdapOptions;
+    private HibernateAdvancedLdapPluginConfigurationDAO hibernateAdvancedLdapPluginConfigurationDAO;
 
     @org.springframework.beans.factory.annotation.Autowired
-    public AdvancedLdapUserManagerImpl(UserManager userManager, AdvancedLdapOptions advancedLdapOptions) {
+    public AdvancedLdapUserManagerImpl(UserManager userManager, HibernateAdvancedLdapPluginConfigurationDAO hibernateAdvancedLdapPluginConfigurationDAO) {
         this.userManager = userManager;
-        this.advancedLdapOptions = advancedLdapOptions;
+        this.hibernateAdvancedLdapPluginConfigurationDAO = hibernateAdvancedLdapPluginConfigurationDAO;
         System.out.println("**************************** AdvancedLdapUserManagerImpl START ****************************");
     }
 
     @Override
     public void loadUser(UserData userData) {
         SearchRequest searchRequest = null;
+        AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = hibernateAdvancedLdapPluginConfigurationDAO.get();
 
         try {
-            Filter filter = AdvancedLdapSearchFilterFactory.getSearchFilterForUser(this.advancedLdapOptions.getUserFilterKey(), userData.getUserName());
-            searchRequest = new SearchRequest(this.advancedLdapOptions.getLDAPBaseDN(), SearchScope.SUB, filter);
+            Filter filter = AdvancedLdapSearchFilterFactory.getSearchFilterForUser(advancedLdapPluginConfiguration.getUserFilterKey(), userData.getUserName());
+            searchRequest = new SearchRequest(advancedLdapPluginConfiguration.getLDAPBaseDN(), SearchScope.SUB, filter);
         } catch (Exception e) {
-            System.out.println("Search Request creation failed for filter: " + this.advancedLdapOptions.getUserFilterKey() + " Exception: " + e);
+            System.out.println("Search Request creation failed for filter: " + advancedLdapPluginConfiguration.getUserFilterKey() + " Exception: " + e);
             return;
         }
 
         AdvancedLdapConnector advancedLdapConnector = new AdvancedLdapConnector();
-        AdvancedLdapPersonBuilder advancedLdapPersonBuilder = new AdvancedLdapPersonBuilder(this.advancedLdapOptions, true);
-        advancedLdapConnector.ldapPagedSearch(this.advancedLdapOptions, searchRequest, advancedLdapPersonBuilder);
+        AdvancedLdapPersonBuilder advancedLdapPersonBuilder = new AdvancedLdapPersonBuilder(advancedLdapPluginConfiguration, true);
+        advancedLdapConnector.ldapPagedSearch(advancedLdapPluginConfiguration, searchRequest, advancedLdapPersonBuilder);
         List<AdvancedLdapPerson> persons = advancedLdapPersonBuilder.getPersons();
 
         if (1 != persons.size()) {

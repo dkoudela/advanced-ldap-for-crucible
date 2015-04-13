@@ -1,6 +1,7 @@
 package com.davidkoudela.crucible.ldap.model;
 
 import com.davidkoudela.crucible.config.AdvancedLdapOptions;
+import com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration;
 import com.unboundid.ldap.sdk.SearchResultEntry;
 
 import java.util.ArrayList;
@@ -15,12 +16,12 @@ import java.util.List;
  * @since 2015-03-21
  */
 public class AdvancedLdapGroupBuilder implements AdvancedLdapGroupSearchResultBuilder {
-    private AdvancedLdapOptions advancedLdapOptions;
+    private AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration;
     private List<AdvancedLdapGroup> advancedLdapGroupList = new ArrayList<AdvancedLdapGroup>();
     private Boolean followMembers = false;
 
-    public AdvancedLdapGroupBuilder(AdvancedLdapOptions advancedLdapOptions, Boolean followMembers) {
-        this.advancedLdapOptions = advancedLdapOptions;
+    public AdvancedLdapGroupBuilder(AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration, Boolean followMembers) {
+        this.advancedLdapPluginConfiguration = advancedLdapPluginConfiguration;
         this.followMembers = followMembers;
     }
 
@@ -32,8 +33,8 @@ public class AdvancedLdapGroupBuilder implements AdvancedLdapGroupSearchResultBu
     @Override
     public void handlePagedSearchResult(SearchResultEntry searchResultEntry) {
         AdvancedLdapGroup advancedLdapGroup = new AdvancedLdapGroup();
-        advancedLdapGroup.setGID(searchResultEntry.getAttributeValue(this.advancedLdapOptions.getGIDAttributeKey()));
-        advancedLdapGroup.setDisplayName(searchResultEntry.getAttributeValue(this.advancedLdapOptions.getGroupDisplayNameKey()));
+        advancedLdapGroup.setGID(searchResultEntry.getAttributeValue(this.advancedLdapPluginConfiguration.getGIDAttributeKey()));
+        advancedLdapGroup.setDisplayName(searchResultEntry.getAttributeValue(this.advancedLdapPluginConfiguration.getGroupDisplayNameKey()));
 
         // TODO: Temp Tracing purpose:
         //System.out.println("AdvancedLdapGroupBuilder: Display Name: " + searchResultEntry.getAttributeValue(this.advancedLdapOptions.getGroupDisplayNameKey()));

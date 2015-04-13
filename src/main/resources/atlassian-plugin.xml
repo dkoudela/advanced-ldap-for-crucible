@@ -42,8 +42,8 @@
     <component key="advancedLdapUserManager" class="com.davidkoudela.crucible.admin.AdvancedLdapUserManagerImpl" public="true">
         <interface>com.davidkoudela.crucible.admin.AdvancedLdapUserManager</interface>
     </component>
-    <component key="advancedLdapOptionsDAO" class="com.davidkoudela.crucible.config.HibernateAdvancedLdapOptionsDAOImpl" public="true">
-        <interface>com.davidkoudela.crucible.config.HibernateAdvancedLdapOptionsDAO</interface>
+    <component key="advancedLdapOptionsDAO" class="com.davidkoudela.crucible.config.HibernateAdvancedLdapPluginConfigurationDAOImpl" public="true">
+        <interface>com.davidkoudela.crucible.config.HibernateAdvancedLdapPluginConfigurationDAO</interface>
     </component>
 
     <!-- import from the product container -->
