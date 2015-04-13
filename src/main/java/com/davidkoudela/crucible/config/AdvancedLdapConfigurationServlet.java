@@ -35,7 +35,7 @@ public class AdvancedLdapConfigurationServlet extends HttpServlet {
 
         Map<String,Object> params = new HashMap<String,Object>();
         req.setAttribute("decorator", "atl.admin");
-        params.put("advancedLdapOptions", advancedLdapPluginConfiguration);
+        params.put("advancedLdapPluginConfiguration", advancedLdapPluginConfiguration);
         resp.setContentType("text/html");
         velocityHelper.renderVelocityTemplate("templates/configureView.vm", params, resp.getWriter());
     }
@@ -54,10 +54,10 @@ public class AdvancedLdapConfigurationServlet extends HttpServlet {
             } catch (Exception e) {
                 System.out.println("AdvancedLdapConfigurationServlet.doPost: hibernateAdvancedLdapPluginConfigurationDAO.store failed: " + e);
             }
-            params.put("advancedLdapOptions", advancedLdapPluginConfiguration);
+            params.put("advancedLdapPluginConfiguration", advancedLdapPluginConfiguration);
             velocityHelper.renderVelocityTemplate("templates/configureView.vm", params, resp.getWriter());
         } else {
-            params.put("advancedLdapOptions", advancedLdapPluginConfiguration);
+            params.put("advancedLdapPluginConfiguration", advancedLdapPluginConfiguration);
             velocityHelper.renderVelocityTemplate("templates/configureEdit.vm", params, resp.getWriter());
         }
     }

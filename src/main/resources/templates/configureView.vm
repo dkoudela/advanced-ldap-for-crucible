@@ -22,43 +22,43 @@
 
     <div class="field-group">
         <label>URL</label>
-        <span class="field-value">$advancedLdapOptions.getLDAPUrl()</span>
+        <span class="field-value">$advancedLdapPluginConfiguration.getLDAPUrl()</span>
     </div>
     <div class="field-group">
         <label>Base DN</label>
-        <span class="field-value">$advancedLdapOptions.getLDAPBaseDN()</span>
+        <span class="field-value">$advancedLdapPluginConfiguration.getLDAPBaseDN()</span>
     </div>
     <div class="field-group">
         <label>User Filter</label>
-        <span class="field-value">$advancedLdapOptions.getUserFilterKey()</span>
+        <span class="field-value">$advancedLdapPluginConfiguration.getUserFilterKey()</span>
     </div>
     <div class="field-group">
         <label>UID attribute</label>
-        <span class="field-value">$advancedLdapOptions.getUIDAttributeKey()</span>
+        <span class="field-value">$advancedLdapPluginConfiguration.getUIDAttributeKey()</span>
     </div>
     <div class="field-group">
         <label>Email attribute</label>
-        <span class="field-value">$advancedLdapOptions.getEmailAttributeKey()</span>
+        <span class="field-value">$advancedLdapPluginConfiguration.getEmailAttributeKey()</span>
     </div>
     <div class="field-group">
         <label>Display name attribute</label>
-        <span class="field-value">$advancedLdapOptions.getDisplayNameAttributeKey()</span>
+        <span class="field-value">$advancedLdapPluginConfiguration.getDisplayNameAttributeKey()</span>
     </div>
     <div class="field-group">
         <label>Server Timeout</label>
-        <span class="field-value">$advancedLdapOptions.getResponseTimeoutMillis()</span>
+        <span class="field-value">$advancedLdapPluginConfiguration.getResponseTimeoutMillis()</span>
     </div>
     <div class="field-group">
         <label>Synchronise Period</label>
-        <span class="field-value">$advancedLdapOptions.getLDAPSyncPeriod()</span>
+        <span class="field-value">$advancedLdapPluginConfiguration.getLDAPSyncPeriod()</span>
     </div>
     <div class="field-group">
         <label>Ldap Page Size</label>
-        <span class="field-value">$advancedLdapOptions.getLDAPPageSize()</span>
+        <span class="field-value">$advancedLdapPluginConfiguration.getLDAPPageSize()</span>
     </div>
     <div class="field-group">
         <label>Initial bind user</label>
-        <span class="field-value">$advancedLdapOptions.getLDAPBindDN()</span>
+        <span class="field-value">$advancedLdapPluginConfiguration.getLDAPBindDN()</span>
     </div>
 
     <div class="buttons-container">
