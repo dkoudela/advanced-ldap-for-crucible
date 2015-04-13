@@ -1,0 +1,92 @@
+<html>
+<head>
+</head>
+<body>
+    #if ($statusMessage)
+    <div class="aui-message info closeable">
+        <span class="aui-icon icon-info"></span>
+        <p style="margin: 0">$statusMessage</p>
+    </div>
+    #end
+
+<div class="GBRQCM4CJB">
+    <div id="ldap-admin-title" class="gwt-Label GBRQCM4CIB">
+        LDAP configuration
+    </div>
+</div>
+
+<form class="aui long-label">
+
+    <h2>LDAP Authentication settings <a href="http://docs.atlassian.com/fisheye/docs-037/LDAP+Authentication"title="Help on LDAP authentication configuration"target="fecruhelp"><span class="aui-icon aui-icon-small aui-iconfont-help inline-help-icon">&nbsp;&nbsp;&nbsp;</span></a>
+    </h2>
+
+    <div class="field-group">
+        <label>URL</label>
+        <span class="field-value">$advancedLdapOptions.getLDAPUrl()</span>
+    </div>
+    <div class="field-group">
+        <label>Base DN</label>
+        <span class="field-value">$advancedLdapOptions.getLDAPBaseDN()</span>
+    </div>
+    <div class="field-group">
+        <label>User Filter</label>
+        <span class="field-value">$advancedLdapOptions.getUserFilterKey()</span>
+    </div>
+    <div class="field-group">
+        <label>UID attribute</label>
+        <span class="field-value">$advancedLdapOptions.getUIDAttributeKey()</span>
+    </div>
+    <div class="field-group">
+        <label>Email attribute</label>
+        <span class="field-value">$advancedLdapOptions.getEmailAttributeKey()</span>
+    </div>
+    <div class="field-group">
+        <label>Display name attribute</label>
+        <span class="field-value">$advancedLdapOptions.getDisplayNameAttributeKey()</span>
+    </div>
+    <div class="field-group">
+        <label>Server Timeout</label>
+        <span class="field-value">$advancedLdapOptions.getResponseTimeoutMillis()</span>
+    </div>
+    <div class="field-group">
+        <label>Synchronise Period</label>
+        <span class="field-value">$advancedLdapOptions.getLDAPSyncPeriod()</span>
+    </div>
+    <div class="field-group">
+        <label>Ldap Page Size</label>
+        <span class="field-value">$advancedLdapOptions.getLDAPPageSize()</span>
+    </div>
+    <div class="field-group">
+        <label>Initial bind user</label>
+        <span class="field-value">$advancedLdapOptions.getLDAPBindDN()</span>
+    </div>
+
+    <div class="buttons-container">
+        <div class="buttons">
+            <input type="button" class="aui-button" id="ldap-resync" value="Re-Sync">*
+            <input type="button" class="aui-button" id="ldap-edit" value="Edit">
+            <input type="button" class="aui-button" id="ldap-test" value="Test">
+            <input type="button" class="aui-button aui-button-link" id="ldap-remove" value="Remove">
+
+            <script type="text/javascript">
+                AJS.$(document).ready(function() {
+                    AJS.$("#ldap-resync").click(function() {
+                        FECRU.XSRF.postUri("advancedLdapConfigurationServletAuth.do");
+                    });
+                    AJS.$("#ldap-edit").click(function() {
+                        FECRU.XSRF.postUri("advancedLdapConfigurationServletEdit.do");
+                    });
+                    AJS.$("#ldap-test").click(function() {
+                        FECRU.XSRF.postUri("advancedLdapConfigurationServletTest.do");
+                    });
+                    AJS.$("#ldap-remove").click(function() {
+                        FECRU.XSRF.postUri("advancedLdapConfigurationServletRemove.do");
+                    });
+                });
+            </script>
+        </div>
+    </div>
+</form>
+
+</body>
+</html>

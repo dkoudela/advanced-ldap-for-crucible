@@ -1,0 +1,133 @@
+<html>
+<head>
+</head>
+<body>
+    #if ($statusMessage)
+    <div class="aui-message info closeable">
+        <span class="aui-icon icon-info"></span>
+        <p style="margin: 0">$statusMessage</p>
+    </div>
+    #end
+
+<div class="GBRQCM4CJB">
+    <div id="ldap-admin-title" class="gwt-Label GBRQCM4CIB">
+        LDAP configuration
+    </div>
+</div>
+
+<div class="formPane-holder">
+    <div class="formPane">
+        <form accept-charset="UTF-8" method="post" onSubmit="trimFormTextFields(this);" action="advancedLdapConfigurationServletView.do" class="aui long-label">
+            <div class="field-group">
+                <label>URL</label>
+                <tr>
+                    <td class="tdLabel"></td>
+                    <td>
+                        <input type="text" name="ldap.url" value="$advancedLdapOptions.getLDAPUrl()" id="ldap_url" class="text"/>
+                    </td>
+                </tr>
+            </div>
+            <div class="field-group">
+                <label>Base DN</label>
+                <tr>
+                    <td class="tdLabel"></td>
+                    <td>
+                        <input type="text" name="ldap.baseDn" value="$advancedLdapOptions.getLDAPBaseDN()" id="ldap_baseDn" class="text long-field"/>
+                    </td>
+                </tr>
+            </div>
+            <div class="field-group">
+                <label>User Filter</label>
+                <tr>
+                    <td class="tdLabel"></td>
+                    <td>
+                        <input type="text" name="ldap.filter" value="$advancedLdapOptions.getUserFilterKey()" id="ldap_filter" class="text long-field"/>
+                    </td>
+                </tr>
+            </div>
+            <div class="field-group">
+                <label>UID attribute</label>
+                <tr>
+                    <td class="tdLabel"></td>
+                    <td>
+                        <input type="text" name="ldap.uidAttr" value="$advancedLdapOptions.getUIDAttributeKey()" id="ldap_uidAttr" class="text"/>
+                    </td>
+                </tr>
+            </div>
+            <div class="field-group">
+                <label>Email attribute</label>
+                <tr>
+                    <td class="tdLabel"></td>
+                    <td>
+                        <input type="text" name="ldap.emailAttr" value="$advancedLdapOptions.getEmailAttributeKey()" id="ldap_emailAttr" class="text"/>
+                    </td>
+                </tr>
+            </div>
+            <div class="field-group">
+                <label>Display name attribute</label>
+                <tr>
+                    <td class="tdLabel"></td>
+                    <td>
+                        <input type="text" name="ldap.displaynameAttr" value="$advancedLdapOptions.getDisplayNameAttributeKey()" id="ldap_displaynameAttr" class="text"/>
+                    </td>
+                </tr>
+            </div>
+            <div class="field-group">
+                <label>Server Timeout</label>
+                <tr>
+                    <td class="tdLabel"></td>
+                    <td>
+                        <input type="text" name="ldap.serverTimeout" value="$advancedLdapOptions.getResponseTimeoutMillis()" id="ldap_serverTimeout" class="text"/>
+                    </td>
+                </tr>
+
+            </div>
+            <div class="field-group">
+                <label>Synchronise Period</label>
+                <tr>
+                    <td class="tdLabel"></td>
+                    <td>
+                        <input type="text" name="ldap.resyncPeriod" value="$advancedLdapOptions.getLDAPSyncPeriod()" id="ldap_resyncPeriod" class="text"/>
+                    </td>
+                </tr>
+            </div>
+            <div class="field-group">
+                <label>Ldap Page Size</label>
+                <tr>
+                    <td class="tdLabel"></td>
+                    <td>
+                        <input type="text" name="ldap.pageSize" value="$advancedLdapOptions.getLDAPPageSize()" id="ldap_pageSize" class="text"/>
+                    </td>
+                </tr>
+            </div>
+            <div class="field-group">
+                <label>Initial bind DN</label>
+                <tr>
+                    <td class="tdLabel"></td>
+                    <td>
+                        <input type="text" name="ldap.initialDn" value="$advancedLdapOptions.getLDAPBindDN()" class="text long-field"/>
+                    </td>
+                </tr>
+            </div>
+            <div class="field-group">
+                <label>Initial bind password</label>
+                <tr>
+                    <td class="tdLabel"></td>
+                    <td>
+                        <input type="password" name="ldap.initialSecret" value="$advancedLdapOptions.getLDAPBindPassword()" id="ldap_initialSecret" class="password"/>
+                    </td>
+                </tr>
+            </div>
+
+            <div class="buttons-container">
+                <div class="buttons">
+                    <input type="submit" value="Apply" class="aui-button aui-button-primary">
+                    <a class="cancel" href="advancedLdapConfigurationServletView.do">Cancel</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

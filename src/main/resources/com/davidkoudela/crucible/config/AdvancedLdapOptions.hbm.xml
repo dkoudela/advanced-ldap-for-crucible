@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<!--
+ Please follow table and column name conventions @ http://extranet.atlassian.com/display/FECRU/Crucible+Hibernate+mapping+conventions
+-->
+
+<hibernate-mapping>
+    <class name="com.davidkoudela.crucible.config.AdvancedLdapOptions" table="AD_LDAP_OPTIONS">
+        <id name="id" column="AD_LDAP_ID">
+            <generator class="increment" />
+        </id>
+        <property name="connectTimeoutMillis" column="CONNECT_TIMEOUT_MILLIS" type="integer"/>
+        <property name="responseTimeoutMillis" column="RESPONSE_TIMEOUT_MILLIS" type="integer"/>
+        <property name="LDAPPageSize" column="LDAP_PAGE_SIZE" type="integer"/>
+        <property name="LDAPSyncPeriod" column="LDAP_SYNC_PERIOD" type="integer"/>
+        <property name="LDAPUrl" column="LDAP_URL" type="string"/>
+        <property name="LDAPBindDN" column="LDAP_BIND_DN" type="string"/>
+        <property name="LDAPBindPassword" column="LDAP_BIND_PASSWORD" type="string"/>
+        <property name="LDAPBaseDN" column="LDAP_BASE_DN" type="string"/>
+        <property name="userFilterKey" column="USER_FILTER_KEY" type="string"/>
+        <property name="displayNameAttributeKey" column="DISPLAYNAME_ATTRIBUTE_KEY" type="string"/>
+        <property name="emailAttributeKey" column="EMAIL_ATTRIBUTE_KEY" type="string"/>
+        <property name="UIDAttributeKey" column="UID_ATTRIBUTE_KEY" type="string"/>
+        <property name="groupAttributeKey" column="GROUP_ATTRIBUTE_KEY" type="string"/>
+        <property name="groupFilterKey" column="GROUP_FILTER_KEY" type="string"/>
+        <property name="GIDAttributeKey" column="GID_ATTRIBUTE_KEY" type="string"/>
+        <property name="groupDisplayNameKey" column="GROUP_DISPLAYNAME_KEY" type="string"/>
+        <property name="userNamesKey" column="USER_NAMES_KEY" type="string"/>
+    </class>
+</hibernate-mapping>

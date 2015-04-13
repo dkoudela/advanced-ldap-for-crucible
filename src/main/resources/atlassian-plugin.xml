@@ -1,0 +1,64 @@
+<atlassian-plugin key="${project.groupId}.${project.artifactId}" name="${project.name}" plugins-version="2">
+    <plugin-info>
+        <description>${project.description}</description>
+        <version>${project.version}</version>
+        <vendor name="${project.organization.name}" url="${project.organization.url}" />
+        <param name="plugin-icon">images/pluginIcon.png</param>
+        <param name="plugin-logo">images/pluginLogo.png</param>
+    </plugin-info>
+
+    <!-- add i18n resource -->
+    <resource type="i18n" name="i18n" location="advanced-ldap-for-crucible"/>
+    
+    <!-- add web resources -->
+    <web-resource key="advanced-ldap-for-crucible-resources" name="advanced-ldap-for-crucible Web Resources">
+        <dependency>com.atlassian.auiplugin:ajs</dependency>
+        
+        <resource type="download" name="advanced-ldap-for-crucible.css" location="/css/advanced-ldap-for-crucible.css"/>
+        <resource type="download" name="advanced-ldap-for-crucible.js" location="/js/advanced-ldap-for-crucible.js"/>
+        <resource type="download" name="images/" location="/images"/>
+
+        <context>advanced-ldap-for-crucible</context>
+    </web-resource>
+    <web-section key="advanced-ldap-config-section" name="Advanced-Ldap-Configuration-Section" location="system.admin" weight="250">
+        <label key="com.davidkoudela.crucible.advanced-ldap-config.websection.label" />
+    </web-section>
+    <web-item key="advanced-ldap-config-link" name="Advanced-Ldap-Configuration-Link" section="system.admin/Advanced-Ldap-Configuration-Section" weight="1">
+        <label key="com.davidkoudela.crucible.advanced-ldap-config.webitem.label"/>
+        <description>Provides ${project.artifactId} admin menu.</description>
+        <link linkId="advancedLdapConfigurationServlet">/plugins/servlet/advancedLdapConfigurationServletView.do</link>
+    </web-item>
+
+    <!-- add configuration servlet -->
+    <servlet name="Advanced Ldap Configuration Servlet" key="advancedLdapConfigurationServlet" class="com.davidkoudela.crucible.config.AdvancedLdapConfigurationServlet">
+        <description>Provides configuration for Advanced Ldap plugin.</description>
+        <url-pattern>/advancedLdapConfigurationServlet*</url-pattern>
+    </servlet>
+
+    <!-- add crucible event listener -->
+    <listener key="advanced-ldap-event-listener" class="com.davidkoudela.crucible.listener.AdvancedLdapEventListener"/>
+
+    <!-- publish components -->
+    <component key="advancedLdapUserManager" class="com.davidkoudela.crucible.admin.AdvancedLdapUserManagerImpl" public="true">
+        <interface>com.davidkoudela.crucible.admin.AdvancedLdapUserManager</interface>
+    </component>
+    <component key="advancedLdapOptionsDAO" class="com.davidkoudela.crucible.config.HibernateAdvancedLdapOptionsDAOImpl" public="true">
+        <interface>com.davidkoudela.crucible.config.HibernateAdvancedLdapOptionsDAO</interface>
+    </component>
+
+    <!-- import from the product container -->
+    <component-import key="applicationProperties" interface="com.atlassian.sal.api.ApplicationProperties" />
+    <component-import key="userManager" interface="com.cenqua.fisheye.user.UserManager" />
+    <component-import key="pluginSettingsFactory" interface="com.atlassian.sal.api.pluginsettings.PluginSettingsFactory" />
+    <component-import key="authenticationListener">
+        <interface>com.atlassian.sal.api.auth.AuthenticationListener</interface>
+    </component-import>
+
+    <!--job key="advanced-ldap-synchronization" name="advanced-ldap-synchronization" class="com.davidkoudela.crucible.trigger.AdvancedLdapTrigger" />
+    <trigger key="advanced-ldap-synchronization-trigger" name="advanced-ldap-synchronization-trigger">
+        <job key="advanced-ldap-synchronization" />
+        <schedule cron-expression="0 */5 * * * ?" />
+        <managed editable="true" keepingHistory="true" canRunAdhoc="true" canDisable="true" />
+    </trigger-->
+
+</atlassian-plugin>
