@@ -1,15 +1,10 @@
 package com.davidkoudela.crucible.ldap.connect;
 
-import com.davidkoudela.crucible.config.AdvancedLdapOptions;
 import com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration;
 import com.unboundid.asn1.ASN1OctetString;
 import com.unboundid.ldap.sdk.*;
 import com.unboundid.ldap.sdk.controls.SimplePagedResultsControl;
-import com.unboundid.ldap.sdk.controls.VirtualListViewResponseControl;
-import com.unboundid.util.DebugType;
 import com.unboundid.util.LDAPTestUtils;
-
-import java.util.HashSet;
 
 /**
  * Description: {@link AdvancedLdapConnector} provides methods for retrieving LDAP data from the remove LDAP server.

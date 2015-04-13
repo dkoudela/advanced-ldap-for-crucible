@@ -2,7 +2,6 @@ package com.davidkoudela.crucible.admin;
 
 import com.atlassian.crucible.spi.data.UserData;
 import com.cenqua.fisheye.user.UserManager;
-import com.davidkoudela.crucible.config.AdvancedLdapOptions;
 import com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration;
 import com.davidkoudela.crucible.config.HibernateAdvancedLdapPluginConfigurationDAO;
 import com.davidkoudela.crucible.ldap.connect.AdvancedLdapConnector;

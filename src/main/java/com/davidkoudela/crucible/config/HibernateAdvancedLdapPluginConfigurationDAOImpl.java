@@ -44,7 +44,6 @@ public class HibernateAdvancedLdapPluginConfigurationDAOImpl implements Hibernat
                 configuration.setProperty("hibernate.dbcp.ps.maxIdle", "0");
             }
             configuration.addProperties(databaseConfig.getProperties());
-            configuration.addClass(com.davidkoudela.crucible.config.AdvancedLdapOptions.class);
             configuration.addClass(com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration.class);
             this.sessionFactory = configuration.buildSessionFactory();
         } catch (Exception e) {

@@ -1,6 +1,5 @@
 package com.davidkoudela.crucible.ldap.connect;
 
-import com.davidkoudela.crucible.config.AdvancedLdapOptions;
 import com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration;
 import com.unboundid.ldap.sdk.LDAPConnectionOptions;
 import com.unboundid.ldap.sdk.LDAPException;

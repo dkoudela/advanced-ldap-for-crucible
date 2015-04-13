@@ -1,6 +1,5 @@
 package com.davidkoudela.crucible.ldap.model;
 
-import com.davidkoudela.crucible.config.AdvancedLdapOptions;
 import com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration;
 import com.davidkoudela.crucible.ldap.connect.AdvancedLdapConnector;
 import com.unboundid.ldap.sdk.SearchRequest;
