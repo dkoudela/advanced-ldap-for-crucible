@@ -24,7 +24,7 @@
         <property name="displayNameAttributeKey" column="DISPLAYNAME_ATTRIBUTE_KEY" type="string"/>
         <property name="emailAttributeKey" column="EMAIL_ATTRIBUTE_KEY" type="string"/>
         <property name="UIDAttributeKey" column="UID_ATTRIBUTE_KEY" type="string"/>
-        <property name="groupAttributeKey" column="GROUP_ATTRIBUTE_KEY" type="string"/>
+        <property name="userGroupNamesKey" column="GROUP_ATTRIBUTE_KEY" type="string"/>
         <property name="groupFilterKey" column="GROUP_FILTER_KEY" type="string"/>
         <property name="GIDAttributeKey" column="GID_ATTRIBUTE_KEY" type="string"/>
         <property name="groupDisplayNameKey" column="GROUP_DISPLAYNAME_KEY" type="string"/>

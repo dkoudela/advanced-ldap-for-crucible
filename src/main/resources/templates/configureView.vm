@@ -19,7 +19,6 @@
 
     <h2>LDAP Authentication settings <a href="http://docs.atlassian.com/fisheye/docs-037/LDAP+Authentication"title="Help on LDAP authentication configuration"target="fecruhelp"><span class="aui-icon aui-icon-small aui-iconfont-help inline-help-icon">&nbsp;&nbsp;&nbsp;</span></a>
     </h2>
-
     <div class="field-group">
         <label>URL</label>
         <span class="field-value">$advancedLdapPluginConfiguration.getLDAPUrl()</span>
@@ -41,7 +40,7 @@
         <span class="field-value">$advancedLdapPluginConfiguration.getEmailAttributeKey()</span>
     </div>
     <div class="field-group">
-        <label>Display name attribute</label>
+        <label>User display name attribute</label>
         <span class="field-value">$advancedLdapPluginConfiguration.getDisplayNameAttributeKey()</span>
     </div>
     <div class="field-group">
@@ -59,6 +58,27 @@
     <div class="field-group">
         <label>Initial bind user</label>
         <span class="field-value">$advancedLdapPluginConfiguration.getLDAPBindDN()</span>
+    </div>
+
+    <div class="field-group">
+        <label>User group names attribute</label>
+        <span class="field-value">$advancedLdapPluginConfiguration.getUserGroupNamesKey()</span>
+    </div>
+    <div class="field-group">
+        <label>Group Filter</label>
+        <span class="field-value">$advancedLdapPluginConfiguration.getGroupFilterKey()</span>
+    </div>
+    <div class="field-group">
+        <label>GID attribute</label>
+        <span class="field-value">$advancedLdapPluginConfiguration.getGIDAttributeKey()</span>
+    </div>
+    <div class="field-group">
+        <label>Group display name attribute</label>
+        <span class="field-value">$advancedLdapPluginConfiguration.getGroupDisplayNameKey()</span>
+    </div>
+    <div class="field-group">
+        <label>Group user names attribute</label>
+        <span class="field-value">$advancedLdapPluginConfiguration.getUserNamesKey()</span>
     </div>
 
     <div class="buttons-container">

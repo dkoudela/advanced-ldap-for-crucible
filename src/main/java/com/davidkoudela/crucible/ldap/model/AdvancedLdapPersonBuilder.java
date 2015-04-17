@@ -46,7 +46,7 @@ public class AdvancedLdapPersonBuilder implements AdvancedLdapPersonSearchResult
         //System.out.println("AdvancedLdapPersonBuilder: UID: " + searchResultEntry.getAttributeValue(this.advancedLdapOptions.getUIDAttributeKey()));
 
         if (this.followMembers) {
-            Attribute groupDns = searchResultEntry.getAttribute(this.advancedLdapPluginConfiguration.getGroupAttributeKey());
+            Attribute groupDns = searchResultEntry.getAttribute(this.advancedLdapPluginConfiguration.getUserGroupNamesKey());
             List<AdvancedLdapGroup> groupList = new ArrayList<AdvancedLdapGroup>();
             for (String groupDn : groupDns.getValues()) {
                 System.out.println("AdvancedLdapPersonBuilder: Group: " + groupDn);

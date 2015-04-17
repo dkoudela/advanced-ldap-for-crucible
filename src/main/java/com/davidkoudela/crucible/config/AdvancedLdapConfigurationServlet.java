@@ -75,5 +75,11 @@ public class AdvancedLdapConfigurationServlet extends HttpServlet {
         advancedLdapPluginConfiguration.setDisplayNameAttributeKey(StringUtils.defaultIfEmpty(request.getParameter("ldap.displaynameAttr"), ""));
         advancedLdapPluginConfiguration.setEmailAttributeKey(StringUtils.defaultIfEmpty(request.getParameter("ldap.emailAttr"), ""));
         advancedLdapPluginConfiguration.setUIDAttributeKey(StringUtils.defaultIfEmpty(request.getParameter("ldap.uidAttr"), ""));
+
+        advancedLdapPluginConfiguration.setUserGroupNamesKey(StringUtils.defaultIfEmpty(request.getParameter("ldap.userGroupNamesAttr"), ""));
+        advancedLdapPluginConfiguration.setGroupFilterKey(StringUtils.defaultIfEmpty(request.getParameter("ldap.groupFilter"), ""));
+        advancedLdapPluginConfiguration.setGIDAttributeKey(StringUtils.defaultIfEmpty(request.getParameter("ldap.gidAttr"), ""));
+        advancedLdapPluginConfiguration.setGroupDisplayNameKey(StringUtils.defaultIfEmpty(request.getParameter("ldap.groupDisplaynameAttr"), ""));
+        advancedLdapPluginConfiguration.setUserNamesKey(StringUtils.defaultIfEmpty(request.getParameter("ldap.groupUsernameAttr"), ""));
     }
 }

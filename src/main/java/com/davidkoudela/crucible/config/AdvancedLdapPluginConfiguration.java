@@ -24,7 +24,7 @@ public class AdvancedLdapPluginConfiguration {
     private String displayNameAttributeKey = "";
     private String emailAttributeKey = "";
     private String UIDAttributeKey = "";
-    private String groupAttributeKey = "";
+    private String userGroupNamesKey = "";
     private String groupFilterKey = "";
     private String GIDAttributeKey = "";
     private String groupDisplayNameKey = "";
@@ -82,8 +82,8 @@ public class AdvancedLdapPluginConfiguration {
         return this.UIDAttributeKey;
     }
 
-    public String getGroupAttributeKey() {
-        return this.groupAttributeKey;
+    public String getUserGroupNamesKey() {
+        return this.userGroupNamesKey;
     }
 
     public String getGroupFilterKey() {
@@ -154,8 +154,8 @@ public class AdvancedLdapPluginConfiguration {
         this.UIDAttributeKey = UIDAttributeKey;
     }
 
-    public void setGroupAttributeKey(String groupAttributeKey) {
-        this.groupAttributeKey = groupAttributeKey;
+    public void setUserGroupNamesKey(String userGroupNamesKey) {
+        this.userGroupNamesKey = userGroupNamesKey;
     }
 
     public void setGroupFilterKey(String groupFilterKey) {
