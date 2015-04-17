@@ -38,7 +38,7 @@ public class HibernateAdvancedLdapPluginConfigurationDAOImpl implements Hibernat
             configuration.setProperty("hibernate.generate_statistics", Boolean.toString(databaseConfig.isGenerateStatistics()));
             configuration.setProperty("hibernate.connection.isolation", Integer.toString(2));
             configuration.setProperty("hibernate.bytecode.use_reflection_optimizer", "true");
-            configuration.setProperty("hibernate.hbm2ddl.auto", "create");
+            configuration.setProperty("hibernate.hbm2ddl.auto", "update");
             if (DBType.ORACLE.equals(databaseConfig.getType())) {
                 configuration.setProperty("hibernate.jdbc.batch_size", "0");
                 configuration.setProperty("hibernate.dbcp.ps.maxIdle", "0");
