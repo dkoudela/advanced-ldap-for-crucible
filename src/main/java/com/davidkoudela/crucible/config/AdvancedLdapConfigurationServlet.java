@@ -24,15 +24,18 @@ public class AdvancedLdapConfigurationServlet extends HttpServlet {
     private final VelocityHelper velocityHelper;
     private HibernateAdvancedLdapPluginConfigurationDAO hibernateAdvancedLdapPluginConfigurationDAO;
     private AdvancedLdapTimerTrigger advancedLdapTimerTrigger;
+    private AdvancedLdapSynchronizationTask advancedLdapSynchronizationTask;
     private int timerIndex = -1;
 
     @org.springframework.beans.factory.annotation.Autowired
     public AdvancedLdapConfigurationServlet(VelocityHelper velocityHelper,
                                             HibernateAdvancedLdapPluginConfigurationDAO hibernateAdvancedLdapPluginConfigurationDAO,
-                                            AdvancedLdapTimerTrigger advancedLdapTimerTrigger) {
+                                            AdvancedLdapTimerTrigger advancedLdapTimerTrigger,
+                                            AdvancedLdapSynchronizationTask advancedLdapSynchronizationTask) {
         this.velocityHelper = velocityHelper;
         this.hibernateAdvancedLdapPluginConfigurationDAO = hibernateAdvancedLdapPluginConfigurationDAO;
         this.advancedLdapTimerTrigger = advancedLdapTimerTrigger;
+        this.advancedLdapSynchronizationTask = advancedLdapSynchronizationTask;
     }
 
     @Override
@@ -96,7 +99,7 @@ public class AdvancedLdapConfigurationServlet extends HttpServlet {
             this.timerIndex = -1;
         }
         if (!advancedLdapPluginConfiguration.getLDAPUrl().isEmpty()) {
-            this.timerIndex = this.advancedLdapTimerTrigger.createTimer(new AdvancedLdapSynchronizationTask(), advancedLdapPluginConfiguration.getLDAPSyncPeriod());
+            this.timerIndex = this.advancedLdapTimerTrigger.createTimer(this.advancedLdapSynchronizationTask, advancedLdapPluginConfiguration.getLDAPSyncPeriod());
         }
     }
 }
