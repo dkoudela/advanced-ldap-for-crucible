@@ -66,8 +66,8 @@ public class AdvancedLdapPersonBuilder implements AdvancedLdapPersonSearchResult
                 } catch (Exception e) {
                     System.out.println("AdvancedLdapPersonBuilder: group search failed: " + groupDn + " Exception: " + e);
                 }
-                advancedLdapPerson.setGroupList(groupList);
             }
+            advancedLdapPerson.setGroupList(groupList);
         }
         this.advancedLdapPersonList.add(advancedLdapPerson);
     }

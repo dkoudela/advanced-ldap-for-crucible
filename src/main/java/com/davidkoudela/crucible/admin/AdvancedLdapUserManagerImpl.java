@@ -7,6 +7,7 @@ import com.davidkoudela.crucible.config.HibernateAdvancedLdapPluginConfiguration
 import com.davidkoudela.crucible.ldap.connect.AdvancedLdapConnector;
 import com.davidkoudela.crucible.ldap.connect.AdvancedLdapSearchFilterFactory;
 import com.davidkoudela.crucible.ldap.model.AdvancedLdapGroup;
+import com.davidkoudela.crucible.ldap.model.AdvancedLdapGroupBuilder;
 import com.davidkoudela.crucible.ldap.model.AdvancedLdapPerson;
 import com.davidkoudela.crucible.ldap.model.AdvancedLdapPersonBuilder;
 import com.unboundid.ldap.sdk.*;
@@ -34,9 +35,14 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
 
     @Override
     public void loadUser(UserData userData) {
-        SearchRequest searchRequest = null;
         AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = hibernateAdvancedLdapPluginConfigurationDAO.get();
 
+        if (advancedLdapPluginConfiguration.getLDAPUrl().isEmpty()) {
+            return;
+        }
+
+        System.out.println("AdvancedLdapUserManagerImpl.loadUser START");
+        SearchRequest searchRequest = null;
         try {
             Filter filter = AdvancedLdapSearchFilterFactory.getSearchFilterForUser(advancedLdapPluginConfiguration.getUserFilterKey(), userData.getUserName());
             searchRequest = new SearchRequest(advancedLdapPluginConfiguration.getLDAPBaseDN(), SearchScope.SUB, filter);
@@ -75,5 +81,52 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
         }
 
         System.out.println("AdvancedLdapUserManagerImpl.loadUser END");
+    }
+
+    @Override
+    public void loadGroups() {
+        AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = hibernateAdvancedLdapPluginConfigurationDAO.get();
+
+        System.out.println("AdvancedLdapUserManagerImpl.loadGroups START");
+        SearchRequest searchRequest = null;
+        try {
+            Filter filter = AdvancedLdapSearchFilterFactory.getSearchFilterForAllGroups(advancedLdapPluginConfiguration.getGroupFilterKey());
+            searchRequest = new SearchRequest(advancedLdapPluginConfiguration.getLDAPBaseDN(), SearchScope.SUB, filter);
+        } catch (Exception e) {
+            System.out.println("Search Request creation failed for filter: " + advancedLdapPluginConfiguration.getGroupFilterKey() + " Exception: " + e);
+            return;
+        }
+
+        AdvancedLdapConnector advancedLdapConnector = new AdvancedLdapConnector();
+        AdvancedLdapGroupBuilder advancedLdapGroupBuilder = new AdvancedLdapGroupBuilder(advancedLdapPluginConfiguration, true);
+        advancedLdapConnector.ldapPagedSearch(advancedLdapPluginConfiguration, searchRequest, advancedLdapGroupBuilder);
+        List<AdvancedLdapGroup> groups = advancedLdapGroupBuilder.getGroups();
+
+        for (AdvancedLdapGroup advancedLdapGroup : groups) {
+            String GID = advancedLdapGroup.getNormalizedGID();
+            System.out.println("AdvancedLdapUserManagerImpl: GID: " + GID);
+            for (AdvancedLdapPerson advancedLdapPerson : advancedLdapGroup.getPersonList()) {
+                String UID = advancedLdapPerson.getUid();
+                System.out.println("AdvancedLdapUserManagerImpl: UID: " + UID);
+                try {
+                    if (!this.userManager.userExists(UID)) {
+                        System.out.println("AdvancedLdapUserManagerImpl: UID does not exist in Crucible: " + UID);
+                    }
+                    if (!this.userManager.builtInGroupExists(GID)) {
+                        System.out.println("AdvancedLdapUserManagerImpl: GID added: " + GID);
+                        this.userManager.addBuiltInGroup(GID);
+                    }
+                    if (!this.userManager.isUserInGroup(GID, advancedLdapPerson.getUid())) {
+                        this.userManager.addUserToBuiltInGroup(GID, advancedLdapPerson.getUid());
+                    }
+                } catch (Exception e) {
+                    System.out.println("AdvancedLdapUserManagerImpl: person: " + UID + " failed: " + e);
+                } catch(Throwable e) {
+                    System.out.println("AdvancedLdapUserManagerImpl: person: " + UID + " failed unexpected: " + e);
+                }
+            }
+        }
+
+        System.out.println("AdvancedLdapUserManagerImpl.loadGroups END");
     }
 }

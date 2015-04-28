@@ -2,6 +2,7 @@ package com.davidkoudela.crucible.ldap.model;
 
 import com.cenqua.fisheye.user.UserManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,6 +16,7 @@ public class AdvancedLdapGroup {
     private String GID;
     private String displayName;
     private List<String> userNames;
+    private List<AdvancedLdapPerson> personList = new ArrayList<AdvancedLdapPerson>();
 
     public String getGID() {
         return GID;
@@ -50,5 +52,13 @@ public class AdvancedLdapGroup {
 
     public void setUserNames(List<String> userNames) {
         this.userNames = userNames;
+    }
+
+    public List<AdvancedLdapPerson> getPersonList() {
+        return this.personList;
+    }
+
+    public void setPersonList(List<AdvancedLdapPerson> personList) {
+        this.personList = personList;
     }
 }

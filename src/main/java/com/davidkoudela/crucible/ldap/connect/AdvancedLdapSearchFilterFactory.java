@@ -19,4 +19,10 @@ public class AdvancedLdapSearchFilterFactory {
         String replacedFilter = filter.replace("${USERNAME}", "*");
         return Filter.create(replacedFilter);
     }
+
+    public static Filter getSearchFilterForAllGroups(String filter) throws LDAPException{
+        String replacedFilter = filter.replace("${GROUPNAME}", "*");
+        return Filter.create(replacedFilter);
+    }
+
 }

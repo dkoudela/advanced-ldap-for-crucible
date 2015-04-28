@@ -12,4 +12,5 @@ import com.atlassian.crucible.spi.data.UserData;
  */
 public interface AdvancedLdapUserManager {
     void loadUser(UserData userData);
+    void loadGroups();
 }
