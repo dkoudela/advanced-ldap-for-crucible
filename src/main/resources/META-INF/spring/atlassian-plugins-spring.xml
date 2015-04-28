@@ -20,4 +20,6 @@
         </constructor-arg>
     </bean>
 
+    <bean id="advancedLdapTrigger" name="AdvancedLdapTrigger" class="com.davidkoudela.crucible.timer.AdvancedLdapTimerTrigger" />
+
 </beans>

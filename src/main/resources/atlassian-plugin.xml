@@ -54,11 +54,4 @@
         <interface>com.atlassian.sal.api.auth.AuthenticationListener</interface>
     </component-import>
 
-    <!--job key="advanced-ldap-synchronization" name="advanced-ldap-synchronization" class="com.davidkoudela.crucible.trigger.AdvancedLdapTrigger" />
-    <trigger key="advanced-ldap-synchronization-trigger" name="advanced-ldap-synchronization-trigger">
-        <job key="advanced-ldap-synchronization" />
-        <schedule cron-expression="0 */5 * * * ?" />
-        <managed editable="true" keepingHistory="true" canRunAdhoc="true" canDisable="true" />
-    </trigger-->
-
 </atlassian-plugin>

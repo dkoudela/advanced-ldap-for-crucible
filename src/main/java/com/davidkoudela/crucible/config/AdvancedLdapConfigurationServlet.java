@@ -1,6 +1,8 @@
 package com.davidkoudela.crucible.config;
 
 import com.atlassian.fisheye.plugin.web.helpers.VelocityHelper;
+import com.davidkoudela.crucible.tasks.AdvancedLdapSynchronizationTask;
+import com.davidkoudela.crucible.timer.AdvancedLdapTimerTrigger;
 import org.apache.commons.lang.StringUtils;
 
 import javax.servlet.ServletException;
@@ -21,12 +23,16 @@ import java.util.Map;
 public class AdvancedLdapConfigurationServlet extends HttpServlet {
     private final VelocityHelper velocityHelper;
     private HibernateAdvancedLdapPluginConfigurationDAO hibernateAdvancedLdapPluginConfigurationDAO;
+    private AdvancedLdapTimerTrigger advancedLdapTimerTrigger;
+    private int timerIndex = -1;
 
     @org.springframework.beans.factory.annotation.Autowired
     public AdvancedLdapConfigurationServlet(VelocityHelper velocityHelper,
-                                            HibernateAdvancedLdapPluginConfigurationDAO hibernateAdvancedLdapPluginConfigurationDAO) {
+                                            HibernateAdvancedLdapPluginConfigurationDAO hibernateAdvancedLdapPluginConfigurationDAO,
+                                            AdvancedLdapTimerTrigger advancedLdapTimerTrigger) {
         this.velocityHelper = velocityHelper;
         this.hibernateAdvancedLdapPluginConfigurationDAO = hibernateAdvancedLdapPluginConfigurationDAO;
+        this.advancedLdapTimerTrigger = advancedLdapTimerTrigger;
     }
 
     @Override
@@ -51,6 +57,7 @@ public class AdvancedLdapConfigurationServlet extends HttpServlet {
 
             try {
                 this.hibernateAdvancedLdapPluginConfigurationDAO.store(advancedLdapPluginConfiguration, true);
+                setTimer(advancedLdapPluginConfiguration);
             } catch (Exception e) {
                 System.out.println("AdvancedLdapConfigurationServlet.doPost: hibernateAdvancedLdapPluginConfigurationDAO.store failed: " + e);
             }
@@ -81,5 +88,15 @@ public class AdvancedLdapConfigurationServlet extends HttpServlet {
         advancedLdapPluginConfiguration.setGIDAttributeKey(StringUtils.defaultIfEmpty(request.getParameter("ldap.gidAttr"), ""));
         advancedLdapPluginConfiguration.setGroupDisplayNameKey(StringUtils.defaultIfEmpty(request.getParameter("ldap.groupDisplaynameAttr"), ""));
         advancedLdapPluginConfiguration.setUserNamesKey(StringUtils.defaultIfEmpty(request.getParameter("ldap.groupUsernameAttr"), ""));
+    }
+
+    private void setTimer(AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration) {
+        if (-1 != this.timerIndex) {
+            this.advancedLdapTimerTrigger.deleteTimer(this.timerIndex);
+            this.timerIndex = -1;
+        }
+        if (!advancedLdapPluginConfiguration.getLDAPUrl().isEmpty()) {
+            this.timerIndex = this.advancedLdapTimerTrigger.createTimer(new AdvancedLdapSynchronizationTask(), advancedLdapPluginConfiguration.getLDAPSyncPeriod());
+        }
     }
 }
