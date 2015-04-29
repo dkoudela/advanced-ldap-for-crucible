@@ -1,6 +1,10 @@
 package com.davidkoudela.crucible.admin;
 
 import com.atlassian.crucible.spi.data.UserData;
+import com.atlassian.fecru.user.User;
+import com.atlassian.fecru.user.UserDAOImpl;
+import com.cenqua.crucible.hibernate.CurrentSessionProvider;
+import com.cenqua.crucible.hibernate.HibernateUtilCurrentSessionProvider;
 import com.cenqua.fisheye.user.UserManager;
 import com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration;
 import com.davidkoudela.crucible.config.HibernateAdvancedLdapPluginConfigurationDAO;
@@ -111,6 +115,15 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
                 try {
                     if (!this.userManager.userExists(UID)) {
                         System.out.println("AdvancedLdapUserManagerImpl: UID does not exist in Crucible: " + UID);
+                        com.atlassian.fecru.user.User  user = new User(UID);
+                        user.setDisplayName(advancedLdapPerson.getDisplayName());
+                        user.setEmail(advancedLdapPerson.getEmail());
+                        user.setAuthType(User.AuthType.LDAP);
+                        user.setFisheyeEnabled(true);
+                        UserDAOImpl userDAO = new UserDAOImpl();
+                        userDAO.setCurrentSessionProvider(new HibernateUtilCurrentSessionProvider());
+                        userDAO.create(user);
+                        userManager.setCrucibleEnabled(UID, true);
                     }
                     if (!this.userManager.builtInGroupExists(GID)) {
                         System.out.println("AdvancedLdapUserManagerImpl: GID added: " + GID);
