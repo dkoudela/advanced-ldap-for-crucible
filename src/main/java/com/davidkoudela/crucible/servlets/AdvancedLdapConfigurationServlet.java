@@ -1,6 +1,8 @@
-package com.davidkoudela.crucible.config;
+package com.davidkoudela.crucible.servlets;
 
 import com.atlassian.fisheye.plugin.web.helpers.VelocityHelper;
+import com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration;
+import com.davidkoudela.crucible.config.HibernateAdvancedLdapPluginConfigurationDAO;
 import com.davidkoudela.crucible.tasks.AdvancedLdapSynchronizationTask;
 import com.davidkoudela.crucible.timer.AdvancedLdapTimerTrigger;
 import org.apache.commons.lang.StringUtils;

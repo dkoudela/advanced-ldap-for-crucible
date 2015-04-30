@@ -30,7 +30,7 @@
     </web-item>
 
     <!-- add configuration servlet -->
-    <servlet name="Advanced Ldap Configuration Servlet" key="advancedLdapConfigurationServlet" class="com.davidkoudela.crucible.config.AdvancedLdapConfigurationServlet">
+    <servlet name="Advanced Ldap Configuration Servlet" key="advancedLdapConfigurationServlet" class="com.davidkoudela.crucible.servlets.AdvancedLdapConfigurationServlet">
         <description>Provides configuration for Advanced Ldap plugin.</description>
         <url-pattern>/advancedLdapConfigurationServlet*</url-pattern>
     </servlet>
