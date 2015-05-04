@@ -1,6 +1,7 @@
 package com.davidkoudela.crucible.servlets;
 
 import com.atlassian.fisheye.plugin.web.helpers.VelocityHelper;
+import com.davidkoudela.crucible.admin.AdvancedLdapUserManager;
 import com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration;
 import com.davidkoudela.crucible.config.HibernateAdvancedLdapPluginConfigurationDAO;
 import com.davidkoudela.crucible.tasks.AdvancedLdapSynchronizationTask;
@@ -26,18 +27,18 @@ public class AdvancedLdapConfigurationServlet extends HttpServlet {
     private final VelocityHelper velocityHelper;
     private HibernateAdvancedLdapPluginConfigurationDAO hibernateAdvancedLdapPluginConfigurationDAO;
     private AdvancedLdapTimerTrigger advancedLdapTimerTrigger;
-    private AdvancedLdapSynchronizationTask advancedLdapSynchronizationTask;
+    private AdvancedLdapUserManager advancedLdapUserManager;
     private int timerIndex = -1;
 
     @org.springframework.beans.factory.annotation.Autowired
     public AdvancedLdapConfigurationServlet(VelocityHelper velocityHelper,
                                             HibernateAdvancedLdapPluginConfigurationDAO hibernateAdvancedLdapPluginConfigurationDAO,
                                             AdvancedLdapTimerTrigger advancedLdapTimerTrigger,
-                                            AdvancedLdapSynchronizationTask advancedLdapSynchronizationTask) {
+                                            AdvancedLdapUserManager advancedLdapUserManager) {
         this.velocityHelper = velocityHelper;
         this.hibernateAdvancedLdapPluginConfigurationDAO = hibernateAdvancedLdapPluginConfigurationDAO;
         this.advancedLdapTimerTrigger = advancedLdapTimerTrigger;
-        this.advancedLdapSynchronizationTask = advancedLdapSynchronizationTask;
+        this.advancedLdapUserManager = advancedLdapUserManager;
     }
 
     @Override
@@ -101,7 +102,8 @@ public class AdvancedLdapConfigurationServlet extends HttpServlet {
             this.timerIndex = -1;
         }
         if (!advancedLdapPluginConfiguration.getLDAPUrl().isEmpty()) {
-            this.timerIndex = this.advancedLdapTimerTrigger.createTimer(this.advancedLdapSynchronizationTask, advancedLdapPluginConfiguration.getLDAPSyncPeriod());
+            AdvancedLdapSynchronizationTask advancedLdapSynchronizationTask = new AdvancedLdapSynchronizationTask(this.advancedLdapUserManager);
+            this.timerIndex = this.advancedLdapTimerTrigger.createTimer(advancedLdapSynchronizationTask, advancedLdapPluginConfiguration.getLDAPSyncPeriod());
         }
     }
 }

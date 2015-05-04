@@ -22,10 +22,4 @@
 
     <bean id="advancedLdapTrigger" name="AdvancedLdapTrigger" class="com.davidkoudela.crucible.timer.AdvancedLdapTimerTrigger" />
 
-    <bean id="advancedLdapSynchronizationTask" name="AdvancedLdapSynchronizationTask" class="com.davidkoudela.crucible.tasks.AdvancedLdapSynchronizationTask">
-        <constructor-arg>
-            <ref bean="advancedLdapUserManager" />
-        </constructor-arg>
-    </bean>
-
 </beans>
