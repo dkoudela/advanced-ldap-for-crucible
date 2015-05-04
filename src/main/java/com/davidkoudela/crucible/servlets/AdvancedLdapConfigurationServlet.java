@@ -1,11 +1,9 @@
 package com.davidkoudela.crucible.servlets;
 
 import com.atlassian.fisheye.plugin.web.helpers.VelocityHelper;
-import com.davidkoudela.crucible.admin.AdvancedLdapUserManager;
 import com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration;
 import com.davidkoudela.crucible.config.HibernateAdvancedLdapPluginConfigurationDAO;
-import com.davidkoudela.crucible.tasks.AdvancedLdapSynchronizationTask;
-import com.davidkoudela.crucible.timer.AdvancedLdapTimerTrigger;
+import com.davidkoudela.crucible.tasks.AdvancedLdapSynchronizationManager;
 import org.apache.commons.lang.StringUtils;
 
 import javax.servlet.ServletException;
@@ -26,19 +24,15 @@ import java.util.Map;
 public class AdvancedLdapConfigurationServlet extends HttpServlet {
     private final VelocityHelper velocityHelper;
     private HibernateAdvancedLdapPluginConfigurationDAO hibernateAdvancedLdapPluginConfigurationDAO;
-    private AdvancedLdapTimerTrigger advancedLdapTimerTrigger;
-    private AdvancedLdapUserManager advancedLdapUserManager;
-    private int timerIndex = -1;
+    private AdvancedLdapSynchronizationManager advancedLdapSynchronizationManager;
 
     @org.springframework.beans.factory.annotation.Autowired
     public AdvancedLdapConfigurationServlet(VelocityHelper velocityHelper,
                                             HibernateAdvancedLdapPluginConfigurationDAO hibernateAdvancedLdapPluginConfigurationDAO,
-                                            AdvancedLdapTimerTrigger advancedLdapTimerTrigger,
-                                            AdvancedLdapUserManager advancedLdapUserManager) {
+                                            AdvancedLdapSynchronizationManager advancedLdapSynchronizationManager) {
         this.velocityHelper = velocityHelper;
         this.hibernateAdvancedLdapPluginConfigurationDAO = hibernateAdvancedLdapPluginConfigurationDAO;
-        this.advancedLdapTimerTrigger = advancedLdapTimerTrigger;
-        this.advancedLdapUserManager = advancedLdapUserManager;
+        this.advancedLdapSynchronizationManager = advancedLdapSynchronizationManager;
     }
 
     @Override
@@ -63,7 +57,7 @@ public class AdvancedLdapConfigurationServlet extends HttpServlet {
 
             try {
                 this.hibernateAdvancedLdapPluginConfigurationDAO.store(advancedLdapPluginConfiguration, true);
-                setTimer(advancedLdapPluginConfiguration);
+                this.advancedLdapSynchronizationManager.updateTimer();
             } catch (Exception e) {
                 System.out.println("AdvancedLdapConfigurationServlet.doPost: hibernateAdvancedLdapPluginConfigurationDAO.store failed: " + e);
             }
@@ -96,14 +90,4 @@ public class AdvancedLdapConfigurationServlet extends HttpServlet {
         advancedLdapPluginConfiguration.setUserNamesKey(StringUtils.defaultIfEmpty(request.getParameter("ldap.groupUsernameAttr"), ""));
     }
 
-    private void setTimer(AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration) {
-        if (-1 != this.timerIndex) {
-            this.advancedLdapTimerTrigger.deleteTimer(this.timerIndex);
-            this.timerIndex = -1;
-        }
-        if (!advancedLdapPluginConfiguration.getLDAPUrl().isEmpty()) {
-            AdvancedLdapSynchronizationTask advancedLdapSynchronizationTask = new AdvancedLdapSynchronizationTask(this.advancedLdapUserManager);
-            this.timerIndex = this.advancedLdapTimerTrigger.createTimer(advancedLdapSynchronizationTask, advancedLdapPluginConfiguration.getLDAPSyncPeriod());
-        }
-    }
 }

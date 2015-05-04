@@ -1,7 +1,6 @@
 package com.davidkoudela.crucible.tasks;
 
 import com.davidkoudela.crucible.admin.AdvancedLdapUserManager;
-import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.TimerTask;
