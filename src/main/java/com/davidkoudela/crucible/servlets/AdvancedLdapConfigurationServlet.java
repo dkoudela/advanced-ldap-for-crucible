@@ -63,6 +63,16 @@ public class AdvancedLdapConfigurationServlet extends HttpServlet {
             }
             params.put("advancedLdapPluginConfiguration", advancedLdapPluginConfiguration);
             velocityHelper.renderVelocityTemplate("templates/configureView.vm", params, resp.getWriter());
+        } else if (req.getPathInfo().contains("/advancedLdapConfigurationServletRemove.do")) {
+            try {
+                this.hibernateAdvancedLdapPluginConfigurationDAO.remove(advancedLdapPluginConfiguration.getId());
+                this.advancedLdapSynchronizationManager.updateTimer();
+            } catch (Exception e) {
+                System.out.println("AdvancedLdapConfigurationServlet.doPost: hibernateAdvancedLdapPluginConfigurationDAO.remove failed: " + e);
+            }
+            advancedLdapPluginConfiguration = this.hibernateAdvancedLdapPluginConfigurationDAO.get();
+            params.put("advancedLdapPluginConfiguration", advancedLdapPluginConfiguration);
+            velocityHelper.renderVelocityTemplate("templates/configureView.vm", params, resp.getWriter());
         } else {
             params.put("advancedLdapPluginConfiguration", advancedLdapPluginConfiguration);
             velocityHelper.renderVelocityTemplate("templates/configureEdit.vm", params, resp.getWriter());
@@ -78,7 +88,7 @@ public class AdvancedLdapConfigurationServlet extends HttpServlet {
         advancedLdapPluginConfiguration.setLDAPBindDN(StringUtils.defaultIfEmpty(request.getParameter("ldap.initialDn"), ""));
         advancedLdapPluginConfiguration.setLDAPBindPassword(StringUtils.defaultIfEmpty(request.getParameter("ldap.initialSecret"), ""));
         advancedLdapPluginConfiguration.setLDAPBaseDN(StringUtils.defaultIfEmpty(request.getParameter("ldap.baseDn"), ""));
-        advancedLdapPluginConfiguration.setUserFilterKey(StringUtils.defaultIfEmpty(request.getParameter("ldap.filter"), null));
+        advancedLdapPluginConfiguration.setUserFilterKey(StringUtils.defaultIfEmpty(request.getParameter("ldap.filter"), ""));
         advancedLdapPluginConfiguration.setDisplayNameAttributeKey(StringUtils.defaultIfEmpty(request.getParameter("ldap.displaynameAttr"), ""));
         advancedLdapPluginConfiguration.setEmailAttributeKey(StringUtils.defaultIfEmpty(request.getParameter("ldap.emailAttr"), ""));
         advancedLdapPluginConfiguration.setUIDAttributeKey(StringUtils.defaultIfEmpty(request.getParameter("ldap.uidAttr"), ""));

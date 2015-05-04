@@ -5,11 +5,14 @@ import com.cenqua.crucible.hibernate.DatabaseConfig;
 import com.cenqua.fisheye.AppConfig;
 import com.cenqua.fisheye.config1.DriverSource;
 import org.hibernate.HibernateException;
+import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.classic.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * Description: Implementation of {@link HibernateAdvancedLdapPluginConfigurationDAO} representing the Data Access Object class
@@ -61,25 +64,27 @@ public class HibernateAdvancedLdapPluginConfigurationDAOImpl implements Hibernat
     @Transactional
     public void store(AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration, boolean isUpdate) throws Exception {
         Session session = null;
+        Transaction tx = null;
         try {
             session = this.sessionFactory.openSession();
+            tx = session.beginTransaction();
 
             if (isUpdate)
                 session.saveOrUpdate(advancedLdapPluginConfiguration);
             else {
                 session.save(advancedLdapPluginConfiguration);
             }
+            Integer id = (Integer) session.getIdentifier(advancedLdapPluginConfiguration);
+            advancedLdapPluginConfiguration.setId(id);
+            session.update(advancedLdapPluginConfiguration);
 
-            session.flush();
+            tx.commit();
         } catch (HibernateException he) {
+            if (tx!=null) tx.rollback();
             throw new Exception("Could not save key");
         } finally {
             try {
                 if (session != null) {
-                    if (!session.connection().getAutoCommit()) {
-                        session.connection().commit();
-                    }
-
                     session.close();
                 }
             } catch (Exception e) {
@@ -91,16 +96,20 @@ public class HibernateAdvancedLdapPluginConfigurationDAOImpl implements Hibernat
     @Transactional
     public AdvancedLdapPluginConfiguration get() {
         Session session = null;
+        Transaction tx = null;
         AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = null;
         try
         {
             session = this.sessionFactory.openSession();
-            Integer id = 1;
-            advancedLdapPluginConfiguration = (AdvancedLdapPluginConfiguration)session.get(AdvancedLdapPluginConfiguration.class, id);
-            if (advancedLdapPluginConfiguration == null)
+            tx = session.beginTransaction();
+            List advancedLdapPluginConfigurationList = session.createQuery("FROM com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration").list();
+            if (advancedLdapPluginConfigurationList == null || advancedLdapPluginConfigurationList.isEmpty())
                 advancedLdapPluginConfiguration = new AdvancedLdapPluginConfiguration();
-            session.flush();
+            else
+                advancedLdapPluginConfiguration = (AdvancedLdapPluginConfiguration)advancedLdapPluginConfigurationList.get(advancedLdapPluginConfigurationList.size()-1);
+            tx.commit();
         } catch (HibernateException e) {
+            if (tx!=null) tx.rollback();
             return new AdvancedLdapPluginConfiguration();
         } finally {
             try {
@@ -117,6 +126,26 @@ public class HibernateAdvancedLdapPluginConfigurationDAOImpl implements Hibernat
     @Override
     @Transactional
     public void remove(int id) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        Session session = null;
+        Transaction tx = null;
+        try
+        {
+            session = this.sessionFactory.openSession();
+            tx = session.beginTransaction();
+            AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = (AdvancedLdapPluginConfiguration)session.get(AdvancedLdapPluginConfiguration.class, id);
+            session.delete(advancedLdapPluginConfiguration);
+            tx.commit();
+        } catch (HibernateException e) {
+            if (tx!=null) tx.rollback();
+        } finally {
+            try {
+                if (session != null) {
+                    session.close();
+                }
+            }
+            catch (Exception e)
+            {
+            }
+        }
     }
 }
