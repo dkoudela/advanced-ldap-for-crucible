@@ -1,0 +1,61 @@
+<html>
+<head>
+</head>
+<body>
+    #if ($statusMessage)
+    <div class="aui-message info closeable">
+        <span class="aui-icon icon-info"></span>
+        <p style="margin: 0">$statusMessage</p>
+    </div>
+    #end
+
+<div class="GBRQCM4CJB">
+    <div id="ldap-admin-title" class="gwt-Label GBRQCM4CIB">
+        Authentication Test
+    </div>
+</div>
+
+<div class="formPane" style="margin-left: 10px;">
+
+    <div class="aui-message info">
+        <p class="title"><span class="aui-icon icon-info"></span> Enter a username and password below. </p>
+        <p> Advanced Ldap plugin will check the username/password against
+            your authentication settings, and report various diagnostics. </p>
+    </div>
+
+    <form accept-charset="UTF-8" method="post" action="advancedLdapConfigurationServletTestResults.do" class="aui">
+
+        <h2>Test parameters</h2>
+
+        <div class="field-group">
+            <label>Username</label>
+            <tr>
+                <td class="tdLabel"></td>
+                <td>
+                    <input type="text" name="username" id="username" class="text"/>
+                </td>
+            </tr>
+        </div>
+        <div class="field-group">
+            <label>Password</label>
+            <tr>
+                <td class="tdLabel"></td>
+                <td>
+                    <input type="password" name="password" id="password" class="password"/>
+                </td>
+            </tr>
+        </div>
+        <div class="buttons-container">
+            <div class="buttons">
+                <input type="submit" value="Test" class="aui-button aui-button-primary">
+                <a class="cancel" href="advancedLdapConfigurationServletView.do">Cancel</a>
+            </div>
+        </div>
+
+    </form>
+
+</div>
+
+
+</body>
+</html>

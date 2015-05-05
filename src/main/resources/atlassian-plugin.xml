@@ -25,8 +25,13 @@
     </web-section>
     <web-item key="advanced-ldap-config-link" name="Advanced-Ldap-Configuration-Link" section="system.admin/Advanced-Ldap-Configuration-Section" weight="1">
         <label key="com.davidkoudela.crucible.advanced-ldap-config.webitem.label"/>
-        <description>Provides ${project.artifactId} admin menu.</description>
+        <description>Provides ${project.artifactId} configuration admin menu.</description>
         <link linkId="advancedLdapConfigurationServlet">/plugins/servlet/advancedLdapConfigurationServletView.do</link>
+    </web-item>
+    <web-item key="advanced-ldap-test-link" name="Advanced-Ldap-Test-Link" section="system.admin/Advanced-Ldap-Configuration-Section" weight="2">
+        <label key="com.davidkoudela.crucible.advanced-ldap-test.webitem.label"/>
+        <description>Provides ${project.artifactId} configuration test menu.</description>
+        <link linkId="advancedLdapConfigurationServlet">/plugins/servlet/advancedLdapConfigurationServletTest.do</link>
     </web-item>
 
     <!-- add configuration servlet -->

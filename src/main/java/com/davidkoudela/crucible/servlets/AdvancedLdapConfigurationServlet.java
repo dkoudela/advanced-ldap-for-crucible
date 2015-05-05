@@ -43,7 +43,11 @@ public class AdvancedLdapConfigurationServlet extends HttpServlet {
         req.setAttribute("decorator", "atl.admin");
         params.put("advancedLdapPluginConfiguration", advancedLdapPluginConfiguration);
         resp.setContentType("text/html");
-        velocityHelper.renderVelocityTemplate("templates/configureView.vm", params, resp.getWriter());
+        if (req.getPathInfo().contains("/advancedLdapConfigurationServletView.do")) {
+            velocityHelper.renderVelocityTemplate("templates/configureView.vm", params, resp.getWriter());
+        } else if (req.getPathInfo().contains("/advancedLdapConfigurationServletTest.do")) {
+            velocityHelper.renderVelocityTemplate("templates/authTest.vm", params, resp.getWriter());
+        }
     }
 
     @Override
@@ -73,6 +77,10 @@ public class AdvancedLdapConfigurationServlet extends HttpServlet {
             advancedLdapPluginConfiguration = this.hibernateAdvancedLdapPluginConfigurationDAO.get();
             params.put("advancedLdapPluginConfiguration", advancedLdapPluginConfiguration);
             velocityHelper.renderVelocityTemplate("templates/configureView.vm", params, resp.getWriter());
+        } else if (req.getPathInfo().contains("/advancedLdapConfigurationServletTest.do")) {
+            velocityHelper.renderVelocityTemplate("templates/authTest.vm", params, resp.getWriter());
+        } else if (req.getPathInfo().contains("/advancedLdapConfigurationServletTestResults.do")) {
+            velocityHelper.renderVelocityTemplate("templates/authResult.vm", params, resp.getWriter());
         } else {
             params.put("advancedLdapPluginConfiguration", advancedLdapPluginConfiguration);
             velocityHelper.renderVelocityTemplate("templates/configureEdit.vm", params, resp.getWriter());

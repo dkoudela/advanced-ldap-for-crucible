@@ -1,0 +1,56 @@
+<html>
+<head>
+</head>
+<body>
+    #if ($statusMessage)
+    <div class="aui-message info closeable">
+        <span class="aui-icon icon-info"></span>
+        <p style="margin: 0">$statusMessage</p>
+    </div>
+    #end
+
+<div class="GBRQCM4CJB">
+    <div id="ldap-admin-title" class="gwt-Label GBRQCM4CIB">
+        Authentication Test Results
+    </div>
+</div>
+
+<div class="GBRQCM4CM" id="admin-content"><div id="decorated-admin-content" style="display: block;">
+    <div id="decorated-admin-content" style="display: block;">
+        <div class="formPane-holder">
+            <div class="formPane">
+                <div style="margin-left: 10px;">
+                    <h2>Auth Test Results:</h2>
+                </div>
+                <form accept-charset="UTF-8" method="post" action="advancedLdapConfigurationServletTest.do" class="aui">
+                    <div class="field-group">
+                        <label>Results</label>
+                        <ul class="test-error">
+                            <li><div class="field-value">username/password succeeded</div></li>
+                            <li><div class="field-value">user's DN is cn=Koudela\, David,ou=davidkoudela,DC=example,DC=com</div></li>
+                            <li><div class="field-value">user's display name is Koudela, David</div></li>
+                            <li><div class="field-value">user's email is dkoudela@example.com</div></li>
+                            <li><div class="field-value">Checking per-repository access</div></li>
+                            <li><div class="field-value">- can dkoudela access the repository checkstyle? YES</div></li>
+                            <li><div class="field-value">- can dkoudela access the repository csvparser? YES</div></li>
+                            <li><div class="field-value">- can dkoudela access the repository django-piston? YES</div></li>
+                            <li><div class="field-value">Checking per-repository a second time (tests the permission cache)</div></li>
+                            <li><div class="field-value">- can dkoudela access the repository checkstyle? YES</div></li>
+                            <li><div class="field-value">- can dkoudela access the repository csvparser? YES</div></li>
+                            <li><div class="field-value">- can dkoudela access the repository django-piston? YES</div></li>
+                        </ul>
+                    </div>
+                    <div class="buttons-container">
+                        <div class="buttons">
+                            <input type="submit" value="Re-Test" class="aui-button aui-button-primary">
+                            <a class="cancel" href="advancedLdapConfigurationServletView.do">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
