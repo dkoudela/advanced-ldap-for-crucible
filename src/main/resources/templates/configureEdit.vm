@@ -17,7 +17,7 @@
 
 <div class="formPane-holder">
     <div class="formPane">
-        <form accept-charset="UTF-8" method="post" onSubmit="trimFormTextFields(this);" action="advancedLdapConfigurationServletView.do" class="aui long-label">
+        <form accept-charset="UTF-8" method="post" onSubmit="trimFormTextFields(this);" action="advancedLdapConfigurationAdminServletView.do" class="aui long-label">
             <div class="field-group">
                 <label>URL</label>
                 <tr>
@@ -168,7 +168,7 @@
             <div class="buttons-container">
                 <div class="buttons">
                     <input type="submit" value="Apply" class="aui-button aui-button-primary">
-                    <a class="cancel" href="advancedLdapConfigurationServletView.do">Cancel</a>
+                    <a class="cancel" href="advancedLdapConfigurationAdminServletView.do">Cancel</a>
                 </div>
             </div>
         </form>

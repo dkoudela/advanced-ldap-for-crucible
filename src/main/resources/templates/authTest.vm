@@ -23,7 +23,7 @@
             your authentication settings, and report various diagnostics. </p>
     </div>
 
-    <form accept-charset="UTF-8" method="post" action="advancedLdapConfigurationServletTestResults.do" class="aui">
+    <form accept-charset="UTF-8" method="post" action="advancedLdapConfigurationTestServletTestResults.do" class="aui">
 
         <h2>Test parameters</h2>
 
@@ -48,7 +48,7 @@
         <div class="buttons-container">
             <div class="buttons">
                 <input type="submit" value="Test" class="aui-button aui-button-primary">
-                <a class="cancel" href="advancedLdapConfigurationServletView.do">Cancel</a>
+                <a class="cancel" href="advancedLdapConfigurationAdminServletView.do">Cancel</a>
             </div>
         </div>
 

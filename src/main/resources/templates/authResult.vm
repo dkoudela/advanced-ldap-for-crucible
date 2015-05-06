@@ -22,7 +22,7 @@
                 <div style="margin-left: 10px;">
                     <h2>Auth Test Results:</h2>
                 </div>
-                <form accept-charset="UTF-8" method="post" action="advancedLdapConfigurationServletTest.do" class="aui">
+                <form accept-charset="UTF-8" method="post" action="advancedLdapConfigurationTestServletTest.do" class="aui">
                     <div class="field-group">
                         <label>Results</label>
                         <ul class="test-error">
@@ -43,7 +43,7 @@
                     <div class="buttons-container">
                         <div class="buttons">
                             <input type="submit" value="Re-Test" class="aui-button aui-button-primary">
-                            <a class="cancel" href="advancedLdapConfigurationServletView.do">Cancel</a>
+                            <a class="cancel" href="advancedLdapConfigurationAdminServletView.do">Cancel</a>
                         </div>
                     </div>
                 </form>

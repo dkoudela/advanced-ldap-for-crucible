@@ -91,16 +91,16 @@
             <script type="text/javascript">
                 AJS.$(document).ready(function() {
                     AJS.$("#ldap-resync").click(function() {
-                        FECRU.XSRF.postUri("advancedLdapConfigurationServletAuth.do");
+                        FECRU.XSRF.postUri("advancedLdapConfigurationAdminServletAuth.do");
                     });
                     AJS.$("#ldap-edit").click(function() {
-                        FECRU.XSRF.postUri("advancedLdapConfigurationServletEdit.do");
+                        FECRU.XSRF.postUri("advancedLdapConfigurationAdminServletEdit.do");
                     });
                     AJS.$("#ldap-test").click(function() {
-                        FECRU.XSRF.postUri("advancedLdapConfigurationServletTest.do");
+                        FECRU.XSRF.postUri("advancedLdapConfigurationTestServletTest.do");
                     });
                     AJS.$("#ldap-remove").click(function() {
-                        FECRU.XSRF.postUri("advancedLdapConfigurationServletRemove.do");
+                        FECRU.XSRF.postUri("advancedLdapConfigurationAdminServletRemove.do");
                     });
                 });
             </script>
