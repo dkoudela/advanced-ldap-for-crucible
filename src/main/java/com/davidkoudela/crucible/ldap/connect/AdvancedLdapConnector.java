@@ -64,4 +64,37 @@ public class AdvancedLdapConnector {
             }
         }
     }
+
+    public boolean bindDn(AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration, String dn, String password) {
+        LDAPConnection connection = null;
+        boolean result = false;
+        try {
+            AdvancedLdapConnectionOptionsFactory advancedLdapConnectionOptionsFactory = new AdvancedLdapConnectionOptionsFactory(advancedLdapPluginConfiguration);
+            connection = new LDAPConnection(
+                    advancedLdapConnectionOptionsFactory.getConnectionOptions(),
+                    advancedLdapConnectionOptionsFactory.getLDAPHost(),
+                    advancedLdapConnectionOptionsFactory.getLDAPPort(),
+                    advancedLdapPluginConfiguration.getLDAPBindDN(),
+                    advancedLdapPluginConfiguration.getLDAPBindPassword());
+
+            BindResult bindResult = connection.bind(dn, password);
+            if (com.unboundid.ldap.sdk.ResultCode.SUCCESS_INT_VALUE == bindResult.getResultCode().intValue())
+                result = true;
+        } catch (AssertionError e) {
+            System.out.println("**************************** AdvancedLdapConnector AssertionError ****************************" + e);
+        } catch (Exception e) {
+            System.out.println("**************************** AdvancedLdapConnector EXCEPTION ****************************" + e);
+        }
+        finally {
+            try {
+                System.out.println("**************************** AdvancedLdapConnector On Finalize ****************************");
+                connection.close();
+            } catch (Exception e)
+            {
+                System.out.println("**************************** AdvancedLdapConnector EXCEPTION on conn closed ****************************" + e);
+            }
+        }
+
+        return result;
+    }
 }

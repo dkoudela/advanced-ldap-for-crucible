@@ -1,6 +1,8 @@
 package com.davidkoudela.crucible.servlets;
 
 import com.atlassian.fisheye.plugin.web.helpers.VelocityHelper;
+import com.davidkoudela.crucible.admin.AdvancedLdapUserManager;
+import org.apache.commons.lang.StringUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -20,10 +22,13 @@ import java.util.Map;
  */
 public class AdvancedLdapConfigurationTestServlet extends HttpServlet {
     private final VelocityHelper velocityHelper;
+    private AdvancedLdapUserManager advancedLdapUserManager;
 
     @org.springframework.beans.factory.annotation.Autowired
-    public AdvancedLdapConfigurationTestServlet(VelocityHelper velocityHelper) {
+    public AdvancedLdapConfigurationTestServlet(VelocityHelper velocityHelper,
+                                                AdvancedLdapUserManager advancedLdapUserManager) {
         this.velocityHelper = velocityHelper;
+        this.advancedLdapUserManager = advancedLdapUserManager;
     }
 
     @Override
@@ -40,6 +45,14 @@ public class AdvancedLdapConfigurationTestServlet extends HttpServlet {
         req.setAttribute("decorator", "atl.admin");
         resp.setContentType("text/html");
         if (req.getPathInfo().contains("/advancedLdapConfigurationTestServletTestResults.do")) {
+            String testResult = "username/password succeeded";
+
+            boolean validCredentials = this.advancedLdapUserManager.verifyUserCredentials(StringUtils.defaultIfEmpty(req.getParameter("username"), ""),
+                    StringUtils.defaultIfEmpty(req.getParameter("password"), ""));
+            if (!validCredentials)
+                testResult = "username/password failed";
+
+            params.put("testResult", testResult);
             velocityHelper.renderVelocityTemplate("templates/authResult.vm", params, resp.getWriter());
         } else {
             velocityHelper.renderVelocityTemplate("templates/authTest.vm", params, resp.getWriter());

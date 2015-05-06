@@ -26,18 +26,7 @@
                     <div class="field-group">
                         <label>Results</label>
                         <ul class="test-error">
-                            <li><div class="field-value">username/password succeeded</div></li>
-                            <li><div class="field-value">user's DN is cn=Koudela\, David,ou=davidkoudela,DC=example,DC=com</div></li>
-                            <li><div class="field-value">user's display name is Koudela, David</div></li>
-                            <li><div class="field-value">user's email is dkoudela@example.com</div></li>
-                            <li><div class="field-value">Checking per-repository access</div></li>
-                            <li><div class="field-value">- can dkoudela access the repository checkstyle? YES</div></li>
-                            <li><div class="field-value">- can dkoudela access the repository csvparser? YES</div></li>
-                            <li><div class="field-value">- can dkoudela access the repository django-piston? YES</div></li>
-                            <li><div class="field-value">Checking per-repository a second time (tests the permission cache)</div></li>
-                            <li><div class="field-value">- can dkoudela access the repository checkstyle? YES</div></li>
-                            <li><div class="field-value">- can dkoudela access the repository csvparser? YES</div></li>
-                            <li><div class="field-value">- can dkoudela access the repository django-piston? YES</div></li>
+                            <li><div class="field-value">$testResult</div></li>
                         </ul>
                     </div>
                     <div class="buttons-container">

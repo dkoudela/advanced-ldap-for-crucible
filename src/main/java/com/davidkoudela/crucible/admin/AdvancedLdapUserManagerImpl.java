@@ -10,10 +10,7 @@ import com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration;
 import com.davidkoudela.crucible.config.HibernateAdvancedLdapPluginConfigurationDAO;
 import com.davidkoudela.crucible.ldap.connect.AdvancedLdapConnector;
 import com.davidkoudela.crucible.ldap.connect.AdvancedLdapSearchFilterFactory;
-import com.davidkoudela.crucible.ldap.model.AdvancedLdapGroup;
-import com.davidkoudela.crucible.ldap.model.AdvancedLdapGroupBuilder;
-import com.davidkoudela.crucible.ldap.model.AdvancedLdapPerson;
-import com.davidkoudela.crucible.ldap.model.AdvancedLdapPersonBuilder;
+import com.davidkoudela.crucible.ldap.model.*;
 import com.unboundid.ldap.sdk.*;
 
 import java.util.List;
@@ -141,5 +138,37 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
         }
 
         System.out.println("AdvancedLdapUserManagerImpl.loadGroups END");
+    }
+
+    @Override
+    public boolean verifyUserCredentials(String username, String password) {
+        AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = hibernateAdvancedLdapPluginConfigurationDAO.get();
+
+        if (advancedLdapPluginConfiguration.getLDAPUrl().isEmpty()) {
+            return false;
+        }
+
+        System.out.println("AdvancedLdapUserManagerImpl.verifyUserCredentials START");
+        SearchRequest searchRequest = null;
+        try {
+            Filter filter = AdvancedLdapSearchFilterFactory.getSearchFilterForUser(advancedLdapPluginConfiguration.getUserFilterKey(), username);
+            searchRequest = new SearchRequest(advancedLdapPluginConfiguration.getLDAPBaseDN(), SearchScope.SUB, filter);
+        } catch (Exception e) {
+            System.out.println("Search Request creation failed for filter: " + advancedLdapPluginConfiguration.getUserFilterKey() + " Exception: " + e);
+            return false;
+        }
+
+        AdvancedLdapConnector advancedLdapConnector = new AdvancedLdapConnector();
+        AdvancedLdapBindBuilder advancedLdapBindBuilder = new AdvancedLdapBindBuilder(advancedLdapPluginConfiguration, password);
+        advancedLdapConnector.ldapPagedSearch(advancedLdapPluginConfiguration, searchRequest, advancedLdapBindBuilder);
+        List<AdvancedLdapBind> binds = advancedLdapBindBuilder.getBinds();
+
+        if (1 != binds.size()) {
+            System.out.println("AdvancedLdapUserManagerImpl: bind search returned "+ binds.size() + " entries");
+            return false;
+        }
+        AdvancedLdapBind advancedLdapBind = binds.get(0);
+
+        return advancedLdapBind.getResult();
     }
 }
