@@ -51,7 +51,7 @@ public class AdvancedLdapPersonBuilder implements AdvancedLdapPersonSearchResult
             for (String groupDn : groupDns.getValues()) {
                 System.out.println("AdvancedLdapPersonBuilder: Group: " + groupDn);
                 try {
-                    SearchRequest searchRequest = new SearchRequest(groupDn, SearchScope.SUB, "objectClass=*");
+                    SearchRequest searchRequest = new SearchRequest(groupDn, SearchScope.BASE, "objectClass=*");
                     AdvancedLdapConnector advancedLdapConnector = new AdvancedLdapConnector();
                     AdvancedLdapGroupBuilder advancedLdapGroupBuilder = new AdvancedLdapGroupBuilder(this.advancedLdapPluginConfiguration, false);
                     advancedLdapConnector.ldapPagedSearch(this.advancedLdapPluginConfiguration, searchRequest, advancedLdapGroupBuilder);
