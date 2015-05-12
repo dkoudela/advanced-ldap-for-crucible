@@ -106,6 +106,11 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
         for (AdvancedLdapGroup advancedLdapGroup : groups) {
             String GID = advancedLdapGroup.getNormalizedGID();
             System.out.println("AdvancedLdapUserManagerImpl: GID: " + GID);
+            if (!this.userManager.builtInGroupExists(GID)) {
+                System.out.println("AdvancedLdapUserManagerImpl: GID added: " + GID);
+                this.userManager.addBuiltInGroup(GID);
+            }
+
             for (AdvancedLdapPerson advancedLdapPerson : advancedLdapGroup.getPersonList()) {
                 String UID = advancedLdapPerson.getUid();
                 System.out.println("AdvancedLdapUserManagerImpl: UID: " + UID);
@@ -121,10 +126,6 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
                         userDAO.setCurrentSessionProvider(new HibernateUtilCurrentSessionProvider());
                         userDAO.create(user);
                         userManager.setCrucibleEnabled(UID, true);
-                    }
-                    if (!this.userManager.builtInGroupExists(GID)) {
-                        System.out.println("AdvancedLdapUserManagerImpl: GID added: " + GID);
-                        this.userManager.addBuiltInGroup(GID);
                     }
                     if (!this.userManager.isUserInGroup(GID, advancedLdapPerson.getUid())) {
                         this.userManager.addUserToBuiltInGroup(GID, advancedLdapPerson.getUid());
