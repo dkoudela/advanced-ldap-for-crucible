@@ -44,25 +44,27 @@ public class AdvancedLdapGroupBuilder implements AdvancedLdapGroupSearchResultBu
         //System.out.println("AdvancedLdapGroupBuilder: GID: " + searchResultEntry.getAttributeValue(this.advancedLdapOptions.getGIDAttributeKey()));
 
         if (this.followMembers) {
-            Attribute personDns = searchResultEntry.getAttribute(this.advancedLdapPluginConfiguration.getUserNamesKey());
             List<AdvancedLdapPerson> personList = new ArrayList<AdvancedLdapPerson>();
-            for (String personDn : personDns.getValues()) {
-                System.out.println("AdvancedLdapGroupBuilder: Person: " + personDn);
-                try {
-                    SearchRequest searchRequest = new SearchRequest(personDn, SearchScope.BASE, "objectClass=*");
-                    AdvancedLdapConnector advancedLdapConnector = new AdvancedLdapConnector();
-                    AdvancedLdapPersonBuilder advancedLdapPersonBuilder = new AdvancedLdapPersonBuilder(this.advancedLdapPluginConfiguration, false);
-                    advancedLdapConnector.ldapPagedSearch(this.advancedLdapPluginConfiguration, searchRequest, advancedLdapPersonBuilder);
+            if (searchResultEntry.hasAttribute(this.advancedLdapPluginConfiguration.getUserNamesKey())) {
+                Attribute personDns = searchResultEntry.getAttribute(this.advancedLdapPluginConfiguration.getUserNamesKey());
+                for (String personDn : personDns.getValues()) {
+                    System.out.println("AdvancedLdapGroupBuilder: Person: " + personDn);
+                    try {
+                        SearchRequest searchRequest = new SearchRequest(personDn, SearchScope.BASE, "objectClass=*");
+                        AdvancedLdapConnector advancedLdapConnector = new AdvancedLdapConnector();
+                        AdvancedLdapPersonBuilder advancedLdapPersonBuilder = new AdvancedLdapPersonBuilder(this.advancedLdapPluginConfiguration, false);
+                        advancedLdapConnector.ldapPagedSearch(this.advancedLdapPluginConfiguration, searchRequest, advancedLdapPersonBuilder);
 
-                    List foundPersonsInLdap = advancedLdapPersonBuilder.getPersons();
-                    if (1 != foundPersonsInLdap.size()) {
-                        System.out.println("AdvancedLdapGroupBuilder: person search returned "+ foundPersonsInLdap.size() + " entries");
-                        continue;
+                        List foundPersonsInLdap = advancedLdapPersonBuilder.getPersons();
+                        if (1 != foundPersonsInLdap.size()) {
+                            System.out.println("AdvancedLdapGroupBuilder: person search returned "+ foundPersonsInLdap.size() + " entries");
+                            continue;
+                        }
+                        personList.addAll(foundPersonsInLdap);
+
+                    } catch (Exception e) {
+                        System.out.println("AdvancedLdapGroupBuilder: person search failed: " + personDn + " Exception: " + e);
                     }
-                    personList.addAll(foundPersonsInLdap);
-
-                } catch (Exception e) {
-                    System.out.println("AdvancedLdapGroupBuilder: person search failed: " + personDn + " Exception: " + e);
                 }
             }
             advancedLdapGroup.setPersonList(personList);
