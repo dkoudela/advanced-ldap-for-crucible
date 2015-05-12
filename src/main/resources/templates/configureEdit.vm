@@ -133,7 +133,7 @@
                 <tr>
                     <td class="tdLabel"></td>
                     <td>
-                        <input type="text" name="ldap.groupFilter" value="$advancedLdapPluginConfiguration.getGroupFilterKey()" id="ldap_groupFilter" class="text"/>
+                        <input type="text" name="ldap.groupFilter" value="$advancedLdapPluginConfiguration.getGroupFilterKey()" id="ldap_groupFilter" class="text long-field"/>
                     </td>
                 </tr>
             </div>
