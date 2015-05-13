@@ -2,6 +2,7 @@ package com.davidkoudela.crucible.ldap.model;
 
 import com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration;
 import com.davidkoudela.crucible.ldap.connect.AdvancedLdapConnector;
+import com.davidkoudela.crucible.ldap.connect.AdvancedLdapSearchFilterFactory;
 import com.unboundid.ldap.sdk.Attribute;
 import com.unboundid.ldap.sdk.SearchRequest;
 import com.unboundid.ldap.sdk.SearchResultEntry;
@@ -50,7 +51,8 @@ public class AdvancedLdapGroupBuilder implements AdvancedLdapGroupSearchResultBu
                 for (String personDn : personDns.getValues()) {
                     System.out.println("AdvancedLdapGroupBuilder: Person: " + personDn);
                     try {
-                        SearchRequest searchRequest = new SearchRequest(personDn, SearchScope.BASE, "objectClass=*");
+                        SearchRequest searchRequest = new SearchRequest(personDn, SearchScope.BASE,
+                                AdvancedLdapSearchFilterFactory.getSearchFilterForAllUsers(this.advancedLdapPluginConfiguration.getUserFilterKey()));
                         AdvancedLdapConnector advancedLdapConnector = new AdvancedLdapConnector();
                         AdvancedLdapPersonBuilder advancedLdapPersonBuilder = new AdvancedLdapPersonBuilder(this.advancedLdapPluginConfiguration, false);
                         advancedLdapConnector.ldapPagedSearch(this.advancedLdapPluginConfiguration, searchRequest, advancedLdapPersonBuilder);
