@@ -66,6 +66,14 @@ public class AdvancedLdapConfigurationAdminServlet extends HttpServlet {
             advancedLdapPluginConfiguration = this.hibernateAdvancedLdapPluginConfigurationDAO.get();
             params.put("advancedLdapPluginConfiguration", advancedLdapPluginConfiguration);
             velocityHelper.renderVelocityTemplate("templates/configureView.vm", params, resp.getWriter());
+        } else if (req.getPathInfo().contains("/advancedLdapConfigurationAdminServletSync.do")) {
+            try {
+                this.advancedLdapSynchronizationManager.runNow();
+            } catch (Exception e) {
+                System.out.println("AdvancedLdapConfigurationAdminServlet.doPost: LDAP manual sync failed: " + e);
+            }
+            params.put("advancedLdapPluginConfiguration", advancedLdapPluginConfiguration);
+            velocityHelper.renderVelocityTemplate("templates/configureView.vm", params, resp.getWriter());
         } else {
             setParameters(advancedLdapPluginConfiguration, req);
             try {

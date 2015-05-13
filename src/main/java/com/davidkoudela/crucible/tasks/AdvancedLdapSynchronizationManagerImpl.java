@@ -39,4 +39,13 @@ public class AdvancedLdapSynchronizationManagerImpl implements AdvancedLdapSynch
             this.timerIndex = this.advancedLdapTimerTrigger.createTimer(advancedLdapSynchronizationTask, advancedLdapPluginConfiguration.getLDAPSyncPeriod());
         }
     }
+
+    @Override
+    public void runNow() {
+        AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = this.hibernateAdvancedLdapPluginConfigurationDAO.get();
+        if (!advancedLdapPluginConfiguration.getLDAPUrl().isEmpty()) {
+            AdvancedLdapSynchronizationTask advancedLdapSynchronizationTask = new AdvancedLdapSynchronizationTask(this.advancedLdapUserManager);
+            this.advancedLdapTimerTrigger.runNow(advancedLdapSynchronizationTask);
+        }
+    }
 }

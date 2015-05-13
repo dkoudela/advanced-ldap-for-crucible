@@ -91,7 +91,7 @@
             <script type="text/javascript">
                 AJS.$(document).ready(function() {
                     AJS.$("#ldap-resync").click(function() {
-                        FECRU.XSRF.postUri("advancedLdapConfigurationAdminServletAuth.do");
+                        FECRU.XSRF.postUri("advancedLdapConfigurationAdminServletSync.do");
                     });
                     AJS.$("#ldap-edit").click(function() {
                         FECRU.XSRF.postUri("advancedLdapConfigurationAdminServletEdit.do");

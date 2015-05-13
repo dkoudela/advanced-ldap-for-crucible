@@ -1,5 +1,6 @@
 package com.davidkoudela.crucible.timer;
 
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -41,5 +42,10 @@ public class AdvancedLdapTimerTrigger {
         } catch (Throwable throwable) {
             System.out.println("Timer index canceling failed: " + index + " Exception: " + throwable);
         }
+    }
+
+    public void runNow(TimerTask timerTask) {
+        Timer timer = new Timer(true);
+        timer.schedule(timerTask, new Date());
     }
 }
