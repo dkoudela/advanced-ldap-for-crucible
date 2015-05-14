@@ -3,7 +3,6 @@ package com.davidkoudela.crucible.admin;
 import com.atlassian.crucible.spi.data.UserData;
 import com.atlassian.fecru.user.User;
 import com.atlassian.fecru.user.UserDAOImpl;
-import com.cenqua.crucible.hibernate.CurrentSessionProvider;
 import com.cenqua.crucible.hibernate.HibernateUtilCurrentSessionProvider;
 import com.cenqua.fisheye.user.UserManager;
 import com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration;

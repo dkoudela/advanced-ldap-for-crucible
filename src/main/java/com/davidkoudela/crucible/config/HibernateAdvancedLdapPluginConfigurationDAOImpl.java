@@ -3,6 +3,7 @@ package com.davidkoudela.crucible.config;
 import com.cenqua.crucible.hibernate.DBType;
 import com.cenqua.crucible.hibernate.DatabaseConfig;
 import com.cenqua.fisheye.AppConfig;
+import com.cenqua.fisheye.config1.ConfigDocument;
 import com.cenqua.fisheye.config1.DriverSource;
 import org.hibernate.HibernateException;
 import org.hibernate.Transaction;
@@ -28,7 +29,12 @@ public class HibernateAdvancedLdapPluginConfigurationDAOImpl implements Hibernat
 
     public HibernateAdvancedLdapPluginConfigurationDAOImpl() {
         try {
-            DatabaseConfig databaseConfig = new DatabaseConfig(DBType.HSQL, "jdbc:hsqldb:file:" + AppConfig.getInstanceDir().getAbsolutePath() + "/var/data/crudb/crucible", "sa", "", DriverSource.BUNDLED, 5, 20);
+            ConfigDocument configDocument = AppConfig.getsConfig().getConfigDocument();
+            DatabaseConfig databaseConfig = null;
+            if ((configDocument != null) && (configDocument.getConfig().isSetDatabase()))
+                databaseConfig = new DatabaseConfig(AppConfig.getsConfig().getConfig().getDatabase());
+            else
+                databaseConfig = new DatabaseConfig(DBType.HSQL, "jdbc:hsqldb:file:" + AppConfig.getInstanceDir().getAbsolutePath() + "/var/data/crudb/crucible", "sa", "", DriverSource.BUNDLED, 5, 20);
             Configuration configuration = new Configuration();
             configuration.setProperty("hibernate.connection.autocommit", "false");
             configuration.setProperty("hibernate.connection.driver_class", databaseConfig.getJdbcDriverClass());
@@ -36,8 +42,7 @@ public class HibernateAdvancedLdapPluginConfigurationDAOImpl implements Hibernat
             configuration.setProperty("hibernate.connection.username", databaseConfig.getUsername());
             configuration.setProperty("hibernate.connection.password", databaseConfig.getPassword());
             configuration.setProperty("hibernate.dialect", databaseConfig.getDialect());
-            //configuration.setProperty("hibernate.show_sql", Boolean.toString(databaseConfig.isShowSQL()));
-            configuration.setProperty("hibernate.show_sql", "true");
+            configuration.setProperty("hibernate.show_sql", Boolean.toString(databaseConfig.isShowSQL()));
             configuration.setProperty("hibernate.generate_statistics", Boolean.toString(databaseConfig.isGenerateStatistics()));
             configuration.setProperty("hibernate.connection.isolation", Integer.toString(2));
             configuration.setProperty("hibernate.bytecode.use_reflection_optimizer", "true");
