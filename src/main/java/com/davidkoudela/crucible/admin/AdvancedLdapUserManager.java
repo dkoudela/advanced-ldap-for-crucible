@@ -1,6 +1,7 @@
 package com.davidkoudela.crucible.admin;
 
 import com.atlassian.crucible.spi.data.UserData;
+import com.cenqua.fisheye.user.UserManager;
 
 /**
  * Description: {@link AdvancedLdapUserManager} represents an interface used by {@link com.davidkoudela.crucible.listener.AdvancedLdapEventListener},
@@ -10,7 +11,7 @@ import com.atlassian.crucible.spi.data.UserData;
  * @author dkoudela
  * @since 2015-03-13
  */
-public interface AdvancedLdapUserManager {
+public interface AdvancedLdapUserManager extends UserManager {
     void loadUser(UserData userData);
     void loadGroups();
     boolean verifyUserCredentials(String username, String password);
