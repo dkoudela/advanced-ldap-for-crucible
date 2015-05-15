@@ -39,37 +39,14 @@ public class HibernateSessionFactoryFactory {
             configuration.setProperty("hibernate.connection.password", databaseConfig.getPassword());
             configuration.setProperty("hibernate.dialect", databaseConfig.getDialect());
 
-            configuration.setProperty("hibernate.connection.provider_class", BoneCPConnectionProvider.class.getName());
-            int boneCpPartitionsCount = NumberUtils.toInt(databaseConfig.getProperties().getProperty("bonecp.partitionCount"), 3);
-            int minPerPartition = databaseConfig.getMinPoolSize() / boneCpPartitionsCount;
-            minPerPartition = minPerPartition < 1 ? 1 : minPerPartition;
-            int maxPerPartition = databaseConfig.getMaxPoolSize() / boneCpPartitionsCount;
-            maxPerPartition = maxPerPartition < 1 ? 1 : maxPerPartition;
-            configuration.setProperty("bonecp.idleMaxAgeInMinutes", "0");
-            configuration.setProperty("bonecp.idleConnectionTestPeriodInMinutes", "60");
-            configuration.setProperty("bonecp.partitionCount", boneCpPartitionsCount + "");
-            configuration.setProperty("bonecp.acquireIncrement", "2");
-            configuration.setProperty("bonecp.maxConnectionsPerPartition", maxPerPartition + "");
-            configuration.setProperty("bonecp.minConnectionsPerPartition", minPerPartition + "");
-            configuration.setProperty("bonecp.statementsCacheSize", "50");
-            configuration.setProperty("bonecp.releaseHelperThreads", "3");
-            configuration.setProperty("bonecp.poolName", "mainPool");
-            configuration.setProperty("bonecp.connectionHookClassName", BoneCPConnectionHook.class.getName());
-
             configuration.setProperty("hibernate.show_sql", Boolean.toString(databaseConfig.isShowSQL()));
             configuration.setProperty("hibernate.generate_statistics", Boolean.toString(databaseConfig.isGenerateStatistics()));
-            configuration.setProperty("net.sf.ehcache.configurationResourceName", "ehcache.xml");
-            configuration.setProperty("hibernate.cache.region.factory_class", "net.sf.ehcache.hibernate.SingletonEhCacheRegionFactory");
-
-            configuration.setProperty("hibernate.cache.use_second_level_cache", "true");
-            configuration.setProperty("hibernate.cache.use_query_cache", "true");
 
             configuration.setProperty("hibernate.connection.isolation", Integer.toString(2));
             configuration.setProperty("hibernate.bytecode.use_reflection_optimizer", "true");
             configuration.setProperty("hibernate.hbm2ddl.auto", "update");
             if (DBType.ORACLE.equals(databaseConfig.getType())) {
                 configuration.setProperty("hibernate.jdbc.batch_size", "0");
-                configuration.setProperty("bonecp.statementsCacheSize", "0");
                 configuration.setProperty("hibernate.dbcp.ps.maxIdle", "0");
             }
 

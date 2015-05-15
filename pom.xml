@@ -107,11 +107,6 @@
             <artifactId>persistence-api</artifactId>
             <version>1.0</version>
         </dependency>
-        <dependency>
-            <groupId>com.jolbox</groupId>
-            <artifactId>bonecp-provider</artifactId>
-            <version>0.7.1.RELEASE</version>
-        </dependency>
 
         <!-- WIRED TEST RUNNER DEPENDENCIES -->
         <dependency>
