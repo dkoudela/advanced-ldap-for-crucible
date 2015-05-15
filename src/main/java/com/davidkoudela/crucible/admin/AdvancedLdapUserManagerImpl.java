@@ -45,7 +45,7 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
     public AdvancedLdapUserManagerImpl(UserManager userManager, HibernateAdvancedLdapPluginConfigurationDAO hibernateAdvancedLdapPluginConfigurationDAO) {
         this.userManager = userManager;
         this.hibernateAdvancedLdapPluginConfigurationDAO = hibernateAdvancedLdapPluginConfigurationDAO;
-        AppConfig.getsConfig().setUserManager(this);
+        //AppConfig.getsConfig().setUserManager(this);
         System.out.println("**************************** AdvancedLdapUserManagerImpl START ****************************");
     }
 

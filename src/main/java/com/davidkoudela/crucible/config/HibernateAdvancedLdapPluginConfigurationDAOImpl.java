@@ -27,47 +27,14 @@ import java.util.List;
 public class HibernateAdvancedLdapPluginConfigurationDAOImpl implements HibernateAdvancedLdapPluginConfigurationDAO {
     private SessionFactory sessionFactory;
 
-    public HibernateAdvancedLdapPluginConfigurationDAOImpl() {
-        try {
-            ConfigDocument configDocument = AppConfig.getsConfig().getConfigDocument();
-            DatabaseConfig databaseConfig = null;
-            if ((configDocument != null) && (configDocument.getConfig().isSetDatabase()))
-                databaseConfig = new DatabaseConfig(AppConfig.getsConfig().getConfig().getDatabase());
-            else
-                databaseConfig = new DatabaseConfig(DBType.HSQL, "jdbc:hsqldb:file:" + AppConfig.getInstanceDir().getAbsolutePath() + "/var/data/crudb/crucible", "sa", "", DriverSource.BUNDLED, 5, 20);
-            Configuration configuration = new Configuration();
-            configuration.setProperty("hibernate.connection.autocommit", "false");
-            configuration.setProperty("hibernate.connection.driver_class", databaseConfig.getJdbcDriverClass());
-            configuration.setProperty("hibernate.connection.url", databaseConfig.getJdbcURL());
-            configuration.setProperty("hibernate.connection.username", databaseConfig.getUsername());
-            configuration.setProperty("hibernate.connection.password", databaseConfig.getPassword());
-            configuration.setProperty("hibernate.dialect", databaseConfig.getDialect());
-            configuration.setProperty("hibernate.show_sql", Boolean.toString(databaseConfig.isShowSQL()));
-            configuration.setProperty("hibernate.generate_statistics", Boolean.toString(databaseConfig.isGenerateStatistics()));
-            configuration.setProperty("hibernate.connection.isolation", Integer.toString(2));
-            configuration.setProperty("hibernate.bytecode.use_reflection_optimizer", "true");
-            configuration.setProperty("hibernate.hbm2ddl.auto", "update");
-            if (DBType.ORACLE.equals(databaseConfig.getType())) {
-                configuration.setProperty("hibernate.jdbc.batch_size", "0");
-                configuration.setProperty("hibernate.dbcp.ps.maxIdle", "0");
-            }
-            configuration.addProperties(databaseConfig.getProperties());
-            configuration.addClass(com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration.class);
-            this.sessionFactory = configuration.buildSessionFactory();
-        } catch (Exception e) {
-            System.out.println("HibernateAdvancedLdapPluginConfigurationDAOImpl: Exception: " + e);
-            StringBuilder sb = new StringBuilder();
-            for (StackTraceElement element : e.getCause().getStackTrace()) {
-                sb.append(element.toString());
-                sb.append("\n");
-            }
-            System.out.println("HibernateAdvancedLdapPluginConfigurationDAOImpl: Exception: " + sb);
-        }
+    public HibernateAdvancedLdapPluginConfigurationDAOImpl() throws Exception {
+        this.sessionFactory = HibernateSessionFactoryFactory.createHibernateSessionFactory();
     }
 
     @Override
     @Transactional
     public void store(AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration, boolean isUpdate) throws Exception {
+        /*
         Session session = null;
         Transaction tx = null;
         try {
@@ -94,7 +61,7 @@ public class HibernateAdvancedLdapPluginConfigurationDAOImpl implements Hibernat
                 }
             } catch (Exception e) {
             }
-        }
+        } */
     }
 
     @Override
@@ -103,6 +70,7 @@ public class HibernateAdvancedLdapPluginConfigurationDAOImpl implements Hibernat
         Session session = null;
         Transaction tx = null;
         AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = null;
+        /*
         try
         {
             session = this.sessionFactory.openSession();
@@ -126,11 +94,14 @@ public class HibernateAdvancedLdapPluginConfigurationDAOImpl implements Hibernat
             }
         }
         return advancedLdapPluginConfiguration;
+        */
+        return new AdvancedLdapPluginConfiguration();
     }
 
     @Override
     @Transactional
     public void remove(int id) {
+        /*
         Session session = null;
         Transaction tx = null;
         try
@@ -151,6 +122,6 @@ public class HibernateAdvancedLdapPluginConfigurationDAOImpl implements Hibernat
             catch (Exception e)
             {
             }
-        }
+        } */
     }
 }
