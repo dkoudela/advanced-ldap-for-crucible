@@ -34,7 +34,6 @@ public class HibernateAdvancedLdapPluginConfigurationDAOImpl implements Hibernat
     @Override
     @Transactional
     public void store(AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration, boolean isUpdate) throws Exception {
-        /*
         Session session = null;
         Transaction tx = null;
         try {
@@ -61,7 +60,7 @@ public class HibernateAdvancedLdapPluginConfigurationDAOImpl implements Hibernat
                 }
             } catch (Exception e) {
             }
-        } */
+        }
     }
 
     @Override
@@ -70,7 +69,6 @@ public class HibernateAdvancedLdapPluginConfigurationDAOImpl implements Hibernat
         Session session = null;
         Transaction tx = null;
         AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = null;
-        /*
         try
         {
             session = this.sessionFactory.openSession();
@@ -94,14 +92,11 @@ public class HibernateAdvancedLdapPluginConfigurationDAOImpl implements Hibernat
             }
         }
         return advancedLdapPluginConfiguration;
-        */
-        return new AdvancedLdapPluginConfiguration();
     }
 
     @Override
     @Transactional
     public void remove(int id) {
-        /*
         Session session = null;
         Transaction tx = null;
         try
@@ -122,6 +117,6 @@ public class HibernateAdvancedLdapPluginConfigurationDAOImpl implements Hibernat
             catch (Exception e)
             {
             }
-        } */
+        }
     }
 }

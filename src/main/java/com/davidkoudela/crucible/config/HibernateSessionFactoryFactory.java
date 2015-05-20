@@ -1,13 +1,10 @@
 package com.davidkoudela.crucible.config;
 
-import com.cenqua.crucible.hibernate.BoneCPConnectionHook;
 import com.cenqua.crucible.hibernate.DBType;
 import com.cenqua.crucible.hibernate.DatabaseConfig;
 import com.cenqua.fisheye.AppConfig;
 import com.cenqua.fisheye.config1.ConfigDocument;
 import com.cenqua.fisheye.config1.DriverSource;
-import com.jolbox.bonecp.provider.BoneCPConnectionProvider;
-import org.apache.commons.lang.math.NumberUtils;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
@@ -52,6 +49,8 @@ public class HibernateSessionFactoryFactory {
 
             configuration.addProperties(databaseConfig.getProperties());
             configuration.addClass(com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration.class);
+//            SchemaExport schema = new SchemaExport(configuration);
+//            schema.create(true, true);
             return configuration.buildSessionFactory();
         } catch (Exception e) {
             System.out.println("HibernateSessionFactoryFactory: Exception: " + e);
