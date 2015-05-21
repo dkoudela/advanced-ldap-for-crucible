@@ -25,7 +25,7 @@ public class HibernateSessionFactoryFactory {
                 databaseConfig = new DatabaseConfig(AppConfig.getsConfig().getConfig().getDatabase());
             else
                 databaseConfig = new DatabaseConfig(DBType.HSQL,
-                        "jdbc:hsqldb:file:" + AppConfig.getInstanceDir().getAbsolutePath() + "/var/data/crudb/crucible",
+                        "jdbc:hsqldb:file:" + AppConfig.getInstanceDir().getAbsolutePath() + "/var/data/adldb/crucible",
                         "sa", "", DriverSource.BUNDLED, 5, 20);
 
             Configuration configuration = new Configuration();
@@ -49,8 +49,6 @@ public class HibernateSessionFactoryFactory {
 
             configuration.addProperties(databaseConfig.getProperties());
             configuration.addClass(com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration.class);
-//            SchemaExport schema = new SchemaExport(configuration);
-//            schema.create(true, true);
             return configuration.buildSessionFactory();
         } catch (Exception e) {
             System.out.println("HibernateSessionFactoryFactory: Exception: " + e);
@@ -60,6 +58,15 @@ public class HibernateSessionFactoryFactory {
                 sb.append("\n");
             }
             System.out.println("HibernateSessionFactoryFactory: Exception: " + sb);
+            throw new Exception(e);
+        } catch (Throwable e) {
+            System.out.println("HibernateSessionFactoryFactory: Unexpected Exception: " + e);
+            StringBuilder sb = new StringBuilder();
+            for (StackTraceElement element : e.getCause().getStackTrace()) {
+                sb.append(element.toString());
+                sb.append("\n");
+            }
+            System.out.println("HibernateSessionFactoryFactory: Unexpected Exception: " + sb);
             throw new Exception(e);
         }
     }
