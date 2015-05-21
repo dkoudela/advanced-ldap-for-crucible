@@ -4,8 +4,9 @@ import com.atlassian.crucible.spi.data.UserData;
 import com.cenqua.fisheye.user.UserManager;
 
 /**
- * Description: {@link AdvancedLdapUserManager} represents an interface used by {@link com.davidkoudela.crucible.listener.AdvancedLdapEventListener},
- *              {@link com.davidkoudela.crucible.timer.AdvancedLdapTimerTrigger} or any other component requiring managed LDAP users with their groups.
+ * Description: {@link AdvancedLdapUserManager} represents an interface used by
+ *              {@link com.davidkoudela.crucible.timer.AdvancedLdapTimerTrigger} or
+ *              any other component requiring managed LDAP users with their groups.
  * Copyright (C) 2015 David Koudela
  *
  * @author dkoudela

@@ -44,9 +44,6 @@
         <url-pattern>/advancedLdapConfigurationTestServlet*</url-pattern>
     </servlet>
 
-    <!-- add crucible event listener -->
-    <listener key="advanced-ldap-event-listener" class="com.davidkoudela.crucible.listener.AdvancedLdapEventListener"/>
-
     <!-- publish components -->
     <component key="advancedLdapUserManager" class="com.davidkoudela.crucible.admin.AdvancedLdapUserManagerImpl" public="true">
         <interface>com.davidkoudela.crucible.admin.AdvancedLdapUserManager</interface>
