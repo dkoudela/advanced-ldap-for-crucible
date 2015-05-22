@@ -4,6 +4,7 @@ import com.cenqua.crucible.hibernate.DBType;
 import com.cenqua.crucible.hibernate.DatabaseConfig;
 import com.cenqua.fisheye.AppConfig;
 import com.cenqua.fisheye.config1.ConfigDocument;
+import com.cenqua.fisheye.config1.DatabaseType;
 import com.cenqua.fisheye.config1.DriverSource;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -21,12 +22,16 @@ public class HibernateSessionFactoryFactory {
             ConfigDocument configDocument = AppConfig.getsConfig().getConfigDocument();
             DatabaseConfig databaseConfig = null;
 
-            if ((configDocument != null) && (configDocument.getConfig().isSetDatabase()))
-                databaseConfig = new DatabaseConfig(AppConfig.getsConfig().getConfig().getDatabase());
-            else
+            if ((configDocument != null) && (configDocument.getConfig().isSetDatabase())) {
+                DatabaseType databaseType = AppConfig.getsConfig().getConfig().getDatabase();
+                String jdbcUrl = databaseType.getConnection().getJdbcurl();
+                databaseConfig = new DatabaseConfig(databaseType);
+                databaseConfig.setJdbcURL(jdbcUrl + "adldb");
+            } else {
                 databaseConfig = new DatabaseConfig(DBType.HSQL,
                         "jdbc:hsqldb:file:" + AppConfig.getInstanceDir().getAbsolutePath() + "/var/data/adldb/crucible",
                         "sa", "", DriverSource.BUNDLED, 5, 20);
+            }
 
             Configuration configuration = new Configuration();
             configuration.setProperty("hibernate.connection.autocommit", "false");
