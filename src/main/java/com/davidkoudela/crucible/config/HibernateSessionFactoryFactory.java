@@ -6,8 +6,12 @@ import com.cenqua.fisheye.AppConfig;
 import com.cenqua.fisheye.config1.ConfigDocument;
 import com.cenqua.fisheye.config1.DatabaseType;
 import com.cenqua.fisheye.config1.DriverSource;
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.postgresql.util.PSQLException;
+
+import java.sql.*;
 
 /**
  * Description: Factory for building {@link SessionFactory} helping with complicated HB setup.
@@ -17,6 +21,8 @@ import org.hibernate.cfg.Configuration;
  * @since 2015-05-15
  */
 public class HibernateSessionFactoryFactory {
+    public static final String pluginDbName = "crucibleadldb";
+
     public static SessionFactory createHibernateSessionFactory() throws Exception {
         try {
             ConfigDocument configDocument = AppConfig.getsConfig().getConfigDocument();
@@ -24,9 +30,9 @@ public class HibernateSessionFactoryFactory {
 
             if ((configDocument != null) && (configDocument.getConfig().isSetDatabase())) {
                 DatabaseType databaseType = AppConfig.getsConfig().getConfig().getDatabase();
-                String jdbcUrl = databaseType.getConnection().getJdbcurl();
                 databaseConfig = new DatabaseConfig(databaseType);
-                databaseConfig.setJdbcURL(jdbcUrl + "adldb");
+                ensureDatabaseExists(databaseConfig);
+                databaseConfig.setJdbcURL(constructJdbcUrl(databaseConfig));
             } else {
                 databaseConfig = new DatabaseConfig(DBType.HSQL,
                         "jdbc:hsqldb:file:" + AppConfig.getInstanceDir().getAbsolutePath() + "/var/data/adldb/crucible",
@@ -74,5 +80,85 @@ public class HibernateSessionFactoryFactory {
             System.out.println("HibernateSessionFactoryFactory: Unexpected Exception: " + sb);
             throw new Exception(e);
         }
+    }
+
+    private static String constructJdbcUrl(DatabaseConfig databaseConfig) {
+        String[] jdbcElements = databaseConfig.getJdbcURL().split("/");
+        jdbcElements[jdbcElements.length-1] = pluginDbName;
+        return StringUtils.join(jdbcElements, "/");
+    }
+
+    private static void ensureDatabaseExists(DatabaseConfig databaseConfig) {
+        Connection conn = null;
+        Statement stmt = null;
+        String jdbcUrl = constructJdbcUrl(databaseConfig);
+
+        try {
+            Class.forName(databaseConfig.getJdbcDriverClass());
+
+            System.out.println("Connecting to database " + pluginDbName);
+            conn = DriverManager.getConnection(jdbcUrl, databaseConfig.getUsername(), databaseConfig.getPassword());
+
+            System.out.println("Database " + pluginDbName + " already exists");
+        } catch(SQLException se){
+            System.out.println("Database " + pluginDbName + " doesn't exist");
+
+            try {
+                conn = DriverManager.getConnection(databaseConfig.getJdbcURL(), databaseConfig.getUsername(), databaseConfig.getPassword());
+                String sqlCreateDatabase = getCreateDbStatement(databaseConfig);
+                String sqlGrant = getGrantDbStatement(databaseConfig);
+
+                if (sqlCreateDatabase != null && sqlGrant != null) {
+                    System.out.println("Creating database " + pluginDbName);
+                    stmt = conn.createStatement();
+                    stmt.executeUpdate(sqlCreateDatabase);
+
+                    stmt.executeUpdate(sqlGrant);
+                    System.out.println("Database " + pluginDbName + " created successfully");
+                } else {
+                    System.out.println("Database " + pluginDbName + " cannot be created automatically");
+                    System.out.println("Create database " + pluginDbName + " in the same way as the crucible database");
+                }
+            } catch (Exception e) {
+                System.out.println("Creating database " + pluginDbName + " failed");
+                System.out.println("Create database " + pluginDbName + " in the same way as the crucible database");
+                e.printStackTrace();
+            }
+        } catch(Exception e){
+            //Handle errors for Class.forName
+            System.out.println("Database existence verification failed with general error");
+            e.printStackTrace();
+        } finally {
+            //finally block used to close resources
+            try {
+                if(stmt!=null)
+                    stmt.close();
+            } catch(SQLException se2){
+            }
+            try {
+                if(conn!=null)
+                    conn.close();
+            } catch(SQLException se){
+                se.printStackTrace();
+            }
+        }
+    }
+
+    private static String getCreateDbStatement(DatabaseConfig databaseConfig) {
+        if (databaseConfig.getType() == DBType.POSTGRESQL)
+            return "CREATE DATABASE " + pluginDbName + " ENCODING 'UTF-8' OWNER " + databaseConfig.getUsername();
+        else  if (databaseConfig.getType() == DBType.MYSQL)
+            return "CREATE DATABASE " + pluginDbName + " CHARACTER SET utf8 COLLATE utf8_bin";
+        else
+            return null;
+    }
+
+    private static String getGrantDbStatement(DatabaseConfig databaseConfig) {
+        if (databaseConfig.getType() == DBType.POSTGRESQL)
+            return "grant all on database " + pluginDbName + " to " + databaseConfig.getUsername();
+        else  if (databaseConfig.getType() == DBType.MYSQL)
+            return "GRANT ALL PRIVILEGES ON " + pluginDbName + " TO '" + databaseConfig.getUsername() + "'@'localhost' IDENTIFIED BY '" + databaseConfig.getPassword() + "'; FLUSH PRIVILEGES;";
+        else
+            return null;
     }
 }
