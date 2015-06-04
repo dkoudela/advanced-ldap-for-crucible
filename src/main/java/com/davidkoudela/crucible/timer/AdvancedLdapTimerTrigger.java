@@ -44,6 +44,10 @@ public class AdvancedLdapTimerTrigger {
         }
     }
 
+    public int activeTimers() {
+        return this.timerLinkedList.size();
+    }
+
     public void runNow(TimerTask timerTask) {
         Timer timer = new Timer(true);
         timer.schedule(timerTask, new Date());
