@@ -36,7 +36,11 @@ public class AdvancedLdapConfigurationTestServlet extends HttpServlet {
         Map<String,Object> params = new HashMap<String,Object>();
         req.setAttribute("decorator", "atl.admin");
         resp.setContentType("text/html");
-        velocityHelper.renderVelocityTemplate("templates/authTest.vm", params, resp.getWriter());
+        if (advancedLdapUserManager.hasSysAdminPrivileges(req)) {
+            velocityHelper.renderVelocityTemplate("templates/authTest.vm", params, resp.getWriter());
+        } else {
+            resp.sendRedirect(req.getContextPath() + "/admin/login-default.do");
+        }
     }
 
     @Override
@@ -44,18 +48,22 @@ public class AdvancedLdapConfigurationTestServlet extends HttpServlet {
         Map<String,Object> params = new HashMap<String,Object>();
         req.setAttribute("decorator", "atl.admin");
         resp.setContentType("text/html");
-        if (req.getPathInfo().contains("/advancedLdapConfigurationTestServletTestResults.do")) {
-            String testResult = "username/password succeeded";
+        if (advancedLdapUserManager.hasSysAdminPrivileges(req)) {
+            if (req.getPathInfo().contains("/advancedLdapConfigurationTestServletTestResults.do")) {
+                String testResult = "username/password succeeded";
 
-            boolean validCredentials = this.advancedLdapUserManager.verifyUserCredentials(StringUtils.defaultIfEmpty(req.getParameter("username"), ""),
-                    StringUtils.defaultIfEmpty(req.getParameter("password"), ""));
-            if (!validCredentials)
-                testResult = "username/password failed";
+                boolean validCredentials = this.advancedLdapUserManager.verifyUserCredentials(StringUtils.defaultIfEmpty(req.getParameter("username"), ""),
+                        StringUtils.defaultIfEmpty(req.getParameter("password"), ""));
+                if (!validCredentials)
+                    testResult = "username/password failed";
 
-            params.put("testResult", testResult);
-            velocityHelper.renderVelocityTemplate("templates/authResult.vm", params, resp.getWriter());
+                params.put("testResult", testResult);
+                velocityHelper.renderVelocityTemplate("templates/authResult.vm", params, resp.getWriter());
+            } else {
+                velocityHelper.renderVelocityTemplate("templates/authTest.vm", params, resp.getWriter());
+            }
         } else {
-            velocityHelper.renderVelocityTemplate("templates/authTest.vm", params, resp.getWriter());
+            resp.sendRedirect(req.getContextPath() + "/admin/login-default.do");
         }
     }
 }

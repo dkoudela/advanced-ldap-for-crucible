@@ -1,6 +1,7 @@
 package com.davidkoudela.crucible.servlets;
 
 import com.atlassian.fisheye.plugin.web.helpers.VelocityHelper;
+import com.davidkoudela.crucible.admin.AdvancedLdapUserManager;
 import com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration;
 import com.davidkoudela.crucible.config.HibernateAdvancedLdapPluginConfigurationDAO;
 import com.davidkoudela.crucible.tasks.AdvancedLdapSynchronizationManager;
@@ -26,25 +27,32 @@ public class AdvancedLdapConfigurationAdminServlet extends HttpServlet {
     private final VelocityHelper velocityHelper;
     private HibernateAdvancedLdapPluginConfigurationDAO hibernateAdvancedLdapPluginConfigurationDAO;
     private AdvancedLdapSynchronizationManager advancedLdapSynchronizationManager;
+    private AdvancedLdapUserManager advancedLdapUserManager;
 
     @org.springframework.beans.factory.annotation.Autowired
     public AdvancedLdapConfigurationAdminServlet(VelocityHelper velocityHelper,
                                                  HibernateAdvancedLdapPluginConfigurationDAO hibernateAdvancedLdapPluginConfigurationDAO,
-                                                 AdvancedLdapSynchronizationManager advancedLdapSynchronizationManager) {
+                                                 AdvancedLdapSynchronizationManager advancedLdapSynchronizationManager,
+                                                 AdvancedLdapUserManager advancedLdapUserManager) {
         this.velocityHelper = velocityHelper;
         this.hibernateAdvancedLdapPluginConfigurationDAO = hibernateAdvancedLdapPluginConfigurationDAO;
         this.advancedLdapSynchronizationManager = advancedLdapSynchronizationManager;
+        this.advancedLdapUserManager = advancedLdapUserManager;
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = this.hibernateAdvancedLdapPluginConfigurationDAO.get();
-
-        Map<String,Object> params = new HashMap<String,Object>();
+        Map<String, Object> params = new HashMap<String, Object>();
         req.setAttribute("decorator", "atl.admin");
-        params.put("advancedLdapPluginConfiguration", advancedLdapPluginConfiguration);
         resp.setContentType("text/html");
-        velocityHelper.renderVelocityTemplate("templates/configureView.vm", params, resp.getWriter());
+        if (advancedLdapUserManager.hasSysAdminPrivileges(req)) {
+            AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = this.hibernateAdvancedLdapPluginConfigurationDAO.get();
+
+            params.put("advancedLdapPluginConfiguration", advancedLdapPluginConfiguration);
+            velocityHelper.renderVelocityTemplate("templates/configureView.vm", params, resp.getWriter());
+        } else {
+            resp.sendRedirect(req.getContextPath() + "/admin/login-default.do");
+        }
     }
 
     @Override
@@ -52,38 +60,42 @@ public class AdvancedLdapConfigurationAdminServlet extends HttpServlet {
         Map<String,Object> params = new HashMap<String,Object>();
         req.setAttribute("decorator", "atl.admin");
         resp.setContentType("text/html");
-        AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = this.hibernateAdvancedLdapPluginConfigurationDAO.get();
-        if (req.getPathInfo().contains("/advancedLdapConfigurationAdminServletEdit.do")) {
-            params.put("advancedLdapPluginConfiguration", advancedLdapPluginConfiguration);
-            velocityHelper.renderVelocityTemplate("templates/configureEdit.vm", params, resp.getWriter());
-        } else if (req.getPathInfo().contains("/advancedLdapConfigurationAdminServletRemove.do")) {
-            try {
-                this.hibernateAdvancedLdapPluginConfigurationDAO.remove(advancedLdapPluginConfiguration.getId());
-                this.advancedLdapSynchronizationManager.updateTimer();
-            } catch (Exception e) {
-                System.out.println("AdvancedLdapConfigurationAdminServlet.doPost: hibernateAdvancedLdapPluginConfigurationDAO.remove failed: " + e);
+        if (advancedLdapUserManager.hasSysAdminPrivileges(req)) {
+            AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = this.hibernateAdvancedLdapPluginConfigurationDAO.get();
+            if (req.getPathInfo().contains("/advancedLdapConfigurationAdminServletEdit.do")) {
+                params.put("advancedLdapPluginConfiguration", advancedLdapPluginConfiguration);
+                velocityHelper.renderVelocityTemplate("templates/configureEdit.vm", params, resp.getWriter());
+            } else if (req.getPathInfo().contains("/advancedLdapConfigurationAdminServletRemove.do")) {
+                try {
+                    this.hibernateAdvancedLdapPluginConfigurationDAO.remove(advancedLdapPluginConfiguration.getId());
+                    this.advancedLdapSynchronizationManager.updateTimer();
+                } catch (Exception e) {
+                    System.out.println("AdvancedLdapConfigurationAdminServlet.doPost: hibernateAdvancedLdapPluginConfigurationDAO.remove failed: " + e);
+                }
+                advancedLdapPluginConfiguration = this.hibernateAdvancedLdapPluginConfigurationDAO.get();
+                params.put("advancedLdapPluginConfiguration", advancedLdapPluginConfiguration);
+                velocityHelper.renderVelocityTemplate("templates/configureView.vm", params, resp.getWriter());
+            } else if (req.getPathInfo().contains("/advancedLdapConfigurationAdminServletSync.do")) {
+                try {
+                    this.advancedLdapSynchronizationManager.runNow();
+                } catch (Exception e) {
+                    System.out.println("AdvancedLdapConfigurationAdminServlet.doPost: LDAP manual sync failed: " + e);
+                }
+                params.put("advancedLdapPluginConfiguration", advancedLdapPluginConfiguration);
+                velocityHelper.renderVelocityTemplate("templates/configureView.vm", params, resp.getWriter());
+            } else {
+                setParameters(advancedLdapPluginConfiguration, req);
+                try {
+                    this.hibernateAdvancedLdapPluginConfigurationDAO.store(advancedLdapPluginConfiguration, true);
+                    this.advancedLdapSynchronizationManager.updateTimer();
+                } catch (Exception e) {
+                    System.out.println("AdvancedLdapConfigurationAdminServlet.doPost: hibernateAdvancedLdapPluginConfigurationDAO.store failed: " + e);
+                }
+                params.put("advancedLdapPluginConfiguration", advancedLdapPluginConfiguration);
+                velocityHelper.renderVelocityTemplate("templates/configureView.vm", params, resp.getWriter());
             }
-            advancedLdapPluginConfiguration = this.hibernateAdvancedLdapPluginConfigurationDAO.get();
-            params.put("advancedLdapPluginConfiguration", advancedLdapPluginConfiguration);
-            velocityHelper.renderVelocityTemplate("templates/configureView.vm", params, resp.getWriter());
-        } else if (req.getPathInfo().contains("/advancedLdapConfigurationAdminServletSync.do")) {
-            try {
-                this.advancedLdapSynchronizationManager.runNow();
-            } catch (Exception e) {
-                System.out.println("AdvancedLdapConfigurationAdminServlet.doPost: LDAP manual sync failed: " + e);
-            }
-            params.put("advancedLdapPluginConfiguration", advancedLdapPluginConfiguration);
-            velocityHelper.renderVelocityTemplate("templates/configureView.vm", params, resp.getWriter());
         } else {
-            setParameters(advancedLdapPluginConfiguration, req);
-            try {
-                this.hibernateAdvancedLdapPluginConfigurationDAO.store(advancedLdapPluginConfiguration, true);
-                this.advancedLdapSynchronizationManager.updateTimer();
-            } catch (Exception e) {
-                System.out.println("AdvancedLdapConfigurationAdminServlet.doPost: hibernateAdvancedLdapPluginConfigurationDAO.store failed: " + e);
-            }
-            params.put("advancedLdapPluginConfiguration", advancedLdapPluginConfiguration);
-            velocityHelper.renderVelocityTemplate("templates/configureView.vm", params, resp.getWriter());
+            resp.sendRedirect(req.getContextPath() + "/admin/login-default.do");
         }
     }
 
