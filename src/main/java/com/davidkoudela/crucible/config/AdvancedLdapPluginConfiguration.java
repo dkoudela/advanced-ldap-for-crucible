@@ -173,4 +173,15 @@ public class AdvancedLdapPluginConfiguration {
     public void setUserNamesKey(String userNamesKey) {
         this.userNamesKey = userNamesKey;
     }
+
+    public String toString() {
+        return "{ id=\"" + id + "\", connectTimeoutMillis=\"" + connectTimeoutMillis + "\", responseTimeoutMillis=\"" + responseTimeoutMillis +
+                "\", LDAPPageSize=\"" + LDAPPageSize + "\", LDAPSyncPeriod=\"" + LDAPSyncPeriod + "\", LDAPUrl=\"" + LDAPUrl +
+                "\", LDAPBindDN=\"" + LDAPBindDN + "\", LDAPBindPassword=\"" + LDAPBindPassword + "\", LDAPBaseDN=\"" + LDAPBaseDN +
+                "\", userFilterKey=\"" + userFilterKey + "\", displayNameAttributeKey=\"" + displayNameAttributeKey +
+                "\", emailAttributeKey=\"" + emailAttributeKey + "\", UIDAttributeKey=\"" + UIDAttributeKey +
+                "\", userGroupNamesKey=\"" + userGroupNamesKey + "\", groupFilterKey=\"" + groupFilterKey +
+                "\", GIDAttributeKey=\"" + GIDAttributeKey + "\", groupDisplayNameKey=\"" + groupDisplayNameKey +
+                "\", userNamesKey=\"" + userNamesKey + "\" }";
+    }
 }
