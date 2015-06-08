@@ -70,7 +70,7 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
         hibernateAdvancedLdapPluginConfigurationDAO = Mockito.mock(HibernateAdvancedLdapPluginConfigurationDAO.class);
         advancedLdapTimerTrigger = new AdvancedLdapTimerTrigger();
         userManager = Mockito.mock(DefaultUserManager.class);
-        advancedLdapUserManager = new AdvancedLdapUserManagerImpl(userManager, hibernateAdvancedLdapPluginConfigurationDAO);
+        advancedLdapUserManager = Mockito.mock(AdvancedLdapUserManagerImpl.class);
 
         Mockito.when(hibernateAdvancedLdapPluginConfigurationDAO.get()).thenReturn(advancedLdapPluginConfiguration);
         argumentCaptorHttpServletRequest = ArgumentCaptor.forClass(HttpServletRequest.class);
@@ -78,6 +78,7 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
         argumentCaptorMap = ArgumentCaptor.forClass(Map.class);
         argumentCaptorPrintWriter = ArgumentCaptor.forClass(PrintWriter.class);
         Mockito.doNothing().when(velocityHelper).renderVelocityTemplate(argumentCaptorString.capture(), argumentCaptorMap.capture(), argumentCaptorPrintWriter.capture());
+        Mockito.doNothing().when(advancedLdapUserManager).loadGroups();
 
         advancedLdapSynchronizationManager =
                 new AdvancedLdapSynchronizationManagerImpl(hibernateAdvancedLdapPluginConfigurationDAO, advancedLdapTimerTrigger, advancedLdapUserManager);
@@ -85,7 +86,7 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
 
     @Test
     public void testDoGetWithAdminPermissions() throws ServletException, IOException {
-        Mockito.when(userManager.hasSysAdminPrivileges(argumentCaptorHttpServletRequest.capture())).thenReturn(true);
+        Mockito.when(advancedLdapUserManager.hasSysAdminPrivileges(argumentCaptorHttpServletRequest.capture())).thenReturn(true);
 
         AdvancedLdapConfigurationAdminServletDummy advancedLdapConfigurationAdminServlet = new AdvancedLdapConfigurationAdminServletDummy(
                 velocityHelper, hibernateAdvancedLdapPluginConfigurationDAO, advancedLdapSynchronizationManager, advancedLdapUserManager);
@@ -103,7 +104,7 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
 
     @Test
     public void testDoGetWithoutAdminPermissions() throws ServletException, IOException {
-        Mockito.when(userManager.hasSysAdminPrivileges(argumentCaptorHttpServletRequest.capture())).thenReturn(false);
+        Mockito.when(advancedLdapUserManager.hasSysAdminPrivileges(argumentCaptorHttpServletRequest.capture())).thenReturn(false);
 
         AdvancedLdapConfigurationAdminServletDummy advancedLdapConfigurationAdminServlet = new AdvancedLdapConfigurationAdminServletDummy(
                 velocityHelper, hibernateAdvancedLdapPluginConfigurationDAO, advancedLdapSynchronizationManager, advancedLdapUserManager);
@@ -118,7 +119,7 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
 
     @Test
     public void testDoPostWithAdminPermissionsAdminEdit() throws ServletException, IOException {
-        Mockito.when(userManager.hasSysAdminPrivileges(argumentCaptorHttpServletRequest.capture())).thenReturn(true);
+        Mockito.when(advancedLdapUserManager.hasSysAdminPrivileges(argumentCaptorHttpServletRequest.capture())).thenReturn(true);
 
         AdvancedLdapConfigurationAdminServletDummy advancedLdapConfigurationAdminServlet = new AdvancedLdapConfigurationAdminServletDummy(
                 velocityHelper, hibernateAdvancedLdapPluginConfigurationDAO, advancedLdapSynchronizationManager, advancedLdapUserManager);
@@ -137,7 +138,7 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
 
     @Test
     public void testDoPostWithAdminPermissionsAdminRemove() throws ServletException, IOException {
-        Mockito.when(userManager.hasSysAdminPrivileges(argumentCaptorHttpServletRequest.capture())).thenReturn(true);
+        Mockito.when(advancedLdapUserManager.hasSysAdminPrivileges(argumentCaptorHttpServletRequest.capture())).thenReturn(true);
         Mockito.doNothing().when(hibernateAdvancedLdapPluginConfigurationDAO).remove(0);
 
         AdvancedLdapConfigurationAdminServletDummy advancedLdapConfigurationAdminServlet = new AdvancedLdapConfigurationAdminServletDummy(
@@ -157,7 +158,7 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
 
     @Test
     public void testDoPostWithAdminPermissionsAdminTest() throws ServletException, IOException {
-        Mockito.when(userManager.hasSysAdminPrivileges(argumentCaptorHttpServletRequest.capture())).thenReturn(true);
+        Mockito.when(advancedLdapUserManager.hasSysAdminPrivileges(argumentCaptorHttpServletRequest.capture())).thenReturn(true);
 
         AdvancedLdapConfigurationAdminServletDummy advancedLdapConfigurationAdminServlet = new AdvancedLdapConfigurationAdminServletDummy(
                 velocityHelper, hibernateAdvancedLdapPluginConfigurationDAO, advancedLdapSynchronizationManager, advancedLdapUserManager);
@@ -176,7 +177,7 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
 
     @Test
     public void testDoPostWithAdminPermissionsAdminOther() throws Exception {
-        Mockito.when(userManager.hasSysAdminPrivileges(argumentCaptorHttpServletRequest.capture())).thenReturn(true);
+        Mockito.when(advancedLdapUserManager.hasSysAdminPrivileges(argumentCaptorHttpServletRequest.capture())).thenReturn(true);
         Mockito.doNothing().when(hibernateAdvancedLdapPluginConfigurationDAO).store(advancedLdapPluginConfiguration, true);
 
         AdvancedLdapConfigurationAdminServletDummy advancedLdapConfigurationAdminServlet = new AdvancedLdapConfigurationAdminServletDummy(
@@ -197,7 +198,7 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
 
     @Test
     public void testDoPostWithoutAdminPermissions() throws ServletException, IOException {
-        Mockito.when(userManager.hasSysAdminPrivileges(argumentCaptorHttpServletRequest.capture())).thenReturn(false);
+        Mockito.when(advancedLdapUserManager.hasSysAdminPrivileges(argumentCaptorHttpServletRequest.capture())).thenReturn(false);
 
         AdvancedLdapConfigurationAdminServletDummy advancedLdapConfigurationAdminServlet = new AdvancedLdapConfigurationAdminServletDummy(
                 velocityHelper, hibernateAdvancedLdapPluginConfigurationDAO, advancedLdapSynchronizationManager, advancedLdapUserManager);
