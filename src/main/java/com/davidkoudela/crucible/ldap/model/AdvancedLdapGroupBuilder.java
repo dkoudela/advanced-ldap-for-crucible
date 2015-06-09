@@ -40,10 +40,6 @@ public class AdvancedLdapGroupBuilder implements AdvancedLdapGroupSearchResultBu
         advancedLdapGroup.setGID(searchResultEntry.getAttributeValue(this.advancedLdapPluginConfiguration.getGIDAttributeKey()));
         advancedLdapGroup.setDisplayName(searchResultEntry.getAttributeValue(this.advancedLdapPluginConfiguration.getGroupDisplayNameKey()));
 
-        // TODO: Temp Tracing purpose:
-        //System.out.println("AdvancedLdapGroupBuilder: Display Name: " + searchResultEntry.getAttributeValue(this.advancedLdapOptions.getGroupDisplayNameKey()));
-        //System.out.println("AdvancedLdapGroupBuilder: GID: " + searchResultEntry.getAttributeValue(this.advancedLdapOptions.getGIDAttributeKey()));
-
         if (this.followMembers) {
             List<AdvancedLdapPerson> personList = new ArrayList<AdvancedLdapPerson>();
             if (searchResultEntry.hasAttribute(this.advancedLdapPluginConfiguration.getUserNamesKey())) {

@@ -41,11 +41,6 @@ public class AdvancedLdapPersonBuilder implements AdvancedLdapPersonSearchResult
         advancedLdapPerson.setDisplayName(searchResultEntry.getAttributeValue(this.advancedLdapPluginConfiguration.getDisplayNameAttributeKey()));
         advancedLdapPerson.setEmail(searchResultEntry.getAttributeValue(this.advancedLdapPluginConfiguration.getEmailAttributeKey()));
 
-        // TODO: Temp Tracing purpose:
-        //System.out.println("AdvancedLdapPersonBuilder: Display Name: " + searchResultEntry.getAttributeValue(this.advancedLdapOptions.getDisplayNameAttributeKey()));
-        //System.out.println("AdvancedLdapPersonBuilder: Email: " + searchResultEntry.getAttributeValue(this.advancedLdapOptions.getEmailAttributeKey()));
-        //System.out.println("AdvancedLdapPersonBuilder: UID: " + searchResultEntry.getAttributeValue(this.advancedLdapOptions.getUIDAttributeKey()));
-
         if (this.followMembers) {
             List<AdvancedLdapGroup> groupList = new ArrayList<AdvancedLdapGroup>();
             if (searchResultEntry.hasAttribute(this.advancedLdapPluginConfiguration.getUserGroupNamesKey())) {
