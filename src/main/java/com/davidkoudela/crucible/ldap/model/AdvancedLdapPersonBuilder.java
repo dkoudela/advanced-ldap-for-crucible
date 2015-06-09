@@ -23,6 +23,7 @@ public class AdvancedLdapPersonBuilder implements AdvancedLdapPersonSearchResult
     private AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration;
     private List<AdvancedLdapPerson> advancedLdapPersonList = new ArrayList<AdvancedLdapPerson>();
     private Boolean followMembers = false;
+    private AdvancedLdapConnector advancedLdapConnector = null;
 
     public AdvancedLdapPersonBuilder(AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration, Boolean followMembers) {
         this.advancedLdapPluginConfiguration = advancedLdapPluginConfiguration;
@@ -50,7 +51,7 @@ public class AdvancedLdapPersonBuilder implements AdvancedLdapPersonSearchResult
                     try {
                         SearchRequest searchRequest = new SearchRequest(groupDn, SearchScope.BASE,
                                 AdvancedLdapSearchFilterFactory.getSearchFilterForAllGroups(this.advancedLdapPluginConfiguration.getGroupFilterKey()));
-                        AdvancedLdapConnector advancedLdapConnector = new AdvancedLdapConnector();
+                        AdvancedLdapConnector advancedLdapConnector = getAdvancedLdapConnector();
                         AdvancedLdapGroupBuilder advancedLdapGroupBuilder = new AdvancedLdapGroupBuilder(this.advancedLdapPluginConfiguration, false);
                         advancedLdapConnector.ldapPagedSearch(this.advancedLdapPluginConfiguration, searchRequest, advancedLdapGroupBuilder);
 
@@ -69,5 +70,15 @@ public class AdvancedLdapPersonBuilder implements AdvancedLdapPersonSearchResult
             advancedLdapPerson.setGroupList(groupList);
         }
         this.advancedLdapPersonList.add(advancedLdapPerson);
+    }
+
+    protected void setAdvancedLdapConnector(AdvancedLdapConnector advancedLdapConnector) {
+        this.advancedLdapConnector = advancedLdapConnector;
+    }
+
+    protected AdvancedLdapConnector getAdvancedLdapConnector() {
+        if (null != this.advancedLdapConnector)
+            return this.advancedLdapConnector;
+        return new AdvancedLdapConnector();
     }
 }
