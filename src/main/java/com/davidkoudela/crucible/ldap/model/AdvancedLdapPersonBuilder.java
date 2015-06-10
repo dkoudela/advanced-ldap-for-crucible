@@ -24,6 +24,7 @@ public class AdvancedLdapPersonBuilder implements AdvancedLdapPersonSearchResult
     private List<AdvancedLdapPerson> advancedLdapPersonList = new ArrayList<AdvancedLdapPerson>();
     private Boolean followMembers = false;
     private AdvancedLdapConnector advancedLdapConnector = null;
+    private AdvancedLdapGroupBuilder advancedLdapGroupBuilder = null;
 
     public AdvancedLdapPersonBuilder(AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration, Boolean followMembers) {
         this.advancedLdapPluginConfiguration = advancedLdapPluginConfiguration;
@@ -52,7 +53,7 @@ public class AdvancedLdapPersonBuilder implements AdvancedLdapPersonSearchResult
                         SearchRequest searchRequest = new SearchRequest(groupDn, SearchScope.BASE,
                                 AdvancedLdapSearchFilterFactory.getSearchFilterForAllGroups(this.advancedLdapPluginConfiguration.getGroupFilterKey()));
                         AdvancedLdapConnector advancedLdapConnector = getAdvancedLdapConnector();
-                        AdvancedLdapGroupBuilder advancedLdapGroupBuilder = new AdvancedLdapGroupBuilder(this.advancedLdapPluginConfiguration, false);
+                        AdvancedLdapGroupBuilder advancedLdapGroupBuilder = getAdvancedLdapGroupBuilder();
                         advancedLdapConnector.ldapPagedSearch(this.advancedLdapPluginConfiguration, searchRequest, advancedLdapGroupBuilder);
 
                         List foundGroupsInLdap = advancedLdapGroupBuilder.getGroups();
@@ -81,4 +82,15 @@ public class AdvancedLdapPersonBuilder implements AdvancedLdapPersonSearchResult
             return this.advancedLdapConnector;
         return new AdvancedLdapConnector();
     }
+
+    protected void setAdvancedLdapGroupBuilder(AdvancedLdapGroupBuilder advancedLdapGroupBuilder) {
+        this.advancedLdapGroupBuilder = advancedLdapGroupBuilder;
+    }
+
+    protected AdvancedLdapGroupBuilder getAdvancedLdapGroupBuilder() {
+        if (null != this.advancedLdapGroupBuilder)
+            return this.advancedLdapGroupBuilder;
+        return new AdvancedLdapGroupBuilder(this.advancedLdapPluginConfiguration, false);
+    }
+
 }
