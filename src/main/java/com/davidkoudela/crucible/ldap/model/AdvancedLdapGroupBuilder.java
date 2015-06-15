@@ -23,6 +23,8 @@ public class AdvancedLdapGroupBuilder implements AdvancedLdapGroupSearchResultBu
     private AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration;
     private List<AdvancedLdapGroup> advancedLdapGroupList = new ArrayList<AdvancedLdapGroup>();
     private Boolean followMembers = false;
+    private AdvancedLdapConnector advancedLdapConnector = null;
+    private AdvancedLdapPersonBuilder advancedLdapPersonBuilder = null;
 
     public AdvancedLdapGroupBuilder(AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration, Boolean followMembers) {
         this.advancedLdapPluginConfiguration = advancedLdapPluginConfiguration;
@@ -49,8 +51,8 @@ public class AdvancedLdapGroupBuilder implements AdvancedLdapGroupSearchResultBu
                     try {
                         SearchRequest searchRequest = new SearchRequest(personDn, SearchScope.BASE,
                                 AdvancedLdapSearchFilterFactory.getSearchFilterForAllUsers(this.advancedLdapPluginConfiguration.getUserFilterKey()));
-                        AdvancedLdapConnector advancedLdapConnector = new AdvancedLdapConnector();
-                        AdvancedLdapPersonBuilder advancedLdapPersonBuilder = new AdvancedLdapPersonBuilder(this.advancedLdapPluginConfiguration, false);
+                        AdvancedLdapConnector advancedLdapConnector = getAdvancedLdapConnector();
+                        AdvancedLdapPersonBuilder advancedLdapPersonBuilder = getAdvancedLdapPersonBuilder();
                         advancedLdapConnector.ldapPagedSearch(this.advancedLdapPluginConfiguration, searchRequest, advancedLdapPersonBuilder);
 
                         List foundPersonsInLdap = advancedLdapPersonBuilder.getPersons();
@@ -70,4 +72,25 @@ public class AdvancedLdapGroupBuilder implements AdvancedLdapGroupSearchResultBu
 
         this.advancedLdapGroupList.add(advancedLdapGroup);
     }
+
+    protected void setAdvancedLdapConnector(AdvancedLdapConnector advancedLdapConnector) {
+        this.advancedLdapConnector = advancedLdapConnector;
+    }
+
+    protected AdvancedLdapConnector getAdvancedLdapConnector() {
+        if (null != this.advancedLdapConnector)
+            return this.advancedLdapConnector;
+        return new AdvancedLdapConnector();
+    }
+
+    protected void setAdvancedLdapPersonBuilder(AdvancedLdapPersonBuilder advancedLdapPersonBuilder) {
+        this.advancedLdapPersonBuilder = advancedLdapPersonBuilder;
+    }
+
+    protected AdvancedLdapPersonBuilder getAdvancedLdapPersonBuilder() {
+        if (null != this.advancedLdapPersonBuilder)
+            return this.advancedLdapPersonBuilder;
+        return new AdvancedLdapPersonBuilder(this.advancedLdapPluginConfiguration, false);
+    }
+
 }
