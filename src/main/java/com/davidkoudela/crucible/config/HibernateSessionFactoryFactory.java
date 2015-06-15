@@ -107,13 +107,17 @@ public class HibernateSessionFactoryFactory {
                 conn = DriverManager.getConnection(databaseConfig.getJdbcURL(), databaseConfig.getUsername(), databaseConfig.getPassword());
                 String sqlCreateDatabase = getCreateDbStatement(databaseConfig);
                 String sqlGrant = getGrantDbStatement(databaseConfig);
+                String sqlFlush = getFlushDbStatement(databaseConfig);
 
                 if (sqlCreateDatabase != null && sqlGrant != null) {
                     System.out.println("Creating database " + pluginDbName);
                     stmt = conn.createStatement();
-                    stmt.executeUpdate(sqlCreateDatabase);
 
+                    stmt.executeUpdate(sqlCreateDatabase);
                     stmt.executeUpdate(sqlGrant);
+                    if (null != sqlFlush)
+                        stmt.executeUpdate(sqlFlush);
+
                     System.out.println("Database " + pluginDbName + " created successfully");
                 } else {
                     System.out.println("Database " + pluginDbName + " cannot be created automatically");
@@ -157,7 +161,14 @@ public class HibernateSessionFactoryFactory {
         if (databaseConfig.getType() == DBType.POSTGRESQL)
             return "grant all on database " + pluginDbName + " to " + databaseConfig.getUsername();
         else  if (databaseConfig.getType() == DBType.MYSQL)
-            return "GRANT ALL PRIVILEGES ON " + pluginDbName + " TO '" + databaseConfig.getUsername() + "'@'localhost' IDENTIFIED BY '" + databaseConfig.getPassword() + "'; FLUSH PRIVILEGES;";
+            return "GRANT ALL PRIVILEGES ON " + pluginDbName + " TO '" + databaseConfig.getUsername() + "'@'localhost' IDENTIFIED BY '" + databaseConfig.getPassword() + "'";
+        else
+            return null;
+    }
+
+    private static String getFlushDbStatement(DatabaseConfig databaseConfig) {
+        if (databaseConfig.getType() == DBType.MYSQL)
+            return "FLUSH PRIVILEGES";
         else
             return null;
     }
