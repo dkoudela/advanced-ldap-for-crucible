@@ -149,5 +149,30 @@ public class AdvancedLdapGroupBuilderTest extends TestCase {
 
     @Test
     public void testHandlePagedSearchResultOneEntryFollowTwoMembersWithTwoMemberEntryInEachMember() {
+        this.advancedLdapGroupBuilderDummy = new AdvancedLdapGroupBuilderDummy(this.advancedLdapPluginConfiguration, true);
+        this.advancedLdapGroupBuilderDummy.setAdvancedLdapConnector(this.advancedLdapConnector);
+        this.advancedLdapGroupBuilderDummy.setAdvancedLdapPersonBuilder(this.advancedLdapPersonBuilder);
+        Mockito.doNothing().when(this.advancedLdapConnector).ldapPagedSearch(this.argumentCaptorAdvancedLdapPluginConfiguration.capture(),
+                this.argumentCaptorSearchRequest.capture(), this.argumentCaptorAdvancedLdapPersonBuilder.capture());
+        List<AdvancedLdapPerson> personList = new ArrayList<AdvancedLdapPerson>();
+        AdvancedLdapPerson advancedLdapPerson = new AdvancedLdapPerson();
+        advancedLdapPerson.setUid("dkoudela");
+        advancedLdapPerson.setEmail("dkoudela@example.com");
+        advancedLdapPerson.setDisplayName("David Koudela");
+        personList.add(advancedLdapPerson);
+        advancedLdapPerson.setUid("jdoe");
+        advancedLdapPerson.setEmail("jdoe@example.com");
+        advancedLdapPerson.setDisplayName("John Doe");
+        personList.add(advancedLdapPerson);
+        Mockito.when(this.advancedLdapPersonBuilder.getPersons()).thenReturn(personList);
+
+        this.advancedLdapGroupBuilderDummy.handlePagedSearchResult(this.searchResultEntry);
+
+        List<AdvancedLdapGroup> advancedLdapGroups = this.advancedLdapGroupBuilderDummy.getGroups();
+        assertEquals(1, advancedLdapGroups.size());
+        assertEquals("group", advancedLdapGroups.get(0).getGID());
+        assertEquals("Default Group", advancedLdapGroups.get(0).getDisplayName());
+
+        assertEquals(0, advancedLdapGroups.get(0).getPersonList().size());
     }
 }
