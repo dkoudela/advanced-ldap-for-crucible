@@ -71,4 +71,22 @@ public class AdvancedLdapBindBuilderTest extends TestCase {
         assertEquals("cn=dkoudela, ou=group, ou=example, dc=com", AdvancedLdapBinds.get(0).getDn());
         assertEquals(true, AdvancedLdapBinds.get(0).getResult());
     }
+
+    @Test
+    public void testHandlePagedSearchResultTwoEntries() {
+        this.advancedLdapBindBuilderDummy = new AdvancedLdapBindBuilderDummy(this.advancedLdapPluginConfiguration, "Password");
+        this.advancedLdapBindBuilderDummy.setAdvancedLdapConnector(this.advancedLdapConnector);
+        Mockito.when(this.advancedLdapConnector.bindDn(this.argumentCaptorAdvancedLdapPluginConfiguration.capture(),
+                this.argumentCaptorDnString.capture(), this.argumentCaptorPwdString.capture())).thenReturn(true);
+
+        this.advancedLdapBindBuilderDummy.handlePagedSearchResult(this.searchResultEntry);
+        this.advancedLdapBindBuilderDummy.handlePagedSearchResult(this.searchResultEntry);
+
+        List<AdvancedLdapBind> AdvancedLdapBinds = this.advancedLdapBindBuilderDummy.getBinds();
+        assertEquals(2, AdvancedLdapBinds.size());
+        assertEquals("cn=dkoudela, ou=group, ou=example, dc=com", AdvancedLdapBinds.get(0).getDn());
+        assertEquals(true, AdvancedLdapBinds.get(0).getResult());
+        assertEquals("cn=dkoudela, ou=group, ou=example, dc=com", AdvancedLdapBinds.get(1).getDn());
+        assertEquals(true, AdvancedLdapBinds.get(1).getResult());
+    }
 }
