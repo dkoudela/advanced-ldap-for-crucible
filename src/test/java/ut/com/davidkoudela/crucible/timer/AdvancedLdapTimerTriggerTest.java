@@ -42,4 +42,24 @@ public class AdvancedLdapTimerTriggerTest extends TestCase {
         advancedLdapTimerTrigger.deleteTimer(index);
         assertEquals(0, advancedLdapTimerTrigger.activeTimers());
     }
+
+    @Test
+    public void testDeleteTimerIndexDoesNotExist() {
+        AdvancedLdapTimerTrigger advancedLdapTimerTrigger = new AdvancedLdapTimerTrigger();
+
+        assertEquals(0, advancedLdapTimerTrigger.activeTimers());
+        advancedLdapTimerTrigger.deleteTimer(666);
+        assertEquals(0, advancedLdapTimerTrigger.activeTimers());
+    }
+
+    @Test
+    public void testCreateTimerPeriodLessThanOne() {
+        AdvancedLdapTimerTrigger advancedLdapTimerTrigger = new AdvancedLdapTimerTrigger();
+        AdvancedLdapTestTask advancedLdapTestTask = new AdvancedLdapTestTask();
+
+        int index = advancedLdapTimerTrigger.createTimer(advancedLdapTestTask, 0);
+        assertEquals(1, advancedLdapTimerTrigger.activeTimers());
+        advancedLdapTimerTrigger.deleteTimer(index);
+        assertEquals(0, advancedLdapTimerTrigger.activeTimers());
+    }
 }
