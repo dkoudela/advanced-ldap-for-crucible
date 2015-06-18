@@ -39,6 +39,7 @@ public class AdvancedLdapGroupBuilderTest extends TestCase {
     private static ArgumentCaptor<AdvancedLdapPersonBuilder> argumentCaptorAdvancedLdapPersonBuilder;
     private static SearchResultEntry searchResultEntry;
     private static SearchResultEntry searchResultEntry2;
+    private static SearchResultEntry searchResultEntry3;
 
     public class AdvancedLdapGroupBuilderDummy extends AdvancedLdapGroupBuilder {
         public AdvancedLdapGroupBuilderDummy(AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration, Boolean followMembers) {
@@ -78,6 +79,11 @@ public class AdvancedLdapGroupBuilderTest extends TestCase {
         attributes.add(new Attribute(this.advancedLdapPluginConfiguration.getGIDAttributeKey(), "product"));
         attributes.add(new Attribute(this.advancedLdapPluginConfiguration.getGroupDisplayNameKey(), "Product Group"));
         this.searchResultEntry2 = new SearchResultEntry("ou=product, ou=example, dc=com", attributes);
+
+        attributes = new ArrayList<Attribute>();
+        attributes.add(new Attribute(this.advancedLdapPluginConfiguration.getGIDAttributeKey(), "Wrong group!containing%strange#symbols+intentionally"));
+        attributes.add(new Attribute(this.advancedLdapPluginConfiguration.getGroupDisplayNameKey(), "Wrong Product Group"));
+        this.searchResultEntry3 = new SearchResultEntry("ou=wrongProduct, ou=example, dc=com", attributes);
     }
 
     @Test
@@ -94,6 +100,26 @@ public class AdvancedLdapGroupBuilderTest extends TestCase {
         assertEquals(1, advancedLdapGroup.size());
         assertEquals("group", advancedLdapGroup.get(0).getGID());
         assertEquals("Default Group", advancedLdapGroup.get(0).getDisplayName());
+    }
+
+    @Test
+    public void testHandlePagedSearchResultOneEntryDoNotFollowMembersGIDWithIncorrectFormat() {
+        this.advancedLdapGroupBuilderDummy = new AdvancedLdapGroupBuilderDummy(this.advancedLdapPluginConfiguration, false);
+        this.advancedLdapGroupBuilderDummy.setAdvancedLdapConnector(this.advancedLdapConnector);
+        Mockito.doNothing().when(this.advancedLdapConnector).ldapPagedSearch(this.argumentCaptorAdvancedLdapPluginConfiguration.capture(),
+                this.argumentCaptorSearchRequest.capture(), this.argumentCaptorAdvancedLdapPersonBuilder.capture());
+
+
+        this.advancedLdapGroupBuilderDummy.handlePagedSearchResult(this.searchResultEntry3);
+
+        List<AdvancedLdapGroup> advancedLdapGroup = this.advancedLdapGroupBuilderDummy.getGroups();
+        assertEquals(1, advancedLdapGroup.size());
+        assertEquals("Wrong group!containing%strange#symbols+intentionally", advancedLdapGroup.get(0).getGID());
+        assertEquals("Wrong-group-containing-strange-symbols-intentionally", advancedLdapGroup.get(0).getNormalizedGID());
+        assertEquals("Wrong Product Group", advancedLdapGroup.get(0).getDisplayName());
+
+        advancedLdapGroup.get(0).setUserNames(new ArrayList<String>()); // for better test coverage
+        advancedLdapGroup.get(0).getUserNames(); // for better test coverage
     }
 
     @Test
