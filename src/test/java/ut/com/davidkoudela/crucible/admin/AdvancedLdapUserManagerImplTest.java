@@ -1,5 +1,6 @@
 package ut.com.davidkoudela.crucible.admin;
 
+import com.atlassian.crucible.spi.data.UserData;
 import com.atlassian.crucible.spi.services.NotFoundException;
 import com.atlassian.extras.common.LicenseException;
 import com.atlassian.fecru.page.Page;
@@ -14,6 +15,7 @@ import com.cenqua.fisheye.rep.RepositoryHandle;
 import com.cenqua.fisheye.user.*;
 import com.davidkoudela.crucible.admin.AdvancedLdapUserManager;
 import com.davidkoudela.crucible.admin.AdvancedLdapUserManagerImpl;
+import com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration;
 import com.davidkoudela.crucible.config.HibernateAdvancedLdapPluginConfigurationDAO;
 import junit.framework.TestCase;
 import org.junit.Before;
@@ -47,6 +49,35 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
     }
 
     @Test
+    public void testLoadUserNoUrl(){
+        AdvancedLdapUserManager advancedLdapUserManager = new AdvancedLdapUserManagerImpl(this.userManager, this.hibernateAdvancedLdapPluginConfigurationDAO);
+        Mockito.when(hibernateAdvancedLdapPluginConfigurationDAO.get()).thenReturn(new AdvancedLdapPluginConfiguration());
+
+        advancedLdapUserManager.loadUser(new UserData());
+    }
+
+    @Test
+    public void testLoadUserWrongFilter(){
+        AdvancedLdapUserManager advancedLdapUserManager = new AdvancedLdapUserManagerImpl(this.userManager, this.hibernateAdvancedLdapPluginConfigurationDAO);
+        AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = new AdvancedLdapPluginConfiguration();
+        advancedLdapPluginConfiguration.setLDAPUrl("url");
+        Mockito.when(hibernateAdvancedLdapPluginConfigurationDAO.get()).thenReturn(advancedLdapPluginConfiguration);
+
+        advancedLdapUserManager.loadUser(new UserData());
+    }
+
+
+
+    @Test
+    public void testLoadGroupsWrongFilter(){
+        AdvancedLdapUserManager advancedLdapUserManager = new AdvancedLdapUserManagerImpl(this.userManager, this.hibernateAdvancedLdapPluginConfigurationDAO);
+        AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = new AdvancedLdapPluginConfiguration();
+        Mockito.when(hibernateAdvancedLdapPluginConfigurationDAO.get()).thenReturn(advancedLdapPluginConfiguration);
+
+        advancedLdapUserManager.loadGroups();
+    }
+
+    @Test
     public void testSetGetForCoverage() throws Exception {
         AdvancedLdapUserManager advancedLdapUserManager =
                 new AdvancedLdapUserManagerImpl(new UserManagerDummy(), this.hibernateAdvancedLdapPluginConfigurationDAO);
@@ -62,7 +93,9 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
             advancedLdapUserManager.login(null, null, null);
             advancedLdapUserManager.hasUserExceededLoginAttempts(null);
             advancedLdapUserManager.login(null,null,null);
+            advancedLdapUserManager.login(null,null,null,null,false);
             advancedLdapUserManager.synchroniseUsers();
+            advancedLdapUserManager.synchroniseUsers(false);
             advancedLdapUserManager.tryRequestDelegatedLogin(null, null);
             advancedLdapUserManager.createTrustedUserLogin(null, false, false);
             advancedLdapUserManager.createTrustedUserLogin(null);
