@@ -34,7 +34,7 @@ public class AdvancedLdapBindBuilder implements AdvancedLdapBindSearchResultBuil
         advancedLdapBind.setDn(dn);
 
         AdvancedLdapConnector advancedLdapConnector = getAdvancedLdapConnector();
-        boolean result = advancedLdapConnector.bindDn(this.advancedLdapPluginConfiguration, dn, this.password);
+        boolean result = advancedLdapConnector.bindDn(dn, this.password);
         advancedLdapBind.setResult(result);
 
         this.advancedLdapBindList.add(advancedLdapBind);
@@ -48,7 +48,7 @@ public class AdvancedLdapBindBuilder implements AdvancedLdapBindSearchResultBuil
     protected AdvancedLdapConnector getAdvancedLdapConnector() {
         if (null != this.advancedLdapConnector)
             return this.advancedLdapConnector;
-        return new AdvancedLdapConnector();
+        return new AdvancedLdapConnector(this.advancedLdapPluginConfiguration);
     }
 
     protected void setAdvancedLdapConnector(AdvancedLdapConnector advancedLdapConnector) {

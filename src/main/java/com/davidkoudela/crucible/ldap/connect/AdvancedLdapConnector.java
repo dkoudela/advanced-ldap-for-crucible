@@ -14,17 +14,17 @@ import com.unboundid.util.LDAPTestUtils;
  * @since 2015-03-20
  */
 public class AdvancedLdapConnector {
+    private AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration;
+    private LDAPConnection ldapConnection = null;
 
-    public void ldapPagedSearch(AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration, SearchRequest searchRequest, AdvancedLdapSearchResultBuilder advancedLdapSearchResultBuilder) {
+    public AdvancedLdapConnector(AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration) {
+        this.advancedLdapPluginConfiguration = advancedLdapPluginConfiguration;
+    }
+
+    public void ldapPagedSearch(SearchRequest searchRequest, AdvancedLdapSearchResultBuilder advancedLdapSearchResultBuilder) {
         LDAPConnection connection = null;
         try {
-            AdvancedLdapConnectionOptionsFactory advancedLdapConnectionOptionsFactory = new AdvancedLdapConnectionOptionsFactory(advancedLdapPluginConfiguration);
-            connection = new LDAPConnection(
-                    advancedLdapConnectionOptionsFactory.getConnectionOptions(),
-                    advancedLdapConnectionOptionsFactory.getLDAPHost(),
-                    advancedLdapConnectionOptionsFactory.getLDAPPort(),
-                    advancedLdapPluginConfiguration.getLDAPBindDN(),
-                    advancedLdapPluginConfiguration.getLDAPBindPassword());
+            connection = getLdapConnection();
 
             int numSearches = 0;
             int totalEntriesReturned = 0;
@@ -65,17 +65,11 @@ public class AdvancedLdapConnector {
         }
     }
 
-    public boolean bindDn(AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration, String dn, String password) {
+    public boolean bindDn(String dn, String password) {
         LDAPConnection connection = null;
         boolean result = false;
         try {
-            AdvancedLdapConnectionOptionsFactory advancedLdapConnectionOptionsFactory = new AdvancedLdapConnectionOptionsFactory(advancedLdapPluginConfiguration);
-            connection = new LDAPConnection(
-                    advancedLdapConnectionOptionsFactory.getConnectionOptions(),
-                    advancedLdapConnectionOptionsFactory.getLDAPHost(),
-                    advancedLdapConnectionOptionsFactory.getLDAPPort(),
-                    advancedLdapPluginConfiguration.getLDAPBindDN(),
-                    advancedLdapPluginConfiguration.getLDAPBindPassword());
+            connection = getLdapConnection();
 
             BindResult bindResult = connection.bind(dn, password);
             if (com.unboundid.ldap.sdk.ResultCode.SUCCESS_INT_VALUE == bindResult.getResultCode().intValue())
@@ -96,5 +90,22 @@ public class AdvancedLdapConnector {
         }
 
         return result;
+    }
+
+    protected LDAPConnection getLdapConnection() throws LDAPException {
+        if (null != this.ldapConnection)
+            return this.ldapConnection;
+
+        AdvancedLdapConnectionOptionsFactory advancedLdapConnectionOptionsFactory = new AdvancedLdapConnectionOptionsFactory(advancedLdapPluginConfiguration);
+        return new LDAPConnection(
+                advancedLdapConnectionOptionsFactory.getConnectionOptions(),
+                advancedLdapConnectionOptionsFactory.getLDAPHost(),
+                advancedLdapConnectionOptionsFactory.getLDAPPort(),
+                this.advancedLdapPluginConfiguration.getLDAPBindDN(),
+                this.advancedLdapPluginConfiguration.getLDAPBindPassword());
+    }
+
+    protected void setLdapConnection(LDAPConnection ldapConnection) {
+        this.ldapConnection = ldapConnection;
     }
 }

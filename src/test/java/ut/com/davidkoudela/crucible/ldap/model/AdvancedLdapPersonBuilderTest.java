@@ -34,7 +34,6 @@ public class AdvancedLdapPersonBuilderTest extends TestCase {
     private static AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration;
     private static AdvancedLdapConnector advancedLdapConnector;
     private static AdvancedLdapGroupBuilder advancedLdapGroupBuilder;
-    private static ArgumentCaptor<AdvancedLdapPluginConfiguration> argumentCaptorAdvancedLdapPluginConfiguration;
     private static ArgumentCaptor<SearchRequest> argumentCaptorSearchRequest;
     private static ArgumentCaptor<AdvancedLdapGroupBuilder> argumentCaptorAdvancedLdapGroupBuilder;
     private static SearchResultEntry searchResultEntry;
@@ -59,7 +58,6 @@ public class AdvancedLdapPersonBuilderTest extends TestCase {
         this.advancedLdapPluginConfiguration = new AdvancedLdapPluginConfiguration();
         this.advancedLdapConnector = Mockito.mock(AdvancedLdapConnector.class);
         this.advancedLdapGroupBuilder = Mockito.mock(AdvancedLdapGroupBuilder.class);
-        this.argumentCaptorAdvancedLdapPluginConfiguration = ArgumentCaptor.forClass(AdvancedLdapPluginConfiguration.class);
         this.argumentCaptorSearchRequest = ArgumentCaptor.forClass(SearchRequest.class);
         this.argumentCaptorAdvancedLdapGroupBuilder = ArgumentCaptor.forClass(AdvancedLdapGroupBuilder.class);
 
@@ -87,7 +85,7 @@ public class AdvancedLdapPersonBuilderTest extends TestCase {
     public void testHandlePagedSearchResultOneEntryDoNotFollowMembers() {
         this.advancedLdapPersonBuilderDummy = new AdvancedLdapPersonBuilderDummy(this.advancedLdapPluginConfiguration, false);
         this.advancedLdapPersonBuilderDummy.setAdvancedLdapConnector(this.advancedLdapConnector);
-        Mockito.doNothing().when(this.advancedLdapConnector).ldapPagedSearch(this.argumentCaptorAdvancedLdapPluginConfiguration.capture(),
+        Mockito.doNothing().when(this.advancedLdapConnector).ldapPagedSearch(
                 this.argumentCaptorSearchRequest.capture(), this.argumentCaptorAdvancedLdapGroupBuilder.capture());
 
 
@@ -104,7 +102,7 @@ public class AdvancedLdapPersonBuilderTest extends TestCase {
     public void testHandlePagedSearchResultTwoEntryDoNotFollowMembers() {
         this.advancedLdapPersonBuilderDummy = new AdvancedLdapPersonBuilderDummy(this.advancedLdapPluginConfiguration, false);
         this.advancedLdapPersonBuilderDummy.setAdvancedLdapConnector(this.advancedLdapConnector);
-        Mockito.doNothing().when(this.advancedLdapConnector).ldapPagedSearch(this.argumentCaptorAdvancedLdapPluginConfiguration.capture(),
+        Mockito.doNothing().when(this.advancedLdapConnector).ldapPagedSearch(
                 this.argumentCaptorSearchRequest.capture(), this.argumentCaptorAdvancedLdapGroupBuilder.capture());
 
 
@@ -127,7 +125,7 @@ public class AdvancedLdapPersonBuilderTest extends TestCase {
         this.advancedLdapPersonBuilderDummy = new AdvancedLdapPersonBuilderDummy(this.advancedLdapPluginConfiguration, true);
         this.advancedLdapPersonBuilderDummy.setAdvancedLdapConnector(this.advancedLdapConnector);
         this.advancedLdapPersonBuilderDummy.setAdvancedLdapGroupBuilder(this.advancedLdapGroupBuilder);
-        Mockito.doNothing().when(this.advancedLdapConnector).ldapPagedSearch(this.argumentCaptorAdvancedLdapPluginConfiguration.capture(),
+        Mockito.doNothing().when(this.advancedLdapConnector).ldapPagedSearch(
                 this.argumentCaptorSearchRequest.capture(), this.argumentCaptorAdvancedLdapGroupBuilder.capture());
         List<AdvancedLdapGroup> groupList = new ArrayList<AdvancedLdapGroup>();
         AdvancedLdapGroup advancedLdapGroup = new AdvancedLdapGroup();
@@ -153,7 +151,7 @@ public class AdvancedLdapPersonBuilderTest extends TestCase {
         this.advancedLdapPersonBuilderDummy = new AdvancedLdapPersonBuilderDummy(this.advancedLdapPluginConfiguration, true);
         this.advancedLdapPersonBuilderDummy.setAdvancedLdapConnector(this.advancedLdapConnector);
         this.advancedLdapPersonBuilderDummy.setAdvancedLdapGroupBuilder(this.advancedLdapGroupBuilder);
-        Mockito.doNothing().when(this.advancedLdapConnector).ldapPagedSearch(this.argumentCaptorAdvancedLdapPluginConfiguration.capture(),
+        Mockito.doNothing().when(this.advancedLdapConnector).ldapPagedSearch(
                 this.argumentCaptorSearchRequest.capture(), this.argumentCaptorAdvancedLdapGroupBuilder.capture());
         List<AdvancedLdapGroup> groupList = new ArrayList<AdvancedLdapGroup>();
         AdvancedLdapGroup advancedLdapGroup = new AdvancedLdapGroup();

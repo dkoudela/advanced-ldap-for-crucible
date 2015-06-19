@@ -54,7 +54,7 @@ public class AdvancedLdapPersonBuilder implements AdvancedLdapPersonSearchResult
                                 AdvancedLdapSearchFilterFactory.getSearchFilterForAllGroups(this.advancedLdapPluginConfiguration.getGroupFilterKey()));
                         AdvancedLdapConnector advancedLdapConnector = getAdvancedLdapConnector();
                         AdvancedLdapGroupBuilder advancedLdapGroupBuilder = getAdvancedLdapGroupBuilder();
-                        advancedLdapConnector.ldapPagedSearch(this.advancedLdapPluginConfiguration, searchRequest, advancedLdapGroupBuilder);
+                        advancedLdapConnector.ldapPagedSearch(searchRequest, advancedLdapGroupBuilder);
 
                         List foundGroupsInLdap = advancedLdapGroupBuilder.getGroups();
                         if (1 != foundGroupsInLdap.size()) {
@@ -80,7 +80,7 @@ public class AdvancedLdapPersonBuilder implements AdvancedLdapPersonSearchResult
     protected AdvancedLdapConnector getAdvancedLdapConnector() {
         if (null != this.advancedLdapConnector)
             return this.advancedLdapConnector;
-        return new AdvancedLdapConnector();
+        return new AdvancedLdapConnector(this.advancedLdapPluginConfiguration);
     }
 
     protected void setAdvancedLdapGroupBuilder(AdvancedLdapGroupBuilder advancedLdapGroupBuilder) {

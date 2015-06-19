@@ -67,9 +67,9 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
             return;
         }
 
-        AdvancedLdapConnector advancedLdapConnector = new AdvancedLdapConnector();
+        AdvancedLdapConnector advancedLdapConnector = new AdvancedLdapConnector(advancedLdapPluginConfiguration);
         AdvancedLdapPersonBuilder advancedLdapPersonBuilder = new AdvancedLdapPersonBuilder(advancedLdapPluginConfiguration, true);
-        advancedLdapConnector.ldapPagedSearch(advancedLdapPluginConfiguration, searchRequest, advancedLdapPersonBuilder);
+        advancedLdapConnector.ldapPagedSearch(searchRequest, advancedLdapPersonBuilder);
         List<AdvancedLdapPerson> persons = advancedLdapPersonBuilder.getPersons();
 
         if (1 != persons.size()) {
@@ -113,9 +113,9 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
             return;
         }
 
-        AdvancedLdapConnector advancedLdapConnector = new AdvancedLdapConnector();
+        AdvancedLdapConnector advancedLdapConnector = new AdvancedLdapConnector(advancedLdapPluginConfiguration);
         AdvancedLdapGroupBuilder advancedLdapGroupBuilder = new AdvancedLdapGroupBuilder(advancedLdapPluginConfiguration, true);
-        advancedLdapConnector.ldapPagedSearch(advancedLdapPluginConfiguration, searchRequest, advancedLdapGroupBuilder);
+        advancedLdapConnector.ldapPagedSearch(searchRequest, advancedLdapGroupBuilder);
         List<AdvancedLdapGroup> groups = advancedLdapGroupBuilder.getGroups();
 
         for (AdvancedLdapGroup advancedLdapGroup : groups) {
@@ -174,9 +174,9 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
             return false;
         }
 
-        AdvancedLdapConnector advancedLdapConnector = new AdvancedLdapConnector();
+        AdvancedLdapConnector advancedLdapConnector = new AdvancedLdapConnector(advancedLdapPluginConfiguration);
         AdvancedLdapBindBuilder advancedLdapBindBuilder = new AdvancedLdapBindBuilder(advancedLdapPluginConfiguration, password);
-        advancedLdapConnector.ldapPagedSearch(advancedLdapPluginConfiguration, searchRequest, advancedLdapBindBuilder);
+        advancedLdapConnector.ldapPagedSearch(searchRequest, advancedLdapBindBuilder);
         List<AdvancedLdapBind> binds = advancedLdapBindBuilder.getBinds();
 
         if (1 != binds.size()) {

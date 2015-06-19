@@ -37,5 +37,10 @@ public class AdvancedLdapSearchFilterFactoryTest extends TestCase {
                         "(&(objectCategory=group)(sAMAccountName=${GROUPNAME}))").toString()
         );
     }
+
+    @Test
+    public void testFactoryCreationToSatisfyCoverage() throws LDAPException {
+        new AdvancedLdapSearchFilterFactory();
+    }
 }
 

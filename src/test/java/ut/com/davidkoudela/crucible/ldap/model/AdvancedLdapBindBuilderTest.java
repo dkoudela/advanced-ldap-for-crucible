@@ -30,7 +30,6 @@ public class AdvancedLdapBindBuilderTest extends TestCase {
     private static AdvancedLdapBindBuilderDummy advancedLdapBindBuilderDummy;
     private static AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration;
     private static AdvancedLdapConnector advancedLdapConnector;
-    private static ArgumentCaptor<AdvancedLdapPluginConfiguration> argumentCaptorAdvancedLdapPluginConfiguration;
     private static ArgumentCaptor<String> argumentCaptorDnString;
     private static ArgumentCaptor<String> argumentCaptorPwdString;
     private static SearchResultEntry searchResultEntry;
@@ -49,7 +48,6 @@ public class AdvancedLdapBindBuilderTest extends TestCase {
     public void init() {
         this.advancedLdapPluginConfiguration = new AdvancedLdapPluginConfiguration();
         this.advancedLdapConnector = Mockito.mock(AdvancedLdapConnector.class);
-        this.argumentCaptorAdvancedLdapPluginConfiguration = ArgumentCaptor.forClass(AdvancedLdapPluginConfiguration.class);
         this.argumentCaptorDnString = ArgumentCaptor.forClass(String.class);
         this.argumentCaptorPwdString = ArgumentCaptor.forClass(String.class);
 
@@ -61,7 +59,7 @@ public class AdvancedLdapBindBuilderTest extends TestCase {
     public void testHandlePagedSearchResultOneEntry() {
         this.advancedLdapBindBuilderDummy = new AdvancedLdapBindBuilderDummy(this.advancedLdapPluginConfiguration, "Password");
         this.advancedLdapBindBuilderDummy.setAdvancedLdapConnector(this.advancedLdapConnector);
-        Mockito.when(this.advancedLdapConnector.bindDn(this.argumentCaptorAdvancedLdapPluginConfiguration.capture(),
+        Mockito.when(this.advancedLdapConnector.bindDn(
                 this.argumentCaptorDnString.capture(), this.argumentCaptorPwdString.capture())).thenReturn(true);
 
         this.advancedLdapBindBuilderDummy.handlePagedSearchResult(this.searchResultEntry);
@@ -76,7 +74,7 @@ public class AdvancedLdapBindBuilderTest extends TestCase {
     public void testHandlePagedSearchResultTwoEntries() {
         this.advancedLdapBindBuilderDummy = new AdvancedLdapBindBuilderDummy(this.advancedLdapPluginConfiguration, "Password");
         this.advancedLdapBindBuilderDummy.setAdvancedLdapConnector(this.advancedLdapConnector);
-        Mockito.when(this.advancedLdapConnector.bindDn(this.argumentCaptorAdvancedLdapPluginConfiguration.capture(),
+        Mockito.when(this.advancedLdapConnector.bindDn(
                 this.argumentCaptorDnString.capture(), this.argumentCaptorPwdString.capture())).thenReturn(true);
 
         this.advancedLdapBindBuilderDummy.handlePagedSearchResult(this.searchResultEntry);
