@@ -40,6 +40,11 @@ import java.util.Map;
 public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
     private UserManager userManager;
     private HibernateAdvancedLdapPluginConfigurationDAO hibernateAdvancedLdapPluginConfigurationDAO;
+    private AdvancedLdapConnector advancedLdapConnector = null;
+    private AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = null;
+    private AdvancedLdapPersonBuilder advancedLdapPersonBuilder = null;
+    private AdvancedLdapGroupBuilder advancedLdapGroupBuilder = null;
+    private AdvancedLdapBindBuilder advancedLdapBindBuilder = null;
 
     @org.springframework.beans.factory.annotation.Autowired
     public AdvancedLdapUserManagerImpl(UserManager userManager, HibernateAdvancedLdapPluginConfigurationDAO hibernateAdvancedLdapPluginConfigurationDAO) {
@@ -51,7 +56,7 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
 
     @Override
     public void loadUser(UserData userData) {
-        AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = hibernateAdvancedLdapPluginConfigurationDAO.get();
+        this.advancedLdapPluginConfiguration = hibernateAdvancedLdapPluginConfigurationDAO.get();
 
         if (advancedLdapPluginConfiguration.getLDAPUrl().isEmpty()) {
             return;
@@ -67,8 +72,8 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
             return;
         }
 
-        AdvancedLdapConnector advancedLdapConnector = new AdvancedLdapConnector(advancedLdapPluginConfiguration);
-        AdvancedLdapPersonBuilder advancedLdapPersonBuilder = new AdvancedLdapPersonBuilder(advancedLdapPluginConfiguration, true);
+        AdvancedLdapConnector advancedLdapConnector = getAdvancedLdapConnector();
+        AdvancedLdapPersonBuilder advancedLdapPersonBuilder = getAdvancedLdapPersonBuilder();
         advancedLdapConnector.ldapPagedSearch(searchRequest, advancedLdapPersonBuilder);
         List<AdvancedLdapPerson> persons = advancedLdapPersonBuilder.getPersons();
 
@@ -101,7 +106,7 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
 
     @Override
     public void loadGroups() {
-        AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = hibernateAdvancedLdapPluginConfigurationDAO.get();
+        this.advancedLdapPluginConfiguration = hibernateAdvancedLdapPluginConfigurationDAO.get();
 
         System.out.println("AdvancedLdapUserManagerImpl.loadGroups START");
         SearchRequest searchRequest = null;
@@ -113,8 +118,8 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
             return;
         }
 
-        AdvancedLdapConnector advancedLdapConnector = new AdvancedLdapConnector(advancedLdapPluginConfiguration);
-        AdvancedLdapGroupBuilder advancedLdapGroupBuilder = new AdvancedLdapGroupBuilder(advancedLdapPluginConfiguration, true);
+        AdvancedLdapConnector advancedLdapConnector = getAdvancedLdapConnector();
+        AdvancedLdapGroupBuilder advancedLdapGroupBuilder = getAdvancedLdapGroupBuilder();
         advancedLdapConnector.ldapPagedSearch(searchRequest, advancedLdapGroupBuilder);
         List<AdvancedLdapGroup> groups = advancedLdapGroupBuilder.getGroups();
 
@@ -158,7 +163,7 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
 
     @Override
     public boolean verifyUserCredentials(String username, String password) {
-        AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = hibernateAdvancedLdapPluginConfigurationDAO.get();
+        this.advancedLdapPluginConfiguration = hibernateAdvancedLdapPluginConfigurationDAO.get();
 
         if (advancedLdapPluginConfiguration.getLDAPUrl().isEmpty()) {
             return false;
@@ -174,8 +179,8 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
             return false;
         }
 
-        AdvancedLdapConnector advancedLdapConnector = new AdvancedLdapConnector(advancedLdapPluginConfiguration);
-        AdvancedLdapBindBuilder advancedLdapBindBuilder = new AdvancedLdapBindBuilder(advancedLdapPluginConfiguration, password);
+        AdvancedLdapConnector advancedLdapConnector = getAdvancedLdapConnector();
+        AdvancedLdapBindBuilder advancedLdapBindBuilder = getAdvancedLdapBindBuilder(password);
         advancedLdapConnector.ldapPagedSearch(searchRequest, advancedLdapBindBuilder);
         List<AdvancedLdapBind> binds = advancedLdapBindBuilder.getBinds();
 
@@ -188,6 +193,45 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
         return advancedLdapBind.getResult();
     }
 
+    protected AdvancedLdapConnector getAdvancedLdapConnector() {
+        if (null != this.advancedLdapConnector)
+            return this.advancedLdapConnector;
+        return new AdvancedLdapConnector(this.advancedLdapPluginConfiguration);
+    }
+
+    protected void setAdvancedLdapConnector(AdvancedLdapConnector advancedLdapConnector) {
+        this.advancedLdapConnector = advancedLdapConnector;
+    }
+
+    protected AdvancedLdapPersonBuilder getAdvancedLdapPersonBuilder() {
+        if (null != this.advancedLdapPersonBuilder)
+            return this.advancedLdapPersonBuilder;
+        return new AdvancedLdapPersonBuilder(this.advancedLdapPluginConfiguration, true);
+    }
+
+    protected void setAdvancedLdapPersonBuilder(AdvancedLdapPersonBuilder advancedLdapPersonBuilder) {
+        this.advancedLdapPersonBuilder = advancedLdapPersonBuilder;
+    }
+
+    protected AdvancedLdapGroupBuilder getAdvancedLdapGroupBuilder() {
+        if (null != this.advancedLdapGroupBuilder)
+            return this.advancedLdapGroupBuilder;
+        return new AdvancedLdapGroupBuilder(this.advancedLdapPluginConfiguration, true);
+    }
+
+    protected void setAdvancedLdapGroupBuilder(AdvancedLdapGroupBuilder advancedLdapGroupBuilder) {
+        this.advancedLdapGroupBuilder = advancedLdapGroupBuilder;
+    }
+
+    protected AdvancedLdapBindBuilder getAdvancedLdapBindBuilder(String password) {
+        if (null != this.advancedLdapBindBuilder)
+            return this.advancedLdapBindBuilder;
+        return new AdvancedLdapBindBuilder(this.advancedLdapPluginConfiguration, password);
+    }
+
+    protected void setAdvancedLdapBindBuilder(AdvancedLdapBindBuilder advancedLdapBindBuilder) {
+        this.advancedLdapBindBuilder = advancedLdapBindBuilder;
+    }
 
     /** Implement the origin interface to be able act as {@link UserManager} */
 
