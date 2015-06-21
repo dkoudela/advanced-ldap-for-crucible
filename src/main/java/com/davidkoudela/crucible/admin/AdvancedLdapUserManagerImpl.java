@@ -7,10 +7,7 @@ import com.atlassian.fecru.page.Page;
 import com.atlassian.fecru.page.PageRequest;
 import com.atlassian.fecru.user.User;
 import com.atlassian.fecru.user.UserDAO;
-import com.atlassian.fecru.user.UserDAOImpl;
-import com.cenqua.crucible.hibernate.HibernateUtilCurrentSessionProvider;
 import com.cenqua.crucible.model.Principal;
-import com.cenqua.fisheye.AppConfig;
 import com.cenqua.fisheye.LicensePolicyException;
 import com.cenqua.fisheye.config.ConfigException;
 import com.cenqua.fisheye.config1.ConfigDocument;
@@ -18,6 +15,7 @@ import com.cenqua.fisheye.rep.RepositoryHandle;
 import com.cenqua.fisheye.user.*;
 import com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration;
 import com.davidkoudela.crucible.config.HibernateAdvancedLdapPluginConfigurationDAO;
+import com.davidkoudela.crucible.config.HibernateAdvancedLdapUserDAO;
 import com.davidkoudela.crucible.ldap.connect.AdvancedLdapConnector;
 import com.davidkoudela.crucible.ldap.connect.AdvancedLdapSearchFilterFactory;
 import com.davidkoudela.crucible.ldap.model.*;
@@ -45,11 +43,14 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
     private AdvancedLdapPersonBuilder advancedLdapPersonBuilder = null;
     private AdvancedLdapGroupBuilder advancedLdapGroupBuilder = null;
     private AdvancedLdapBindBuilder advancedLdapBindBuilder = null;
+    private HibernateAdvancedLdapUserDAO hibernateAdvancedLdapUserDAO = null;
 
     @org.springframework.beans.factory.annotation.Autowired
-    public AdvancedLdapUserManagerImpl(UserManager userManager, HibernateAdvancedLdapPluginConfigurationDAO hibernateAdvancedLdapPluginConfigurationDAO) {
+    public AdvancedLdapUserManagerImpl(UserManager userManager, HibernateAdvancedLdapPluginConfigurationDAO hibernateAdvancedLdapPluginConfigurationDAO,
+                                       HibernateAdvancedLdapUserDAO hibernateAdvancedLdapUserDAO) {
         this.userManager = userManager;
         this.hibernateAdvancedLdapPluginConfigurationDAO = hibernateAdvancedLdapPluginConfigurationDAO;
+        this.hibernateAdvancedLdapUserDAO = hibernateAdvancedLdapUserDAO;
 //        AppConfig.getsConfig().setUserManager(this);
         System.out.println("**************************** AdvancedLdapUserManagerImpl START ****************************");
     }
@@ -137,15 +138,7 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
                 try {
                     if (!this.userManager.userExists(UID)) {
                         System.out.println("AdvancedLdapUserManagerImpl: UID does not exist in Crucible: " + UID);
-                        com.atlassian.fecru.user.User  user = new User(UID);
-                        user.setDisplayName(advancedLdapPerson.getDisplayName());
-                        user.setEmail(advancedLdapPerson.getEmail());
-                        user.setAuthType(User.AuthType.LDAP);
-                        user.setFisheyeEnabled(true);
-                        UserDAOImpl userDAO = new UserDAOImpl();
-                        userDAO.setCurrentSessionProvider(new HibernateUtilCurrentSessionProvider());
-                        userDAO.create(user);
-                        userManager.setCrucibleEnabled(UID, true);
+                        this.hibernateAdvancedLdapUserDAO.create(advancedLdapPerson);
                     }
                     if (!this.userManager.isUserInGroup(GID, advancedLdapPerson.getUid())) {
                         this.userManager.addUserToBuiltInGroup(GID, advancedLdapPerson.getUid());

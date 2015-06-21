@@ -11,6 +11,13 @@
         <plugin:interface>com.davidkoudela.crucible.config.HibernateAdvancedLdapPluginConfigurationDAO</plugin:interface>
     </bean>
 
+    <bean id="advancedLdapUserDAO" name="AdvancedLdapUserDAO" class="com.davidkoudela.crucible.config.HibernateAdvancedLdapUserDAOImpl">
+        <plugin:interface>com.davidkoudela.crucible.config.HibernateAdvancedLdapUserDAO</plugin:interface>
+        <constructor-arg>
+            <ref bean="userManager"/>
+        </constructor-arg>
+    </bean>
+
     <bean id="advancedLdapTrigger" name="AdvancedLdapTrigger" class="com.davidkoudela.crucible.timer.AdvancedLdapTimerTrigger" />
 
     <bean id="advancedLdapUserManager" name="AdvancedLdapUserManagerImpl" class="com.davidkoudela.crucible.admin.AdvancedLdapUserManagerImpl">
