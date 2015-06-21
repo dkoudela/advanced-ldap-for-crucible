@@ -20,6 +20,7 @@ import com.davidkoudela.crucible.config.HibernateAdvancedLdapPluginConfiguration
 import com.davidkoudela.crucible.config.HibernateAdvancedLdapUserDAO;
 import com.davidkoudela.crucible.config.HibernateAdvancedLdapUserDAOImpl;
 import com.davidkoudela.crucible.ldap.connect.AdvancedLdapConnector;
+import com.davidkoudela.crucible.ldap.connect.AdvancedLdapSearchResultBuilder;
 import com.davidkoudela.crucible.ldap.model.*;
 import com.persistit.CLI;
 import com.unboundid.ldap.sdk.SearchRequest;
@@ -56,6 +57,8 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
     private static ArrayList<AdvancedLdapPerson> advancedLdapPersons2;
     private static ArrayList<AdvancedLdapGroup> advancedLdapGroups;
     private static ArrayList<AdvancedLdapGroup> advancedLdapGroups2;
+    private static ArrayList<AdvancedLdapBind> advancedLdapBinds;
+    private static ArrayList<AdvancedLdapBind> advancedLdapBinds2;
     private static ArgumentCaptor<SearchRequest> argumentCaptorSearchRequest;
     private static ArgumentCaptor<AdvancedLdapPersonBuilder> argumentCaptorAdvancedLdapPersonBuilder;
     private static ArgumentCaptor<AdvancedLdapGroupBuilder> argumentCaptorAdvancedLdapGroupBuilder;
@@ -63,6 +66,7 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
     private static ArgumentCaptor<AdvancedLdapPerson> argumentCaptorAdvancedLdapPerson;
     private static UserData userData;
     private static HibernateAdvancedLdapUserDAO hibernateAdvancedLdapUserDAO;
+    private static AdvancedLdapBindBuilder advancedLdapBindBuilder;
 
     public class AdvancedLdapUserManagerImplDummy extends AdvancedLdapUserManagerImpl {
         public AdvancedLdapUserManagerImplDummy(UserManager userManager,
@@ -120,7 +124,17 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
         advancedLdapGroup2.setGID("group");
         advancedLdapGroup2.setDisplayName("Default Group");
         advancedLdapGroup2.setPersonList(this.advancedLdapPersons);
-        advancedLdapGroups2.add(advancedLdapGroup2);
+        this.advancedLdapGroups2.add(advancedLdapGroup2);
+        this.advancedLdapBinds = new ArrayList<AdvancedLdapBind>();
+        AdvancedLdapBind advancedLdapBind = new AdvancedLdapBind();
+        advancedLdapBind.setDn("cn=dkoudela, cn=group, ou=example, dc=com");
+        advancedLdapBind.setResult(false);
+        this.advancedLdapBinds.add(advancedLdapBind);
+        this.advancedLdapBinds2 = new ArrayList<AdvancedLdapBind>();
+        AdvancedLdapBind advancedLdapBind2 = new AdvancedLdapBind();
+        advancedLdapBind2.setDn("cn=dkoudela, cn=group, ou=example, dc=com");
+        advancedLdapBind2.setResult(true);
+        this.advancedLdapBinds2.add(advancedLdapBind2);
 
         this.argumentCaptorSearchRequest = ArgumentCaptor.forClass(SearchRequest.class);
         this.argumentCaptorAdvancedLdapPersonBuilder = ArgumentCaptor.forClass(AdvancedLdapPersonBuilder.class);
@@ -130,7 +144,7 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
         this.userData = new UserData();
         this.userData.setUserName("dkoudela");
         this.hibernateAdvancedLdapUserDAO = Mockito.mock(HibernateAdvancedLdapUserDAOImpl.class);
-
+        this.advancedLdapBindBuilder = Mockito.mock(AdvancedLdapBindBuilder.class);
     }
 
     @Test
@@ -280,6 +294,79 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
         Mockito.verify(this.hibernateAdvancedLdapUserDAO, Mockito.times(1)).create(this.argumentCaptorAdvancedLdapPerson.capture());
         Mockito.verify(this.userManager, Mockito.times(1)).isUserInGroup("group", "dkoudela");
         Mockito.verify(this.userManager, Mockito.times(1)).addUserToBuiltInGroup("group", "dkoudela");
+    }
+
+
+
+    @Test
+    public void testVerifyUserCredentialsNoUrl() {
+        AdvancedLdapUserManagerImplDummy advancedLdapUserManager = new AdvancedLdapUserManagerImplDummy(this.userManager, this.hibernateAdvancedLdapPluginConfigurationDAO, this.hibernateAdvancedLdapUserDAO);
+        Mockito.when(hibernateAdvancedLdapPluginConfigurationDAO.get()).thenReturn(new AdvancedLdapPluginConfiguration());
+
+        advancedLdapUserManager.verifyUserCredentials("dkoudela", "pwd");
+
+        Mockito.verify(this.advancedLdapConnector, Mockito.times(0)).ldapPagedSearch(new ArgumentCaptor<SearchRequest>().capture(),
+                new ArgumentCaptor<AdvancedLdapSearchResultBuilder>().capture());
+    }
+
+    @Test
+    public void testVerifyUserCredentialsWrongFilter() {
+        AdvancedLdapUserManagerImplDummy advancedLdapUserManager = new AdvancedLdapUserManagerImplDummy(this.userManager, this.hibernateAdvancedLdapPluginConfigurationDAO, this.hibernateAdvancedLdapUserDAO);
+        advancedLdapUserManager.setAdvancedLdapConnector(this.advancedLdapConnector);
+        AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = new AdvancedLdapPluginConfiguration();
+        advancedLdapPluginConfiguration.setLDAPUrl("url");
+        Mockito.when(hibernateAdvancedLdapPluginConfigurationDAO.get()).thenReturn(advancedLdapPluginConfiguration);
+
+        advancedLdapUserManager.verifyUserCredentials("dkoudela", "pwd");
+
+        Mockito.verify(this.advancedLdapConnector, Mockito.times(0)).ldapPagedSearch(new ArgumentCaptor<SearchRequest>().capture(),
+                new ArgumentCaptor<AdvancedLdapSearchResultBuilder>().capture());
+    }
+
+    @Test
+    public void testVerifyUserCredentialsNoBinds() {
+        AdvancedLdapUserManagerImplDummy advancedLdapUserManager = new AdvancedLdapUserManagerImplDummy(this.userManager, this.hibernateAdvancedLdapPluginConfigurationDAO, this.hibernateAdvancedLdapUserDAO);
+        advancedLdapUserManager.setAdvancedLdapConnector(this.advancedLdapConnector);
+        AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = new AdvancedLdapPluginConfiguration();
+        advancedLdapPluginConfiguration.setLDAPUrl("url");
+        advancedLdapPluginConfiguration.setLDAPBaseDN("ou=example, dc=com");
+        advancedLdapPluginConfiguration.setUserFilterKey("(&(objectCategory=cn=Person*)(sAMAccountName=${USERNAME}))");
+        Mockito.when(hibernateAdvancedLdapPluginConfigurationDAO.get()).thenReturn(advancedLdapPluginConfiguration);
+        Mockito.doNothing().when(this.advancedLdapConnector).ldapPagedSearch(this.argumentCaptorSearchRequest.capture(), this.argumentCaptorAdvancedLdapPersonBuilder.capture());
+
+        assertEquals(false, advancedLdapUserManager.verifyUserCredentials("dkoudela", "pwd"));
+    }
+
+    @Test
+    public void testVerifyUserCredentialsOneBindResultFalse() {
+        AdvancedLdapUserManagerImplDummy advancedLdapUserManager = new AdvancedLdapUserManagerImplDummy(this.userManager, this.hibernateAdvancedLdapPluginConfigurationDAO, this.hibernateAdvancedLdapUserDAO);
+        advancedLdapUserManager.setAdvancedLdapConnector(this.advancedLdapConnector);
+        AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = new AdvancedLdapPluginConfiguration();
+        advancedLdapPluginConfiguration.setLDAPUrl("url");
+        advancedLdapPluginConfiguration.setLDAPBaseDN("ou=example, dc=com");
+        advancedLdapPluginConfiguration.setUserFilterKey("(&(objectCategory=cn=Person*)(sAMAccountName=${USERNAME}))");
+        advancedLdapUserManager.setAdvancedLdapBindBuilder(this.advancedLdapBindBuilder);
+        Mockito.when(hibernateAdvancedLdapPluginConfigurationDAO.get()).thenReturn(advancedLdapPluginConfiguration);
+        Mockito.when(this.advancedLdapBindBuilder.getBinds()).thenReturn(this.advancedLdapBinds);
+        Mockito.doNothing().when(this.advancedLdapConnector).ldapPagedSearch(this.argumentCaptorSearchRequest.capture(), this.argumentCaptorAdvancedLdapPersonBuilder.capture());
+
+        assertEquals(false, advancedLdapUserManager.verifyUserCredentials("dkoudela", "pwd"));
+    }
+
+    @Test
+    public void testVerifyUserCredentialsOneBindResultTrue() {
+        AdvancedLdapUserManagerImplDummy advancedLdapUserManager = new AdvancedLdapUserManagerImplDummy(this.userManager, this.hibernateAdvancedLdapPluginConfigurationDAO, this.hibernateAdvancedLdapUserDAO);
+        advancedLdapUserManager.setAdvancedLdapConnector(this.advancedLdapConnector);
+        AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = new AdvancedLdapPluginConfiguration();
+        advancedLdapPluginConfiguration.setLDAPUrl("url");
+        advancedLdapPluginConfiguration.setLDAPBaseDN("ou=example, dc=com");
+        advancedLdapPluginConfiguration.setUserFilterKey("(&(objectCategory=cn=Person*)(sAMAccountName=${USERNAME}))");
+        advancedLdapUserManager.setAdvancedLdapBindBuilder(this.advancedLdapBindBuilder);
+        Mockito.when(hibernateAdvancedLdapPluginConfigurationDAO.get()).thenReturn(advancedLdapPluginConfiguration);
+        Mockito.when(this.advancedLdapBindBuilder.getBinds()).thenReturn(this.advancedLdapBinds2);
+        Mockito.doNothing().when(this.advancedLdapConnector).ldapPagedSearch(this.argumentCaptorSearchRequest.capture(), this.argumentCaptorAdvancedLdapPersonBuilder.capture());
+
+        assertEquals(true, advancedLdapUserManager.verifyUserCredentials("dkoudela", "pwd"));
     }
 
 
