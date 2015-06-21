@@ -1,6 +1,7 @@
 package com.davidkoudela.crucible.config;
 
 import com.atlassian.fecru.user.User;
+import com.atlassian.fecru.user.UserDAO;
 import com.atlassian.fecru.user.UserDAOImpl;
 import com.cenqua.crucible.hibernate.HibernateUtilCurrentSessionProvider;
 import com.cenqua.fisheye.user.UserManager;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Component;
 @Component("advancedLdapUserDAO")
 public class HibernateAdvancedLdapUserDAOImpl implements HibernateAdvancedLdapUserDAO {
     private UserManager userManager;
+    private UserDAO userDAO;
 
     @org.springframework.beans.factory.annotation.Autowired
     public HibernateAdvancedLdapUserDAOImpl(UserManager userManager) {
@@ -32,9 +34,20 @@ public class HibernateAdvancedLdapUserDAOImpl implements HibernateAdvancedLdapUs
         user.setEmail(advancedLdapPerson.getEmail());
         user.setAuthType(User.AuthType.LDAP);
         user.setFisheyeEnabled(true);
-        UserDAOImpl userDAO = new UserDAOImpl();
-        userDAO.setCurrentSessionProvider(new HibernateUtilCurrentSessionProvider());
+        UserDAO userDAO = getUserDAO();
         userDAO.create(user);
         this.userManager.setCrucibleEnabled(UID, true);
+    }
+
+    protected UserDAO getUserDAO() {
+        if (null != this.userDAO)
+            return this.userDAO;
+        UserDAOImpl userDAOImpl = new UserDAOImpl();
+        userDAOImpl.setCurrentSessionProvider(new HibernateUtilCurrentSessionProvider());
+        return userDAOImpl;
+    }
+
+    protected void setUserDAO(UserDAO userDAO) {
+        this.userDAO = userDAO;
     }
 }
