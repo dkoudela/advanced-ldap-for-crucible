@@ -22,7 +22,6 @@ import com.davidkoudela.crucible.config.HibernateAdvancedLdapUserDAOImpl;
 import com.davidkoudela.crucible.ldap.connect.AdvancedLdapConnector;
 import com.davidkoudela.crucible.ldap.connect.AdvancedLdapSearchResultBuilder;
 import com.davidkoudela.crucible.ldap.model.*;
-import com.persistit.CLI;
 import com.unboundid.ldap.sdk.SearchRequest;
 import junit.framework.TestCase;
 import org.junit.Before;
@@ -291,7 +290,8 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
 
         Mockito.verify(this.userManager, Mockito.times(1)).builtInGroupExists("group");
         Mockito.verify(this.userManager, Mockito.times(1)).addBuiltInGroup("group");
-        Mockito.verify(this.hibernateAdvancedLdapUserDAO, Mockito.times(1)).create(this.argumentCaptorAdvancedLdapPerson.capture());
+        Mockito.verify(this.hibernateAdvancedLdapUserDAO, Mockito.times(1)).create(ArgumentCaptor.forClass(String.class).capture(),
+                ArgumentCaptor.forClass(String.class).capture(), ArgumentCaptor.forClass(String.class).capture());
         Mockito.verify(this.userManager, Mockito.times(1)).isUserInGroup("group", "dkoudela");
         Mockito.verify(this.userManager, Mockito.times(1)).addUserToBuiltInGroup("group", "dkoudela");
     }

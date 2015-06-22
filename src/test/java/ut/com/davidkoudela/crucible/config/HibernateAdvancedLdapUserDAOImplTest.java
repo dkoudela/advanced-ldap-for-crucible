@@ -50,7 +50,7 @@ public class HibernateAdvancedLdapUserDAOImplTest extends TestCase {
         advancedLdapPerson.setDisplayName("David Koudela");
         Mockito.doNothing().when(userDAO).create(new ArgumentCaptor<com.atlassian.fecru.user.User>().capture());
 
-        hibernateAdvancedLdapUserDAO.create(advancedLdapPerson);
+        hibernateAdvancedLdapUserDAO.create(advancedLdapPerson.getUid(), advancedLdapPerson.getDisplayName(), advancedLdapPerson.getEmail());
 
         Mockito.verify(userManager, Mockito.times(1)).setCrucibleEnabled("dkoudela", true);
         Mockito.verify(userDAO, Mockito.times(1)).create(new ArgumentCaptor<com.atlassian.fecru.user.User>().capture());

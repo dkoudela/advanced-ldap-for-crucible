@@ -138,7 +138,7 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
                 try {
                     if (!this.userManager.userExists(UID)) {
                         System.out.println("AdvancedLdapUserManagerImpl: UID does not exist in Crucible: " + UID);
-                        this.hibernateAdvancedLdapUserDAO.create(advancedLdapPerson);
+                        this.hibernateAdvancedLdapUserDAO.create(UID, advancedLdapPerson.getDisplayName(), advancedLdapPerson.getEmail());
                     }
                     if (!this.userManager.isUserInGroup(GID, advancedLdapPerson.getUid())) {
                         this.userManager.addUserToBuiltInGroup(GID, advancedLdapPerson.getUid());

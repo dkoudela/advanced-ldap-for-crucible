@@ -5,7 +5,6 @@ import com.atlassian.fecru.user.UserDAO;
 import com.atlassian.fecru.user.UserDAOImpl;
 import com.cenqua.crucible.hibernate.HibernateUtilCurrentSessionProvider;
 import com.cenqua.fisheye.user.UserManager;
-import com.davidkoudela.crucible.ldap.model.AdvancedLdapPerson;
 import org.springframework.stereotype.Component;
 
 /**
@@ -27,16 +26,15 @@ public class HibernateAdvancedLdapUserDAOImpl implements HibernateAdvancedLdapUs
     }
 
     @Override
-    public void create(AdvancedLdapPerson advancedLdapPerson) {
-        String UID = advancedLdapPerson.getUid();
-        com.atlassian.fecru.user.User  user = new User(UID);
-        user.setDisplayName(advancedLdapPerson.getDisplayName());
-        user.setEmail(advancedLdapPerson.getEmail());
+    public void create(String uid, String displayName, String email) {
+        com.atlassian.fecru.user.User  user = new User(uid);
+        user.setDisplayName(displayName);
+        user.setEmail(email);
         user.setAuthType(User.AuthType.LDAP);
         user.setFisheyeEnabled(true);
         UserDAO userDAO = getUserDAO();
         userDAO.create(user);
-        this.userManager.setCrucibleEnabled(UID, true);
+        this.userManager.setCrucibleEnabled(uid, true);
     }
 
     protected UserDAO getUserDAO() {

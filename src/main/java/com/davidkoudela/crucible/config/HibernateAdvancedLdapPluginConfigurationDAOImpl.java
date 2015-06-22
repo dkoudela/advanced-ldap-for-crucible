@@ -1,13 +1,7 @@
 package com.davidkoudela.crucible.config;
 
-import com.cenqua.crucible.hibernate.DBType;
-import com.cenqua.crucible.hibernate.DatabaseConfig;
-import com.cenqua.fisheye.AppConfig;
-import com.cenqua.fisheye.config1.ConfigDocument;
-import com.cenqua.fisheye.config1.DriverSource;
 import org.hibernate.HibernateException;
 import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
 import org.hibernate.classic.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Component;

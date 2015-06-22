@@ -1,7 +1,5 @@
 package com.davidkoudela.crucible.config;
 
-import com.davidkoudela.crucible.ldap.model.AdvancedLdapPerson;
-
 /**
  * Description: {@link HibernateAdvancedLdapUserDAO} represents an interface for Data Access Object class
  *              for creating Crucible User instances.
@@ -11,5 +9,5 @@ import com.davidkoudela.crucible.ldap.model.AdvancedLdapPerson;
  * @since 2015-06-21
  */
 public interface HibernateAdvancedLdapUserDAO {
-    public abstract void create(AdvancedLdapPerson advancedLdapPerson);
+    public abstract void create(String uid, String displayName, String email);
 }
