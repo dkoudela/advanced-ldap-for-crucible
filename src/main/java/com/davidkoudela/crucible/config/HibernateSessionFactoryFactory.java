@@ -82,7 +82,7 @@ public class HibernateSessionFactoryFactory {
         }
     }
 
-    private static String constructJdbcUrl(DatabaseConfig databaseConfig) {
+    protected static String constructJdbcUrl(DatabaseConfig databaseConfig) {
         String[] jdbcElements = databaseConfig.getJdbcURL().split("/");
         jdbcElements[jdbcElements.length-1] = pluginDbName;
         return StringUtils.join(jdbcElements, "/");
@@ -148,7 +148,7 @@ public class HibernateSessionFactoryFactory {
         }
     }
 
-    private static String getCreateDbStatement(DatabaseConfig databaseConfig) {
+    protected static String getCreateDbStatement(DatabaseConfig databaseConfig) {
         if (databaseConfig.getType() == DBType.POSTGRESQL)
             return "CREATE DATABASE " + pluginDbName + " ENCODING 'UTF-8' OWNER " + databaseConfig.getUsername();
         else  if (databaseConfig.getType() == DBType.MYSQL)
@@ -157,7 +157,7 @@ public class HibernateSessionFactoryFactory {
             return null;
     }
 
-    private static String getGrantDbStatement(DatabaseConfig databaseConfig) {
+    protected static String getGrantDbStatement(DatabaseConfig databaseConfig) {
         if (databaseConfig.getType() == DBType.POSTGRESQL)
             return "grant all on database " + pluginDbName + " to " + databaseConfig.getUsername();
         else  if (databaseConfig.getType() == DBType.MYSQL)
@@ -166,7 +166,7 @@ public class HibernateSessionFactoryFactory {
             return null;
     }
 
-    private static String getFlushDbStatement(DatabaseConfig databaseConfig) {
+    protected static String getFlushDbStatement(DatabaseConfig databaseConfig) {
         if (databaseConfig.getType() == DBType.MYSQL)
             return "FLUSH PRIVILEGES";
         else
