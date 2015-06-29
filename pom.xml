@@ -105,9 +105,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>javassist</groupId>
+            <groupId>org.javassist</groupId>
             <artifactId>javassist</artifactId>
-            <version>3.11.0.GA</version>
+            <version>3.19.0-GA</version>
         </dependency>
         <dependency>
             <groupId>javax.persistence</groupId>
@@ -138,6 +138,24 @@
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
             <version>1.9.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+            <version>${easymock.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
+            <version>${powermock.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-easymock</artifactId>
+            <version>${powermock.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -189,6 +207,8 @@
         <fecru.data.version>3.7.0-20150127093303</fecru.data.version>
         <amps.version>5.0.13</amps.version>
         <plugin.testrunner.version>1.2.0</plugin.testrunner.version>
+        <powermock.version>1.6.2</powermock.version>
+        <easymock.version>3.3.1</easymock.version>
     </properties>
 
 </project>
