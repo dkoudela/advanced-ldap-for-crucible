@@ -76,7 +76,7 @@ public class HibernateSessionFactoryFactoryTest extends TestCase {
 
     @Test
     public void testGetGrantDbStatementMySql() {
-        assertEquals("GRANT ALL PRIVILEGES ON crucibleadldb TO 'crucible'@'localhost' IDENTIFIED BY 'password'", HibernateSessionFactoryFactoryDummy.getGrantDbStatement(this.databaseConfig));
+        assertEquals("GRANT ALL PRIVILEGES ON crucibleadldb.* TO 'crucible'@'localhost' IDENTIFIED BY 'password'", HibernateSessionFactoryFactoryDummy.getGrantDbStatement(this.databaseConfig));
     }
 
     @Test
