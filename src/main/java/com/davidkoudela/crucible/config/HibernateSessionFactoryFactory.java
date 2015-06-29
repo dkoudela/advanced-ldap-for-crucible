@@ -161,7 +161,7 @@ public class HibernateSessionFactoryFactory {
         if (databaseConfig.getType() == DBType.POSTGRESQL)
             return "grant all on database " + pluginDbName + " to " + databaseConfig.getUsername();
         else  if (databaseConfig.getType() == DBType.MYSQL)
-            return "GRANT ALL PRIVILEGES ON " + pluginDbName + " TO '" + databaseConfig.getUsername() + "'@'localhost' IDENTIFIED BY '" + databaseConfig.getPassword() + "'";
+            return "GRANT ALL PRIVILEGES ON " + pluginDbName + ".* TO '" + databaseConfig.getUsername() + "'@'localhost' IDENTIFIED BY '" + databaseConfig.getPassword() + "'";
         else
             return null;
     }
