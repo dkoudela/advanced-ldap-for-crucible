@@ -29,6 +29,7 @@ public class AdvancedLdapPluginConfiguration {
     private String GIDAttributeKey = "";
     private String groupDisplayNameKey = "";
     private String userNamesKey = "";
+    private String recordRevision = "1.0";
 
     public int getId() {
         return id;
@@ -102,6 +103,10 @@ public class AdvancedLdapPluginConfiguration {
         return this.userNamesKey;
     }
 
+    public String getRecordRevision() {
+        return recordRevision;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -172,6 +177,10 @@ public class AdvancedLdapPluginConfiguration {
 
     public void setUserNamesKey(String userNamesKey) {
         this.userNamesKey = userNamesKey;
+    }
+
+    public void setRecordRevision(String recordRevision) {
+        this.recordRevision = recordRevision;
     }
 
     public String toString() {

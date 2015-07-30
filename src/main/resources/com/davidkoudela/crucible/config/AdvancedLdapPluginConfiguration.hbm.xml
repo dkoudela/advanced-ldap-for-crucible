@@ -12,6 +12,7 @@
         <id name="id" column="AD_LDAP_ID">
             <generator class="native" />
         </id>
+        <property name="recordRevision" column="RECORD_REVISION" type="string"/>
         <property name="connectTimeoutMillis" column="CONNECT_TIMEOUT_MILLIS" type="integer"/>
         <property name="responseTimeoutMillis" column="RESPONSE_TIMEOUT_MILLIS" type="integer"/>
         <property name="LDAPPageSize" column="LDAP_PAGE_SIZE" type="integer"/>
