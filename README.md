@@ -1,5 +1,5 @@
-# advanced-ldap-for-crucible
-This is the advanced-ldap-for-crucible plugin for Atlassian FishEye/Crucible.
+# Advanced Ldap for Crucible
+This is the Advanced Ldap plugin for Atlassian FishEye/Crucible.
 
 ## Provided features
 
