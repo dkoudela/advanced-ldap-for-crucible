@@ -11,13 +11,13 @@
 
 <div class="GBRQCM4CJB">
     <div id="ldap-admin-title" class="gwt-Label GBRQCM4CIB">
-        LDAP configuration
+        Advanced LDAP configuration
     </div>
 </div>
 
 <form class="aui long-label">
 
-    <h2>LDAP Authentication settings <a href="http://docs.atlassian.com/fisheye/docs-037/LDAP+Authentication"title="Help on LDAP authentication configuration"target="fecruhelp"><span class="aui-icon aui-icon-small aui-iconfont-help inline-help-icon">&nbsp;&nbsp;&nbsp;</span></a>
+    <h2>Advanced LDAP Authentication settings <a href="https://github.com/dkoudela/advanced-ldap-for-crucible/wiki/User-Documentation"title="Help on LDAP authentication configuration"target="fecruhelp"><span class="aui-icon aui-icon-small aui-iconfont-help inline-help-icon">&nbsp;&nbsp;&nbsp;</span></a>
     </h2>
     <div class="field-group">
         <label>URL</label>
