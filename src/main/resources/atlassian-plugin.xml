@@ -53,11 +53,6 @@
     </component>
 
     <!-- import from the product container -->
-    <component-import key="applicationProperties" interface="com.atlassian.sal.api.ApplicationProperties" />
     <component-import key="userManager" interface="com.cenqua.fisheye.user.UserManager" />
-    <component-import key="pluginSettingsFactory" interface="com.atlassian.sal.api.pluginsettings.PluginSettingsFactory" />
-    <component-import key="authenticationListener">
-        <interface>com.atlassian.sal.api.auth.AuthenticationListener</interface>
-    </component-import>
 
 </atlassian-plugin>
