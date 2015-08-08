@@ -9,3 +9,7 @@ This is the Advanced Ldap plugin for Atlassian FishEye/Crucible.
 * All LDAP requests are paged LDAP requests based on Simple Paged Results (RFC 2696 - IETF).
 
 For more information see [User Documentation](https://github.com/dkoudela/advanced-ldap-for-crucible/wiki/User-Documentation)
+
+
+## Atlassian Marketplace
+The plugin can be downloaded and installed from [Atlassian Marketplace](https://marketplace.atlassian.com/plugins/com.davidkoudela.crucible.advanced-ldap-for-crucible)
