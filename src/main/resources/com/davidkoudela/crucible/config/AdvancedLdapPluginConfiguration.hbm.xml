@@ -8,27 +8,27 @@
 -->
 
 <hibernate-mapping>
-    <class name="com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration" table="AD_LDAP_PLUG_CONF">
+    <class name="com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration" table="AD_LDAP_PLUG_CONF_V2">
         <id name="id" column="AD_LDAP_ID">
             <generator class="native" />
         </id>
-        <property name="recordRevision" column="RECORD_REVISION" type="string"/>
-        <property name="connectTimeoutMillis" column="CONNECT_TIMEOUT_MILLIS" type="integer"/>
-        <property name="responseTimeoutMillis" column="RESPONSE_TIMEOUT_MILLIS" type="integer"/>
-        <property name="LDAPPageSize" column="LDAP_PAGE_SIZE" type="integer"/>
-        <property name="LDAPSyncPeriod" column="LDAP_SYNC_PERIOD" type="integer"/>
-        <property name="LDAPUrl" column="LDAP_URL" type="string"/>
-        <property name="LDAPBindDN" column="LDAP_BIND_DN" type="string"/>
-        <property name="LDAPBindPassword" column="LDAP_BIND_PASSWORD" type="string"/>
-        <property name="LDAPBaseDN" column="LDAP_BASE_DN" type="string"/>
-        <property name="userFilterKey" column="USER_FILTER_KEY" type="string"/>
-        <property name="displayNameAttributeKey" column="DISPLAYNAME_ATTRIBUTE_KEY" type="string"/>
-        <property name="emailAttributeKey" column="EMAIL_ATTRIBUTE_KEY" type="string"/>
-        <property name="UIDAttributeKey" column="UID_ATTRIBUTE_KEY" type="string"/>
-        <property name="userGroupNamesKey" column="GROUP_ATTRIBUTE_KEY" type="string"/>
-        <property name="groupFilterKey" column="GROUP_FILTER_KEY" type="string"/>
-        <property name="GIDAttributeKey" column="GID_ATTRIBUTE_KEY" type="string"/>
-        <property name="groupDisplayNameKey" column="GROUP_DISPLAYNAME_KEY" type="string"/>
-        <property name="userNamesKey" column="USER_NAMES_KEY" type="string"/>
+        <property name="recordRevision" column="RECORD_REVISION" type="string" not-null="true"/>
+        <property name="connectTimeoutMillis" column="CONNECT_TIMEOUT_MILLIS" type="integer" not-null="true"/>
+        <property name="responseTimeoutMillis" column="RESPONSE_TIMEOUT_MILLIS" type="integer" not-null="true"/>
+        <property name="LDAPPageSize" column="LDAP_PAGE_SIZE" type="integer" not-null="true"/>
+        <property name="LDAPSyncPeriod" column="LDAP_SYNC_PERIOD" type="integer" not-null="true"/>
+        <property name="LDAPUrl" column="LDAP_URL" type="text" not-null="true"/>
+        <property name="LDAPBindDN" column="LDAP_BIND_DN" type="text" not-null="true"/>
+        <property name="LDAPBindPassword" column="LDAP_BIND_PASSWORD" type="text" not-null="true"/>
+        <property name="LDAPBaseDN" column="LDAP_BASE_DN" type="text" not-null="true"/>
+        <property name="userFilterKey" column="USER_FILTER_KEY" type="text" not-null="true"/>
+        <property name="displayNameAttributeKey" column="DISPLAYNAME_ATTRIBUTE_KEY" type="text" not-null="true"/>
+        <property name="emailAttributeKey" column="EMAIL_ATTRIBUTE_KEY" type="text" not-null="true"/>
+        <property name="UIDAttributeKey" column="UID_ATTRIBUTE_KEY" type="text" not-null="true"/>
+        <property name="userGroupNamesKey" column="GROUP_ATTRIBUTE_KEY" type="text" not-null="true"/>
+        <property name="groupFilterKey" column="GROUP_FILTER_KEY" type="text" not-null="true"/>
+        <property name="GIDAttributeKey" column="GID_ATTRIBUTE_KEY" type="text" not-null="true"/>
+        <property name="groupDisplayNameKey" column="GROUP_DISPLAYNAME_KEY" type="text" not-null="true"/>
+        <property name="userNamesKey" column="USER_NAMES_KEY" type="text" not-null="true"/>
     </class>
 </hibernate-mapping>
