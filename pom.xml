@@ -5,15 +5,15 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.davidkoudela.crucible</groupId>
     <artifactId>advanced-ldap-for-crucible</artifactId>
-    <version>1.1</version>
+    <version>1.2</version>
 
     <organization>
         <name>David Koudela</name>
         <url>http://www.davidkoudela.com/</url>
     </organization>
 
-    <name>advanced-ldap-for-crucible</name>
-    <description>This is the com.davidkoudela.crucible:advanced-ldap-for-crucible plugin for Atlassian FishEye/Crucible.</description>
+    <name>Advanced Ldap for Crucible</name>
+    <description>This is the Advanced Ldap for Crucible plugin for Atlassian FishEye/Crucible.</description>
     <packaging>atlassian-plugin</packaging>
 
     <repositories>

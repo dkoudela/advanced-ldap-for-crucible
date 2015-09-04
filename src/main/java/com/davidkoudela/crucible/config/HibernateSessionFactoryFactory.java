@@ -9,7 +9,6 @@ import com.cenqua.fisheye.config1.DriverSource;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import org.postgresql.util.PSQLException;
 
 import java.sql.*;
 
@@ -45,7 +44,7 @@ public class HibernateSessionFactoryFactory {
             configuration.setProperty("hibernate.connection.url", databaseConfig.getJdbcURL());
             configuration.setProperty("hibernate.connection.username", databaseConfig.getUsername());
             configuration.setProperty("hibernate.connection.password", databaseConfig.getPassword());
-            configuration.setProperty("hibernate.dialect", databaseConfig.getDialect());
+            configuration.setProperty("hibernate.dialect", getDialect(databaseConfig));
 
             configuration.setProperty("hibernate.show_sql", Boolean.toString(databaseConfig.isShowSQL()));
             configuration.setProperty("hibernate.generate_statistics", Boolean.toString(databaseConfig.isGenerateStatistics()));
@@ -83,8 +82,15 @@ public class HibernateSessionFactoryFactory {
     }
 
     protected static String constructJdbcUrl(DatabaseConfig databaseConfig) {
+        if (DBType.ORACLE.equals(databaseConfig.getType())) {
+            String[] ojdbcElements = databaseConfig.getJdbcURL().split(":");
+            int lastIndex = (12 < pluginDbName.length()) ? 12 : pluginDbName.length();
+            ojdbcElements[ojdbcElements.length - 1] = pluginDbName.substring(0, lastIndex);
+            return StringUtils.join(ojdbcElements, ":");
+        }
+
         String[] jdbcElements = databaseConfig.getJdbcURL().split("/");
-        jdbcElements[jdbcElements.length-1] = pluginDbName;
+        jdbcElements[jdbcElements.length - 1] = pluginDbName;
         return StringUtils.join(jdbcElements, "/");
     }
 
@@ -171,5 +177,14 @@ public class HibernateSessionFactoryFactory {
             return "FLUSH PRIVILEGES";
         else
             return null;
+    }
+
+    protected static String getDialect(DatabaseConfig databaseConfig) {
+        String dialect = databaseConfig.getDialect();
+        if (DBType.ORACLE.equals(databaseConfig.getType())) {
+            dialect = HibernateAdvancedLdapOracle11gDialect.class.getCanonicalName();
+        }
+        System.out.println("Database dialect: " + dialect);
+        return dialect;
     }
 }
