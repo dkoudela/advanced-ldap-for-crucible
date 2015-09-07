@@ -1,4 +1,4 @@
-package com.davidkoudela.crucible.config;
+package com.davidkoudela.crucible.persistence;
 
 import com.atlassian.fecru.user.User;
 import com.atlassian.fecru.user.UserDAO;

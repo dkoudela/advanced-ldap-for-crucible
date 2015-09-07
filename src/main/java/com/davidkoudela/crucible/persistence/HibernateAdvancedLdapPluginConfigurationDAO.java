@@ -1,8 +1,10 @@
-package com.davidkoudela.crucible.config;
+package com.davidkoudela.crucible.persistence;
+
+import com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration;
 
 /**
  * Description: {@link HibernateAdvancedLdapPluginConfigurationDAO} represents an interface for Data Access Object class
- *              for {@link AdvancedLdapPluginConfiguration}.
+ *              for {@link com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration}.
  * Copyright (C) 2015 David Koudela
  *
  * @author dkoudela

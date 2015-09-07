@@ -1,9 +1,9 @@
-package ut.com.davidkoudela.crucible.config;
+package ut.com.davidkoudela.crucible.persistence;
 
 import com.atlassian.fecru.user.UserDAO;
 import com.cenqua.fisheye.user.DefaultUserManager;
 import com.cenqua.fisheye.user.UserManager;
-import com.davidkoudela.crucible.config.HibernateAdvancedLdapUserDAOImpl;
+import com.davidkoudela.crucible.persistence.HibernateAdvancedLdapUserDAOImpl;
 import com.davidkoudela.crucible.ldap.model.AdvancedLdapPerson;
 import junit.framework.TestCase;
 import org.junit.Test;

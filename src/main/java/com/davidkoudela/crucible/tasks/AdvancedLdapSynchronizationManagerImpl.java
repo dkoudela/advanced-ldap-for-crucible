@@ -2,7 +2,7 @@ package com.davidkoudela.crucible.tasks;
 
 import com.davidkoudela.crucible.admin.AdvancedLdapUserManager;
 import com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration;
-import com.davidkoudela.crucible.config.HibernateAdvancedLdapPluginConfigurationDAO;
+import com.davidkoudela.crucible.persistence.HibernateAdvancedLdapPluginConfigurationDAO;
 import com.davidkoudela.crucible.timer.AdvancedLdapTimerTrigger;
 
 /**

@@ -1,4 +1,4 @@
-package com.davidkoudela.crucible.config;
+package com.davidkoudela.crucible.persistence;
 
 import com.cenqua.crucible.hibernate.DBType;
 import com.cenqua.crucible.hibernate.DatabaseConfig;
@@ -6,6 +6,9 @@ import com.cenqua.fisheye.AppConfig;
 import com.cenqua.fisheye.config1.ConfigDocument;
 import com.cenqua.fisheye.config1.DatabaseType;
 import com.cenqua.fisheye.config1.DriverSource;
+import com.davidkoudela.crucible.persistence.strategy.HibernateAdvancedLdapPluginConfigurationNoChangeStrategy;
+import com.davidkoudela.crucible.persistence.strategy.HibernateAdvancedLdapPluginConfigurationOracleStrategy;
+import com.davidkoudela.crucible.persistence.strategy.HibernateAdvancedLdapPluginConfigurationPersistenceStrategy;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -24,19 +27,7 @@ public class HibernateSessionFactoryFactory {
 
     public static SessionFactory createHibernateSessionFactory() throws Exception {
         try {
-            ConfigDocument configDocument = AppConfig.getsConfig().getConfigDocument();
-            DatabaseConfig databaseConfig = null;
-
-            if ((configDocument != null) && (configDocument.getConfig().isSetDatabase())) {
-                DatabaseType databaseType = AppConfig.getsConfig().getConfig().getDatabase();
-                databaseConfig = new DatabaseConfig(databaseType);
-                ensureDatabaseExists(databaseConfig);
-                databaseConfig.setJdbcURL(constructJdbcUrl(databaseConfig));
-            } else {
-                databaseConfig = new DatabaseConfig(DBType.HSQL,
-                        "jdbc:hsqldb:file:" + AppConfig.getInstanceDir().getAbsolutePath() + "/var/data/adldb/crucible",
-                        "sa", "", DriverSource.BUNDLED, 5, 20);
-            }
+            DatabaseConfig databaseConfig = createDatabaseConfig();
 
             Configuration configuration = new Configuration();
             configuration.setProperty("hibernate.connection.autocommit", "false");
@@ -79,6 +70,36 @@ public class HibernateSessionFactoryFactory {
             System.out.println("HibernateSessionFactoryFactory: Unexpected Exception: " + sb);
             throw new Exception(e);
         }
+    }
+
+    public static HibernateAdvancedLdapPluginConfigurationPersistenceStrategy createHibernateAdvancedLdapPluginConfigurationPersistenceStrategy() throws Exception {
+        DatabaseConfig databaseConfig = createDatabaseConfig();
+        HibernateAdvancedLdapPluginConfigurationPersistenceStrategy hibernateAdvancedLdapPluginConfigurationPersistenceStrategy = null;
+
+        if (DBType.ORACLE.equals(databaseConfig.getType())) {
+            hibernateAdvancedLdapPluginConfigurationPersistenceStrategy = new HibernateAdvancedLdapPluginConfigurationOracleStrategy();
+        } else {
+            hibernateAdvancedLdapPluginConfigurationPersistenceStrategy = new HibernateAdvancedLdapPluginConfigurationNoChangeStrategy();
+        }
+
+        return hibernateAdvancedLdapPluginConfigurationPersistenceStrategy;
+    }
+
+    protected static DatabaseConfig createDatabaseConfig() {
+        ConfigDocument configDocument = AppConfig.getsConfig().getConfigDocument();
+        DatabaseConfig databaseConfig = null;
+
+        if ((configDocument != null) && (configDocument.getConfig().isSetDatabase())) {
+            DatabaseType databaseType = AppConfig.getsConfig().getConfig().getDatabase();
+            databaseConfig = new DatabaseConfig(databaseType);
+            ensureDatabaseExists(databaseConfig);
+            databaseConfig.setJdbcURL(constructJdbcUrl(databaseConfig));
+        } else {
+            databaseConfig = new DatabaseConfig(DBType.HSQL,
+                    "jdbc:hsqldb:file:" + AppConfig.getInstanceDir().getAbsolutePath() + "/var/data/adldb/crucible",
+                    "sa", "", DriverSource.BUNDLED, 5, 20);
+        }
+        return databaseConfig;
     }
 
     protected static String constructJdbcUrl(DatabaseConfig databaseConfig) {

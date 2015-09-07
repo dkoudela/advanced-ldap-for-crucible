@@ -1,4 +1,4 @@
-package com.davidkoudela.crucible.config;
+package com.davidkoudela.crucible.persistence;
 
 import org.hibernate.dialect.Oracle10gDialect;
 import org.hibernate.type.ClobType;

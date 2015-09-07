@@ -1,8 +1,8 @@
-package ut.com.davidkoudela.crucible.config;
+package ut.com.davidkoudela.crucible.persistence;
 
 import com.cenqua.crucible.hibernate.DBType;
 import com.cenqua.crucible.hibernate.DatabaseConfig;
-import com.davidkoudela.crucible.config.HibernateSessionFactoryFactory;
+import com.davidkoudela.crucible.persistence.HibernateSessionFactoryFactory;
 import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;

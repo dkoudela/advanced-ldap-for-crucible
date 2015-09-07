@@ -1,4 +1,4 @@
-package com.davidkoudela.crucible.config;
+package com.davidkoudela.crucible.persistence;
 
 /**
  * Description: {@link HibernateAdvancedLdapUserDAO} represents an interface for Data Access Object class

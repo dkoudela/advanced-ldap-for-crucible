@@ -1,5 +1,7 @@
-package com.davidkoudela.crucible.config;
+package com.davidkoudela.crucible.persistence;
 
+import com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration;
+import com.davidkoudela.crucible.persistence.strategy.HibernateAdvancedLdapPluginConfigurationPersistenceStrategy;
 import org.hibernate.HibernateException;
 import org.hibernate.Transaction;
 import org.hibernate.classic.Session;
@@ -11,7 +13,7 @@ import java.util.List;
 
 /**
  * Description: Implementation of {@link HibernateAdvancedLdapPluginConfigurationDAO} representing the Data Access Object class
- *              for {@link AdvancedLdapPluginConfiguration}.
+ *              for {@link com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration}.
  * Copyright (C) 2015 David Koudela
  *
  * @author dkoudela
@@ -20,9 +22,11 @@ import java.util.List;
 @Component("advancedLdapOptionsDAO")
 public class HibernateAdvancedLdapPluginConfigurationDAOImpl implements HibernateAdvancedLdapPluginConfigurationDAO {
     private SessionFactory sessionFactory;
+    private HibernateAdvancedLdapPluginConfigurationPersistenceStrategy hibernateAdvancedLdapPluginConfigurationPersistenceStrategy;
 
     public HibernateAdvancedLdapPluginConfigurationDAOImpl() throws Exception {
         this.sessionFactory = HibernateSessionFactoryFactory.createHibernateSessionFactory();
+        this.hibernateAdvancedLdapPluginConfigurationPersistenceStrategy = HibernateSessionFactoryFactory.createHibernateAdvancedLdapPluginConfigurationPersistenceStrategy();
     }
 
     @Override
@@ -33,6 +37,8 @@ public class HibernateAdvancedLdapPluginConfigurationDAOImpl implements Hibernat
         try {
             session = this.sessionFactory.openSession();
             tx = session.beginTransaction();
+
+            this.hibernateAdvancedLdapPluginConfigurationPersistenceStrategy.transformToStorage(advancedLdapPluginConfiguration);
 
             if (isUpdate)
                 session.saveOrUpdate(advancedLdapPluginConfiguration);
@@ -72,9 +78,13 @@ public class HibernateAdvancedLdapPluginConfigurationDAOImpl implements Hibernat
                 advancedLdapPluginConfiguration = new AdvancedLdapPluginConfiguration();
             else
                 advancedLdapPluginConfiguration = (AdvancedLdapPluginConfiguration)advancedLdapPluginConfigurationList.get(advancedLdapPluginConfigurationList.size()-1);
-            tx.commit();
+
+            this.hibernateAdvancedLdapPluginConfigurationPersistenceStrategy.transformFromStorage(advancedLdapPluginConfiguration);
+
+            tx.rollback();
         } catch (HibernateException e) {
             if (tx!=null) tx.rollback();
+            System.out.println("Hibernate get failed for Configuration data: " + e);
             return new AdvancedLdapPluginConfiguration();
         } finally {
             try {
