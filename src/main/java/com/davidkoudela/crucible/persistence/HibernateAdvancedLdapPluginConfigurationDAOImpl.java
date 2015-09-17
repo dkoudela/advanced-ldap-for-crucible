@@ -38,6 +38,8 @@ public class HibernateAdvancedLdapPluginConfigurationDAOImpl implements Hibernat
             session = this.sessionFactory.openSession();
             tx = session.beginTransaction();
 
+            testConnection(session);
+
             this.hibernateAdvancedLdapPluginConfigurationPersistenceStrategy.transformToStorage(advancedLdapPluginConfiguration);
 
             if (isUpdate)
@@ -73,6 +75,9 @@ public class HibernateAdvancedLdapPluginConfigurationDAOImpl implements Hibernat
         {
             session = this.sessionFactory.openSession();
             tx = session.beginTransaction();
+
+            testConnection(session);
+
             List advancedLdapPluginConfigurationList = session.createQuery("FROM com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration").list();
             if (advancedLdapPluginConfigurationList == null || advancedLdapPluginConfigurationList.isEmpty())
                 advancedLdapPluginConfiguration = new AdvancedLdapPluginConfiguration();
@@ -107,6 +112,9 @@ public class HibernateAdvancedLdapPluginConfigurationDAOImpl implements Hibernat
         {
             session = this.sessionFactory.openSession();
             tx = session.beginTransaction();
+
+            testConnection(session);
+
             AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = (AdvancedLdapPluginConfiguration)session.get(AdvancedLdapPluginConfiguration.class, id);
             session.delete(advancedLdapPluginConfiguration);
             tx.commit();
@@ -121,6 +129,20 @@ public class HibernateAdvancedLdapPluginConfigurationDAOImpl implements Hibernat
             catch (Exception e)
             {
             }
+        }
+    }
+
+    /**
+     * Due to lost database connection Hibernate requests can fail.
+     * This method asks the Hibernate session about the connection status
+     * which causes connection reconnect.
+     * This is enough to ensure proper Hibernate CRUD operations.
+     */
+    private void testConnection(Session session) {
+        try {
+            session.isConnected();
+        } catch (HibernateException e) {
+            System.out.println("Hibernate test connection failed: " + e);
         }
     }
 }
