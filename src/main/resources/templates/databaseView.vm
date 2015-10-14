@@ -1,0 +1,52 @@
+<html>
+<head>
+</head>
+<body>
+    #if ($statusMessage)
+    <div class="aui-message info closeable">
+        <span class="aui-icon icon-info"></span>
+        <p style="margin: 0">$statusMessage</p>
+    </div>
+    #end
+
+<div class="GBRQCM4CJB">
+    <div id="ldap-admin-title" class="gwt-Label GBRQCM4CIB">
+        Advanced LDAP Database settings
+    </div>
+</div>
+
+<div class="formPane-holder">
+
+    <form class="aui">
+        <h2>Database settings</h2>
+        <div class="field-group">
+            <label>Database Name</label>
+            <span class="field-value">crucible</span>
+        </div>
+        <div class="field-group">
+            <label>User Name</label>
+            <span class="field-value">crucible</span>
+        </div>
+        <div class="field-group">
+            <label>Password</label>
+            <span class="field-value">***********</span>
+        </div>
+        <div class="buttons-container">
+            <div class="buttons">
+                <input type="button" id="editDB" value="Edit" class="aui-button">
+            </div>
+        </div>
+    </form>
+
+    <script type="text/javascript">
+        AJS.$(document).ready(function() {
+            AJS.$("#editDB").click(function() {
+                FECRU.XSRF.postUri("advancedLdapDatabaseAdminServletEdit.do");
+            });
+        })
+    </script>
+
+</div>
+
+</body>
+</html>

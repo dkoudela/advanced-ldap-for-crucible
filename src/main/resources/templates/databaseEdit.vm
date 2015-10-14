@@ -1,0 +1,122 @@
+$webResourceManager.requireResource('com.atlassian.auiplugin:ajs')
+$webResourceManager.requireResource('com.atlassian.auiplugin:aui-messages')
+
+<html>
+<head>
+</head>
+<body>
+    #if ($statusMessage)
+    <div class="aui-message info closeable">
+        <span class="aui-icon icon-info"></span>
+        <p style="margin: 0">$statusMessage</p>
+    </div>
+    #end
+
+<div class="GBRQCM4CJB">
+    <div id="ldap-admin-title" class="gwt-Label GBRQCM4CIB">
+        Advanced LDAP Database settings
+    </div>
+</div>
+
+<div id="db_form">
+    <div class="aui-message info">
+        <p>To switch to a different database, specify the database's configuration settings in the form below and use
+            the <em>Test Connection</em> button.</p>
+        <p>Changes to connection pool sizes require a full restart before the new settings will take effect.</p>
+        <p>FishEye and Crucible
+            are
+            currently connected to the <em>MySQL</em> database at <em>jdbc:mysql://127.0.0.1:3306/crucible</em>.</p>
+        <span class="aui-icon icon-info"></span>
+    </div>
+
+    <form name="dbform" id="dbform" action="advancedLdapDatabaseAdminServletView.do" method="POST" class="aui">
+        <input type="hidden" name="edit" value="y"/>
+
+        <h2>Database settings</h2>
+        <div class="field-group db_field">
+            <label for="dbConfig_dbName">Database Name</label>
+            <input type="text" name="dbConfig.dbName" id="dbConfig_dbName" value="crucible" class="text long-field" />
+        </div>
+
+        <div class="field-group db_field">
+            <label for="dbConfig_username">User Name</label>
+            <input type="text" name="dbConfig.username" id="dbConfig_username" value="crucible" class="text long-field" />
+        </div>
+
+        <div class="field-group db_field">
+            <label for="password">Password</label>
+            <input id="password" type="password" name="dbConfig.password" value="*****" class="password long-field" />
+            <input id="passwordChanged" type="hidden" name="passwordChanged" value="false"/>
+        </div>
+
+        <div class="buttons-container">
+            <div id="db_status" class="buttons">
+                <div class="db_test">
+                    <button id="db_test" value="Test Connection" class="aui-button">Test connection</button>
+                </div>
+            </div>
+        </div>
+        <div class="buttons-container">
+            <div class="buttons">
+                <button id="db_save" class="aui-button" value="Save" disabled>Save</button>
+                <a class="cancel" id="db_cancel" href="advancedLdapDatabaseAdminServletView.do">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    AJS.$(".db_field input").change(function(){
+        db_disableSave(false);
+    });
+
+    AJS.$("#db_test").live("click",function(e){
+        db_testConnection();
+        e.preventDefault();
+    });
+
+    AJS.$("#password").change(function() {
+        AJS.$("#passwordChanged").val('true');
+    });
+
+    AJS.$("#db_status a.close").live("click",function(){
+        db_removeFeedback();
+    });
+
+    function db_removeFeedback() {
+        AJS.$("#db_status .message-status").fadeTo("slow",0.01).slideUp("slow");
+    }
+
+    function db_testConnection() {
+        var form = document.dbform;
+        var params = {
+            'dbConfig.jdbcURL' :  form["dbConfig.dbName"].value ,
+            'dbConfig.username' :  form["dbConfig.username"].value ,
+            'dbConfig.password' :  form["dbConfig.password"].value ,
+            'passwordChanged' :  form["passwordChanged"].value
+        };
+
+        var done = function(resp) {
+            document.dbform.db_save.disabled = !(resp.connection && resp.changed && resp.sameUrl);
+        };
+
+        var loading = [
+            '<div class="message-loading"><div>loading...</div></div>',
+            '<div class="db_test">',
+            '<button id="db_test" class="aui-button" value="Test Connection" disabled>Test Connection</button>',
+            '</div>'
+        ];
+        var inner = loading.join("");
+
+        AJS.$("#db_status").html(inner);
+
+        FECRU.AJAX.ajaxUpdate(AJS.contextPath() + "/plugins/servlet/advancedLdapDatabaseAdminServletTest.do", params, "db_status", done, true);
+    }
+
+    function db_disableSave(disable) {
+        document.dbform.db_save.disabled = disable;
+    }
+</script>
+
+</body>
+</html>

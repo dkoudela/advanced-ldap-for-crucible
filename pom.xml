@@ -266,6 +266,11 @@
             <version>2.3.0</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.atlassian.aui</groupId>
+            <artifactId>auiplugin</artifactId>
+            <version>5.9.0</version>
+        </dependency>
 
         <!-- WIRED TEST RUNNER DEPENDENCIES -->
         <dependency>

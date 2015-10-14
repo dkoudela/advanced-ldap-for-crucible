@@ -9,7 +9,13 @@
 
     <!-- add i18n resource -->
     <resource type="i18n" name="i18n" location="advanced-ldap-for-crucible"/>
-    
+
+    <!-- aui resource -->
+    <web-resource key="aui">
+        <dependency>com.atlassian.auiplugin:ajs</dependency>
+        <context>atl.general</context>
+    </web-resource>
+
     <!-- add web resources -->
     <web-resource key="advanced-ldap-for-crucible-resources" name="advanced-ldap-for-crucible Web Resources">
         <dependency>com.atlassian.auiplugin:ajs</dependency>
@@ -23,12 +29,17 @@
     <web-section key="advanced-ldap-config-section" name="Advanced-Ldap-Configuration-Section" location="system.admin" weight="250">
         <label key="com.davidkoudela.crucible.advanced-ldap-config.websection.label" />
     </web-section>
-    <web-item key="advanced-ldap-config-link" name="Advanced-Ldap-Configuration-Link" section="system.admin/Advanced-Ldap-Configuration-Section" weight="1">
+    <web-item key="advanced-ldap-database-link" name="Advanced-Ldap-Database-Link" section="system.admin/Advanced-Ldap-Configuration-Section" weight="1">
+        <label key="com.davidkoudela.crucible.advanced-ldap-database.webitem.label"/>
+        <description>Provides ${project.artifactId} database admin menu.</description>
+        <link linkId="advancedLdapDatabaseServlet">/plugins/servlet/advancedLdapDatabaseAdminServletView.do</link>
+    </web-item>
+    <web-item key="advanced-ldap-config-link" name="Advanced-Ldap-Configuration-Link" section="system.admin/Advanced-Ldap-Configuration-Section" weight="2">
         <label key="com.davidkoudela.crucible.advanced-ldap-config.webitem.label"/>
         <description>Provides ${project.artifactId} configuration admin menu.</description>
         <link linkId="advancedLdapConfigurationServlet">/plugins/servlet/advancedLdapConfigurationAdminServletView.do</link>
     </web-item>
-    <web-item key="advanced-ldap-test-link" name="Advanced-Ldap-Test-Link" section="system.admin/Advanced-Ldap-Configuration-Section" weight="2">
+    <web-item key="advanced-ldap-test-link" name="Advanced-Ldap-Test-Link" section="system.admin/Advanced-Ldap-Configuration-Section" weight="3">
         <label key="com.davidkoudela.crucible.advanced-ldap-test.webitem.label"/>
         <description>Provides ${project.artifactId} configuration test menu.</description>
         <link linkId="advancedLdapConfigurationServlet">/plugins/servlet/advancedLdapConfigurationTestServletTest.do</link>
@@ -42,6 +53,10 @@
     <servlet name="Advanced Ldap Configuration Test Servlet" key="advancedLdapConfigurationTestServlet" class="com.davidkoudela.crucible.servlets.AdvancedLdapConfigurationTestServlet">
         <description>Provides configuration testing for Advanced Ldap plugin.</description>
         <url-pattern>/advancedLdapConfigurationTestServlet*</url-pattern>
+    </servlet>
+    <servlet name="Advanced Ldap Database Servlet" key="advancedLdapDatabaseServlet" class="com.davidkoudela.crucible.servlets.AdvancedLdapDatabaseAdminServlet">
+        <description>Provides database setting for Advanced Ldap plugin.</description>
+        <url-pattern>/advancedLdapDatabaseAdminServlet*</url-pattern>
     </servlet>
 
     <!-- publish components -->
