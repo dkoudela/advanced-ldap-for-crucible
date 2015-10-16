@@ -29,6 +29,10 @@ $webResourceManager.requireResource('com.atlassian.auiplugin:aui-messages')
         <span class="aui-icon icon-info"></span>
     </div>
 
+    <div class="aui-message closeable aui-message-success">
+        <p>Connection succeeded</p>
+    </div>
+
     <form name="dbform" id="dbform" action="advancedLdapDatabaseAdminServletView.do" method="POST" class="aui">
         <input type="hidden" name="edit" value="y"/>
 
@@ -49,10 +53,12 @@ $webResourceManager.requireResource('com.atlassian.auiplugin:aui-messages')
             <input id="passwordChanged" type="hidden" name="passwordChanged" value="false"/>
         </div>
 
-        <div class="buttons-container">
-            <div id="db_status" class="buttons">
-                <div class="db_test">
-                    <button id="db_test" value="Test Connection" class="aui-button">Test connection</button>
+        <div id="db_elements">
+            <div class="buttons-container">
+                <div id="db_status" class="buttons">
+                    <div class="db_test">
+                        <button id="db_test" value="Test Connection" class="aui-button">Test connection</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -110,7 +116,7 @@ $webResourceManager.requireResource('com.atlassian.auiplugin:aui-messages')
 
         AJS.$("#db_status").html(inner);
 
-        FECRU.AJAX.ajaxUpdate(AJS.contextPath() + "/plugins/servlet/advancedLdapDatabaseAdminServletTest.do", params, "db_status", done, true);
+        FECRU.AJAX.ajaxUpdate(AJS.contextPath() + "/plugins/servlet/advancedLdapDatabaseAdminServletTest.do", params, "db_elements", done, true);
     }
 
     function db_disableSave(disable) {
