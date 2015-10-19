@@ -19,18 +19,13 @@ $webResourceManager.requireResource('com.atlassian.auiplugin:aui-messages')
 </div>
 
 <div id="db_form">
-    <div class="aui-message info">
+    <div class="aui-message aui-message-info">
+        <p class="title">
+            <strong>Info</strong>
+        </p>
         <p>To switch to a different database, specify the database's configuration settings in the form below and use
             the <em>Test Connection</em> button.</p>
         <p>Changes to connection pool sizes require a full restart before the new settings will take effect.</p>
-        <p>FishEye and Crucible
-            are
-            currently connected to the <em>MySQL</em> database at <em>jdbc:mysql://127.0.0.1:3306/crucible</em>.</p>
-        <span class="aui-icon icon-info"></span>
-    </div>
-
-    <div class="aui-message closeable aui-message-success">
-        <p>Connection succeeded</p>
     </div>
 
     <form name="dbform" id="dbform" action="advancedLdapDatabaseAdminServletView.do" method="POST" class="aui">

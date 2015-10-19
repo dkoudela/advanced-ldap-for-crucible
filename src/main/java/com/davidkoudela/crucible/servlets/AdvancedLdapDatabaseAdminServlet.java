@@ -23,24 +23,6 @@ import java.util.Map;
 public class AdvancedLdapDatabaseAdminServlet extends HttpServlet {
     private final VelocityHelper velocityHelper;
     private AdvancedLdapUserManager advancedLdapUserManager;
-    private String testResponse = "{ " +
-            "    \"errorMsg\": \"No error\", " +
-            "    \"worked\": true, " +
-            "    \"payload\": \"  \\u003cdiv class=\\\"aui-message closeable aui-message-success\\\"\\u003e\\n            \\u003cp\\u003eConnection succeeded\\u003c/p\\u003e\\n                  \\u003c/div\\u003e\\n        \\u003cdiv class=\\\"db_test\\\"\\u003e\\n            \\u003cbutton id=\\\"db_test\\\" value=\\\"Test Connection\\\" class=\\\"aui-button\\\"\\u003eTest Connection\\u003c/button\\u003e\\n        \\u003c/div\\u003e\\n    \",\n" +
-            "    \"connection\": true, " +
-            "    \"sameUrl\": true, " +
-            "    \"changed\": false, " +
-            "    \"message\": null " +
-            "}";
-    private String testErrorResponse = "{\n" +
-            "    \"errorMsg\": \"No error\",\n" +
-            "    \"worked\": true,\n" +
-            "    \"payload\": \"  \\u003cdiv class=\\\"buttons-container\\\"\\u003e\\n  \\u003cdiv class=\\\"aui-message closeable aui-message-error\\\"\\u003e\\n   \\u003cp class=\\\"title\\\"\\u003e \\u003cstrong\\u003eFailed\\u003c/strong\\u003e  \\u003c/p\\u003e\\n             \\u003cp\\u003eUnable to connect to MySQL database\\u003c/p\\u003e\\n   \\u003c/div\\u003e\\n    \\u003c/div\\u003e\\n       \\u003cdiv class=\\\"buttons-container\\\"\\u003e\\n  \\u003cdiv id=\\\"db_status\\\" class=\\\"buttons\\\"\\u003e\\n   \\u003cdiv class=\\\"db_test\\\"\\u003e\\n            \\u003cbutton id=\\\"db_test\\\" value=\\\"Test Connection\\\" class=\\\"aui-button\\\"\\u003eTest Connection\\u003c/button\\u003e\\n        \\u003c/div\\u003e\\n    \\u003c/div\\u003e\\n    \\u003c/div\\u003e\\n    \",\n" +
-            "    \"connection\": false,\n" +
-            "    \"sameUrl\": true,\n" +
-            "    \"changed\": true,\n" +
-            "    \"message\": null " +
-            "}";
 
     @org.springframework.beans.factory.annotation.Autowired
     public AdvancedLdapDatabaseAdminServlet(VelocityHelper velocityHelper,
@@ -55,7 +37,7 @@ public class AdvancedLdapDatabaseAdminServlet extends HttpServlet {
         if (advancedLdapUserManager.hasSysAdminPrivileges(req)) {
             if (req.getPathInfo().contains("/advancedLdapDatabaseAdminServletTest.do")) {
                 setRestDecorator(req, resp);
-                params.put("testResult", this.testErrorResponse);
+                params.put("testResult", false);
                 velocityHelper.renderVelocityTemplate("templates/databaseTest.vm", params, resp.getWriter());
             } else {
                 setAdminMenuDecorator(req, resp);
@@ -76,7 +58,7 @@ public class AdvancedLdapDatabaseAdminServlet extends HttpServlet {
                 velocityHelper.renderVelocityTemplate("templates/databaseEdit.vm", params, resp.getWriter());
             } else if (req.getPathInfo().contains("/advancedLdapDatabaseAdminServletTest.do")) {
                 setRestDecorator(req, resp);
-                params.put("testResult", this.testErrorResponse);
+                params.put("testResult", false);
                 velocityHelper.renderVelocityTemplate("templates/databaseTest.vm", params, resp.getWriter());
             } else {
                 setAdminMenuDecorator(req, resp);
