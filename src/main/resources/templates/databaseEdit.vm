@@ -1,5 +1,6 @@
 $webResourceManager.requireResource('com.atlassian.auiplugin:ajs')
 $webResourceManager.requireResource('com.atlassian.auiplugin:aui-messages')
+$webResourceManager.requireResource('com.atlassian.auiplugin:aui-spinner')
 
 <html>
 <head>
@@ -102,7 +103,7 @@ $webResourceManager.requireResource('com.atlassian.auiplugin:aui-messages')
         };
 
         var loading = [
-            '<div class="message-loading"><div>loading...</div></div>',
+            '<div class="button-spinner"></div><div style="margin: 0px 25px;">loading...</div>',
             '<div class="db_test">',
             '<button id="db_test" class="aui-button" value="Test Connection" disabled>Test Connection</button>',
             '</div>'
@@ -110,6 +111,8 @@ $webResourceManager.requireResource('com.atlassian.auiplugin:aui-messages')
         var inner = loading.join("");
 
         AJS.$("#db_status").html(inner);
+        AJS.$('.button-spinner').spin();
+        AJS.$('.spinner').css({'position': 'absolute', 'width': '20px', 'z-index': '0', 'left': '155px', 'top': '10px'});
 
         FECRU.AJAX.ajaxUpdate(AJS.contextPath() + "/plugins/servlet/advancedLdapDatabaseAdminServletTest.do", params, "db_elements", done, true);
     }
