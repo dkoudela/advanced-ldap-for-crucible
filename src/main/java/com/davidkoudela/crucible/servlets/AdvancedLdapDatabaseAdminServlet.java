@@ -2,6 +2,7 @@ package com.davidkoudela.crucible.servlets;
 
 import com.atlassian.fisheye.plugin.web.helpers.VelocityHelper;
 import com.davidkoudela.crucible.admin.AdvancedLdapUserManager;
+import com.davidkoudela.crucible.config.AdvancedLdapDatabaseConfiguration;
 import org.apache.commons.lang.StringUtils;
 
 import javax.servlet.ServletException;
@@ -52,6 +53,9 @@ public class AdvancedLdapDatabaseAdminServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Map<String,Object> params = new HashMap<String,Object>();
+        AdvancedLdapDatabaseConfiguration advancedLdapDatabaseConfiguration = new AdvancedLdapDatabaseConfiguration();
+        setParameters(advancedLdapDatabaseConfiguration, req);
+
         if (advancedLdapUserManager.hasSysAdminPrivileges(req)) {
             if (req.getPathInfo().contains("/advancedLdapDatabaseAdminServletEdit.do")) {
                 setAdminMenuDecorator(req, resp);
@@ -78,4 +82,16 @@ public class AdvancedLdapDatabaseAdminServlet extends HttpServlet {
     protected void setRestDecorator(HttpServletRequest req, HttpServletResponse resp) {
         resp.setContentType("application/json");
     }
+
+    private void setParameters(AdvancedLdapDatabaseConfiguration advancedLdapDatabaseConfiguration, HttpServletRequest request) {
+        advancedLdapDatabaseConfiguration.setDatabaseName(StringUtils.defaultIfEmpty(request.getParameter("dbConfig.dbName"), ""));
+        advancedLdapDatabaseConfiguration.setUserName(StringUtils.defaultIfEmpty(request.getParameter("dbConfig.username"), ""));
+        if (Boolean.parseBoolean(StringUtils.defaultIfEmpty(request.getParameter("passwordChanged"), "false"))) {
+            advancedLdapDatabaseConfiguration.setPassword(StringUtils.defaultIfEmpty(request.getParameter("dbConfig.password"), ""));
+        } else {
+            // TODO: ensure the password is taken from the system as it was not provided by the user.
+            advancedLdapDatabaseConfiguration.setPassword("");
+        }
+    }
+
 }
