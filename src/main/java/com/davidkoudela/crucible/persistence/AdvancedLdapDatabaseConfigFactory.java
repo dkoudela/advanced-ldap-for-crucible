@@ -24,13 +24,21 @@ public class AdvancedLdapDatabaseConfigFactory {
     public static final String pluginDbName = "crucibleadldb";
 
     public static DatabaseConfig createDatabaseConfig() {
+        return getDatabaseConfig();
+    }
+
+    public static boolean verifyDatabaseConfig() {
+        DatabaseConfig databaseConfig = getDatabaseConfig();
+        return ensureDatabaseExists(databaseConfig);
+    }
+
+    protected static DatabaseConfig getDatabaseConfig() {
         ConfigDocument configDocument = AppConfig.getsConfig().getConfigDocument();
         DatabaseConfig databaseConfig = null;
 
         if ((configDocument != null) && (configDocument.getConfig().isSetDatabase())) {
             DatabaseType databaseType = AppConfig.getsConfig().getConfig().getDatabase();
             databaseConfig = new DatabaseConfig(databaseType);
-            ensureDatabaseExists(databaseConfig);
             databaseConfig.setJdbcURL(constructJdbcUrl(databaseConfig));
         } else {
             databaseConfig = new DatabaseConfig(DBType.HSQL,
@@ -53,7 +61,7 @@ public class AdvancedLdapDatabaseConfigFactory {
         return StringUtils.join(jdbcElements, "/");
     }
 
-    private static void ensureDatabaseExists(DatabaseConfig databaseConfig) {
+    private static boolean ensureDatabaseExists(DatabaseConfig databaseConfig) {
         Connection conn = null;
         Statement stmt = null;
         String jdbcUrl = constructJdbcUrl(databaseConfig);
@@ -64,35 +72,11 @@ public class AdvancedLdapDatabaseConfigFactory {
             System.out.println("Connecting to database " + pluginDbName);
             conn = DriverManager.getConnection(jdbcUrl, databaseConfig.getUsername(), databaseConfig.getPassword());
 
-            System.out.println("Database " + pluginDbName + " already exists");
+            System.out.println("Database " + pluginDbName + " exists");
+            return true;
         } catch(SQLException se){
             System.out.println("Database " + pluginDbName + " doesn't exist");
 
-            try {
-                conn = DriverManager.getConnection(databaseConfig.getJdbcURL(), databaseConfig.getUsername(), databaseConfig.getPassword());
-                String sqlCreateDatabase = getCreateDbStatement(databaseConfig);
-                String sqlGrant = getGrantDbStatement(databaseConfig);
-                String sqlFlush = getFlushDbStatement(databaseConfig);
-
-                if (sqlCreateDatabase != null && sqlGrant != null) {
-                    System.out.println("Creating database " + pluginDbName);
-                    stmt = conn.createStatement();
-
-                    stmt.executeUpdate(sqlCreateDatabase);
-                    stmt.executeUpdate(sqlGrant);
-                    if (null != sqlFlush)
-                        stmt.executeUpdate(sqlFlush);
-
-                    System.out.println("Database " + pluginDbName + " created successfully");
-                } else {
-                    System.out.println("Database " + pluginDbName + " cannot be created automatically");
-                    System.out.println("Create database " + pluginDbName + " in the same way as the crucible database");
-                }
-            } catch (Exception e) {
-                System.out.println("Creating database " + pluginDbName + " failed");
-                System.out.println("Create database " + pluginDbName + " in the same way as the crucible database");
-                e.printStackTrace();
-            }
         } catch(Exception e){
             //Handle errors for Class.forName
             System.out.println("Database existence verification failed with general error");
@@ -111,30 +95,6 @@ public class AdvancedLdapDatabaseConfigFactory {
                 se.printStackTrace();
             }
         }
-    }
-
-    protected static String getCreateDbStatement(DatabaseConfig databaseConfig) {
-        if (databaseConfig.getType() == DBType.POSTGRESQL)
-            return "CREATE DATABASE " + pluginDbName + " ENCODING 'UTF-8' OWNER " + databaseConfig.getUsername();
-        else  if (databaseConfig.getType() == DBType.MYSQL)
-            return "CREATE DATABASE " + pluginDbName + " CHARACTER SET utf8 COLLATE utf8_bin";
-        else
-            return null;
-    }
-
-    protected static String getGrantDbStatement(DatabaseConfig databaseConfig) {
-        if (databaseConfig.getType() == DBType.POSTGRESQL)
-            return "grant all on database " + pluginDbName + " to " + databaseConfig.getUsername();
-        else  if (databaseConfig.getType() == DBType.MYSQL)
-            return "GRANT ALL PRIVILEGES ON " + pluginDbName + ".* TO '" + databaseConfig.getUsername() + "'@'localhost' IDENTIFIED BY '" + databaseConfig.getPassword() + "'";
-        else
-            return null;
-    }
-
-    protected static String getFlushDbStatement(DatabaseConfig databaseConfig) {
-        if (databaseConfig.getType() == DBType.MYSQL)
-            return "FLUSH PRIVILEGES";
-        else
-            return null;
+        return false;
     }
 }

@@ -3,6 +3,7 @@ package com.davidkoudela.crucible.servlets;
 import com.atlassian.fisheye.plugin.web.helpers.VelocityHelper;
 import com.davidkoudela.crucible.admin.AdvancedLdapUserManager;
 import com.davidkoudela.crucible.config.AdvancedLdapDatabaseConfiguration;
+import com.davidkoudela.crucible.persistence.AdvancedLdapDatabaseConfigFactory;
 import org.apache.commons.lang.StringUtils;
 
 import javax.servlet.ServletException;
@@ -38,7 +39,7 @@ public class AdvancedLdapDatabaseAdminServlet extends HttpServlet {
         if (advancedLdapUserManager.hasSysAdminPrivileges(req)) {
             if (req.getPathInfo().contains("/advancedLdapDatabaseAdminServletTest.do")) {
                 setRestDecorator(req, resp);
-                params.put("testResult", false);
+                params.put("testResult", AdvancedLdapDatabaseConfigFactory.verifyDatabaseConfig());
                 velocityHelper.renderVelocityTemplate("templates/databaseTest.vm", params, resp.getWriter());
             } else {
                 setAdminMenuDecorator(req, resp);
@@ -62,7 +63,7 @@ public class AdvancedLdapDatabaseAdminServlet extends HttpServlet {
                 velocityHelper.renderVelocityTemplate("templates/databaseEdit.vm", params, resp.getWriter());
             } else if (req.getPathInfo().contains("/advancedLdapDatabaseAdminServletTest.do")) {
                 setRestDecorator(req, resp);
-                params.put("testResult", false);
+                params.put("testResult", AdvancedLdapDatabaseConfigFactory.verifyDatabaseConfig());
                 velocityHelper.renderVelocityTemplate("templates/databaseTest.vm", params, resp.getWriter());
             } else {
                 setAdminMenuDecorator(req, resp);
