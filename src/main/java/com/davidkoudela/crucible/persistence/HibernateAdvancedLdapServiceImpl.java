@@ -2,8 +2,6 @@ package com.davidkoudela.crucible.persistence;
 
 import com.cenqua.crucible.hibernate.DatabaseConfig;
 import com.davidkoudela.crucible.config.AdvancedLdapDatabaseConfiguration;
-import com.davidkoudela.crucible.persistence.strategy.HibernateAdvancedLdapPluginConfigurationPersistenceStrategy;
-import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Component;
 
 /**

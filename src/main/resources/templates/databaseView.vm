@@ -21,11 +21,11 @@
         <h2>Database settings</h2>
         <div class="field-group">
             <label>Database Name</label>
-            <span class="field-value">crucible</span>
+            <span class="field-value">$advancedLdapDatabaseConfiguration.getDatabaseName()</span>
         </div>
         <div class="field-group">
             <label>User Name</label>
-            <span class="field-value">crucible</span>
+            <span class="field-value">$advancedLdapDatabaseConfiguration.getUserName()</span>
         </div>
         <div class="field-group">
             <label>Password</label>

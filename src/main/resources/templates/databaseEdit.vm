@@ -35,12 +35,12 @@ $webResourceManager.requireResource('com.atlassian.auiplugin:aui-spinner')
         <h2>Database settings</h2>
         <div class="field-group db_field">
             <label for="dbConfig_dbName">Database Name</label>
-            <input type="text" name="dbConfig.dbName" id="dbConfig_dbName" value="crucible" class="text long-field" />
+            <input type="text" name="dbConfig.dbName" id="dbConfig_dbName" value="$advancedLdapDatabaseConfiguration.getDatabaseName()" class="text long-field" />
         </div>
 
         <div class="field-group db_field">
             <label for="dbConfig_username">User Name</label>
-            <input type="text" name="dbConfig.username" id="dbConfig_username" value="crucible" class="text long-field" />
+            <input type="text" name="dbConfig.username" id="dbConfig_username" value="$advancedLdapDatabaseConfiguration.getUserName()" class="text long-field" />
         </div>
 
         <div class="field-group db_field">

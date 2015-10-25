@@ -8,9 +8,9 @@ package com.davidkoudela.crucible.config;
  * @since 2015-10-20
  */
 public class AdvancedLdapDatabaseConfiguration {
-    private String databaseName;
-    private String userName;
-    private String password;
+    private String databaseName = "";
+    private String userName = "";
+    private String password = "";
 
     public String getDatabaseName() {
         return databaseName;

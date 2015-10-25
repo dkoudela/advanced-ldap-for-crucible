@@ -52,6 +52,16 @@ public class AdvancedLdapDatabaseConfigFactory {
         return databaseConfig;
     }
 
+    public static String extractDatabaseName(DatabaseConfig databaseConfig) {
+        if (DBType.ORACLE.equals(databaseConfig.getType())) {
+            String[] ojdbcElements = databaseConfig.getJdbcURL().split(":");
+            return ojdbcElements[ojdbcElements.length - 1];
+        }
+
+        String[] jdbcElements = databaseConfig.getJdbcURL().split("/");
+        return jdbcElements[jdbcElements.length - 1];
+    }
+
     protected static DatabaseConfig getDatabaseConfig(AdvancedLdapDatabaseConfiguration advancedLdapDatabaseConfiguration) {
         ConfigDocument configDocument = AppConfig.getsConfig().getConfigDocument();
         DatabaseConfig databaseConfig = null;

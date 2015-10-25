@@ -11,6 +11,14 @@
         <plugin:interface>com.davidkoudela.crucible.persistence.HibernateAdvancedLdapService</plugin:interface>
     </bean>
 
+    <bean id="advancedLdapDatabaseConfigurationDAO" name="AdvancedLdapDatabaseConfigurationDAO" class="com.davidkoudela.crucible.persistence.AdvancedLdapDatabaseConfigurationDAOImpl">
+        <plugin:interface>com.davidkoudela.crucible.persistence.AdvancedLdapDatabaseConfigurationDAO</plugin:interface>
+        <constructor-arg>
+            <ref bean="salPluginSettingsFactory"/>
+        </constructor-arg>
+    </bean>
+
+
     <bean id="advancedLdapOptionsDAO" name="AdvancedLdapOptionsDAO" class="com.davidkoudela.crucible.persistence.HibernateAdvancedLdapPluginConfigurationDAOImpl">
         <plugin:interface>com.davidkoudela.crucible.persistence.HibernateAdvancedLdapPluginConfigurationDAO</plugin:interface>
         <constructor-arg>
