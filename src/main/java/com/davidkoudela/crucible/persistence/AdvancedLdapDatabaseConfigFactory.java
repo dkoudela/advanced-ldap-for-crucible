@@ -6,6 +6,7 @@ import com.cenqua.fisheye.AppConfig;
 import com.cenqua.fisheye.config1.ConfigDocument;
 import com.cenqua.fisheye.config1.DatabaseType;
 import com.cenqua.fisheye.config1.DriverSource;
+import com.davidkoudela.crucible.config.AdvancedLdapDatabaseConfiguration;
 import org.apache.commons.lang.StringUtils;
 
 import java.sql.Connection;
@@ -23,59 +24,80 @@ import java.sql.Statement;
 public class AdvancedLdapDatabaseConfigFactory {
     public static final String pluginDbName = "crucibleadldb";
 
-    public static DatabaseConfig createDatabaseConfig() {
-        return getDatabaseConfig();
+    public static DatabaseConfig createDatabaseConfig(AdvancedLdapDatabaseConfiguration advancedLdapDatabaseConfiguration) {
+        return getDatabaseConfig(advancedLdapDatabaseConfiguration);
     }
 
-    public static boolean verifyDatabaseConfig() {
-        DatabaseConfig databaseConfig = getDatabaseConfig();
-        return ensureDatabaseExists(databaseConfig);
+    public static boolean verifyDatabaseConfig(AdvancedLdapDatabaseConfiguration advancedLdapDatabaseConfiguration) {
+        if (0 == advancedLdapDatabaseConfiguration.getDatabaseName().length()) {
+            System.out.println("Database name must not be empty");
+            return false;
+        }
+        DatabaseConfig databaseConfig = getDatabaseConfig(advancedLdapDatabaseConfiguration);
+        return ensureDatabaseExists(databaseConfig, advancedLdapDatabaseConfiguration.getDatabaseName());
     }
 
-    protected static DatabaseConfig getDatabaseConfig() {
+    public static DatabaseConfig getCrucibleDefaultDatabaseConfig() {
         ConfigDocument configDocument = AppConfig.getsConfig().getConfigDocument();
         DatabaseConfig databaseConfig = null;
 
         if ((configDocument != null) && (configDocument.getConfig().isSetDatabase())) {
             DatabaseType databaseType = AppConfig.getsConfig().getConfig().getDatabase();
             databaseConfig = new DatabaseConfig(databaseType);
-            databaseConfig.setJdbcURL(constructJdbcUrl(databaseConfig));
         } else {
             databaseConfig = new DatabaseConfig(DBType.HSQL,
-                    "jdbc:hsqldb:file:" + AppConfig.getInstanceDir().getAbsolutePath() + "/var/data/adldb/crucible",
+                    "jdbc:hsqldb:file:" + AppConfig.getInstanceDir().getAbsolutePath() + "/var/data/crudb/crucible",
                     "sa", "", DriverSource.BUNDLED, 5, 20);
         }
         return databaseConfig;
     }
 
-    protected static String constructJdbcUrl(DatabaseConfig databaseConfig) {
+    protected static DatabaseConfig getDatabaseConfig(AdvancedLdapDatabaseConfiguration advancedLdapDatabaseConfiguration) {
+        ConfigDocument configDocument = AppConfig.getsConfig().getConfigDocument();
+        DatabaseConfig databaseConfig = null;
+
+        if ((configDocument != null) && (configDocument.getConfig().isSetDatabase())) {
+            DatabaseType databaseType = AppConfig.getsConfig().getConfig().getDatabase();
+            databaseConfig = new DatabaseConfig(databaseType);
+            databaseConfig.setJdbcURL(constructJdbcUrl(databaseConfig, advancedLdapDatabaseConfiguration.getDatabaseName()));
+            databaseConfig.setUsername(advancedLdapDatabaseConfiguration.getUserName());
+            databaseConfig.setPassword(advancedLdapDatabaseConfiguration.getPassword());
+        } else {
+            databaseConfig = new DatabaseConfig(DBType.HSQL,
+                    "jdbc:hsqldb:file:" + AppConfig.getInstanceDir().getAbsolutePath() + "/var/data/"+ advancedLdapDatabaseConfiguration.getDatabaseName() + "/crucible",
+                    advancedLdapDatabaseConfiguration.getUserName(), advancedLdapDatabaseConfiguration.getPassword(), DriverSource.BUNDLED, 5, 20);
+        }
+        return databaseConfig;
+    }
+
+    protected static String constructJdbcUrl(DatabaseConfig databaseConfig, String databaseName) {
         if (DBType.ORACLE.equals(databaseConfig.getType())) {
             String[] ojdbcElements = databaseConfig.getJdbcURL().split(":");
-            int lastIndex = (12 < pluginDbName.length()) ? 12 : pluginDbName.length();
-            ojdbcElements[ojdbcElements.length - 1] = pluginDbName.substring(0, lastIndex);
+            int lastIndex = (12 < databaseName.length()) ? 12 : databaseName.length();
+            ojdbcElements[ojdbcElements.length - 1] = databaseName.substring(0, lastIndex);
             return StringUtils.join(ojdbcElements, ":");
         }
 
         String[] jdbcElements = databaseConfig.getJdbcURL().split("/");
-        jdbcElements[jdbcElements.length - 1] = pluginDbName;
+        jdbcElements[jdbcElements.length - 1] = databaseName;
         return StringUtils.join(jdbcElements, "/");
     }
 
-    private static boolean ensureDatabaseExists(DatabaseConfig databaseConfig) {
+    private static boolean ensureDatabaseExists(DatabaseConfig databaseConfig, String databaseName) {
         Connection conn = null;
         Statement stmt = null;
-        String jdbcUrl = constructJdbcUrl(databaseConfig);
+        String jdbcUrl = databaseConfig.getJdbcURL();
 
         try {
             Class.forName(databaseConfig.getJdbcDriverClass());
 
-            System.out.println("Connecting to database " + pluginDbName);
+            System.out.println("Connecting to database " + databaseName + " url: " + jdbcUrl);
             conn = DriverManager.getConnection(jdbcUrl, databaseConfig.getUsername(), databaseConfig.getPassword());
 
-            System.out.println("Database " + pluginDbName + " exists");
+            System.out.println("Database " + databaseName + " exists");
             return true;
         } catch(SQLException se){
-            System.out.println("Database " + pluginDbName + " doesn't exist");
+            System.out.println("Database " + databaseName + " doesn't exist");
 
         } catch(Exception e){
             //Handle errors for Class.forName

@@ -21,26 +21,25 @@ import java.util.List;
  */
 @Component("advancedLdapOptionsDAO")
 public class HibernateAdvancedLdapPluginConfigurationDAOImpl implements HibernateAdvancedLdapPluginConfigurationDAO {
-    private SessionFactory sessionFactory;
-    private HibernateAdvancedLdapPluginConfigurationPersistenceStrategy hibernateAdvancedLdapPluginConfigurationPersistenceStrategy;
+    private HibernateAdvancedLdapService hibernateAdvancedLdapService;
 
-    public HibernateAdvancedLdapPluginConfigurationDAOImpl() throws Exception {
-        this.sessionFactory = HibernateSessionFactoryFactory.createHibernateSessionFactory();
-        this.hibernateAdvancedLdapPluginConfigurationPersistenceStrategy = HibernateSessionFactoryFactory.createHibernateAdvancedLdapPluginConfigurationPersistenceStrategy();
+    public HibernateAdvancedLdapPluginConfigurationDAOImpl(HibernateAdvancedLdapService hibernateAdvancedLdapService) throws Exception {
+        this.hibernateAdvancedLdapService = hibernateAdvancedLdapService;
     }
 
     @Override
     @Transactional
     public void store(AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration, boolean isUpdate) throws Exception {
+        HibernateAdvancedLdapInstance hibernateAdvancedLdapInstance = hibernateAdvancedLdapService.getInstance();
         Session session = null;
         Transaction tx = null;
         try {
-            session = this.sessionFactory.openSession();
+            session = hibernateAdvancedLdapInstance.getSessionFactory().openSession();
             tx = session.beginTransaction();
 
             testConnection(session);
 
-            this.hibernateAdvancedLdapPluginConfigurationPersistenceStrategy.transformToStorage(advancedLdapPluginConfiguration);
+            hibernateAdvancedLdapInstance.getHibernateAdvancedLdapPluginConfigurationPersistenceStrategy().transformToStorage(advancedLdapPluginConfiguration);
 
             if (isUpdate)
                 session.saveOrUpdate(advancedLdapPluginConfiguration);
@@ -68,12 +67,13 @@ public class HibernateAdvancedLdapPluginConfigurationDAOImpl implements Hibernat
     @Override
     @Transactional
     public AdvancedLdapPluginConfiguration get() {
+        HibernateAdvancedLdapInstance hibernateAdvancedLdapInstance = hibernateAdvancedLdapService.getInstance();
         Session session = null;
         Transaction tx = null;
         AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = null;
         try
         {
-            session = this.sessionFactory.openSession();
+            session = hibernateAdvancedLdapInstance.getSessionFactory().openSession();
             tx = session.beginTransaction();
 
             testConnection(session);
@@ -84,7 +84,7 @@ public class HibernateAdvancedLdapPluginConfigurationDAOImpl implements Hibernat
             else
                 advancedLdapPluginConfiguration = (AdvancedLdapPluginConfiguration)advancedLdapPluginConfigurationList.get(advancedLdapPluginConfigurationList.size()-1);
 
-            this.hibernateAdvancedLdapPluginConfigurationPersistenceStrategy.transformFromStorage(advancedLdapPluginConfiguration);
+            hibernateAdvancedLdapInstance.getHibernateAdvancedLdapPluginConfigurationPersistenceStrategy().transformFromStorage(advancedLdapPluginConfiguration);
 
             tx.rollback();
         } catch (HibernateException e) {
@@ -106,11 +106,12 @@ public class HibernateAdvancedLdapPluginConfigurationDAOImpl implements Hibernat
     @Override
     @Transactional
     public void remove(int id) {
+        HibernateAdvancedLdapInstance hibernateAdvancedLdapInstance = hibernateAdvancedLdapService.getInstance();
         Session session = null;
         Transaction tx = null;
         try
         {
-            session = this.sessionFactory.openSession();
+            session = hibernateAdvancedLdapInstance.getSessionFactory().openSession();
             tx = session.beginTransaction();
 
             testConnection(session);

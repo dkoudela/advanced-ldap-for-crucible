@@ -16,10 +16,8 @@ import org.hibernate.cfg.Configuration;
  * @since 2015-05-15
  */
 public class HibernateSessionFactoryFactory {
-    public static SessionFactory createHibernateSessionFactory() throws Exception {
+    public static SessionFactory createHibernateSessionFactory(DatabaseConfig databaseConfig) throws Exception {
         try {
-            DatabaseConfig databaseConfig = AdvancedLdapDatabaseConfigFactory.createDatabaseConfig();
-
             Configuration configuration = new Configuration();
             configuration.setProperty("hibernate.connection.autocommit", "false");
             configuration.setProperty("hibernate.connection.driver_class", databaseConfig.getJdbcDriverClass());
@@ -63,8 +61,7 @@ public class HibernateSessionFactoryFactory {
         }
     }
 
-    public static HibernateAdvancedLdapPluginConfigurationPersistenceStrategy createHibernateAdvancedLdapPluginConfigurationPersistenceStrategy() throws Exception {
-        DatabaseConfig databaseConfig = AdvancedLdapDatabaseConfigFactory.createDatabaseConfig();
+    public static HibernateAdvancedLdapPluginConfigurationPersistenceStrategy createHibernateAdvancedLdapPluginConfigurationPersistenceStrategy(DatabaseConfig databaseConfig) throws Exception {
         HibernateAdvancedLdapPluginConfigurationPersistenceStrategy hibernateAdvancedLdapPluginConfigurationPersistenceStrategy = null;
 
         if (DBType.ORACLE.equals(databaseConfig.getType())) {

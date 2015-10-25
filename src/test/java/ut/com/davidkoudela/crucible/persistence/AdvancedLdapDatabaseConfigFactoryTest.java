@@ -35,13 +35,13 @@ public class AdvancedLdapDatabaseConfigFactoryTest extends TestCase {
     }
 
     public static class AdvancedLdapDatabaseConfigFactoryDummy extends AdvancedLdapDatabaseConfigFactory {
-        public static String constructJdbcUrl(DatabaseConfig databaseConfig) {
-            return AdvancedLdapDatabaseConfigFactory.constructJdbcUrl(databaseConfig);
+        public static String constructJdbcUrl(DatabaseConfig databaseConfig, String databaseName) {
+            return AdvancedLdapDatabaseConfigFactory.constructJdbcUrl(databaseConfig, databaseName);
         }
     }
 
     @Test
     public void testConstructJdbcUrl() {
-        assertEquals("jdbc:mysql://localhost:3306/crucibleadldb", AdvancedLdapDatabaseConfigFactoryDummy.constructJdbcUrl(this.databaseConfig));
+        assertEquals("jdbc:mysql://localhost:3306/myowndb", AdvancedLdapDatabaseConfigFactoryDummy.constructJdbcUrl(this.databaseConfig, "myowndb"));
     }
 }

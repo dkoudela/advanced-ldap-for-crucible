@@ -66,6 +66,9 @@
     <component key="advancedLdapOptionsDAO" class="com.davidkoudela.crucible.persistence.HibernateAdvancedLdapPluginConfigurationDAOImpl" public="true">
         <interface>com.davidkoudela.crucible.persistence.HibernateAdvancedLdapPluginConfigurationDAO</interface>
     </component>
+    <component key="hibernateAdvancedLdapService" class="com.davidkoudela.crucible.persistence.HibernateAdvancedLdapServiceImpl" public="true">
+        <interface>com.davidkoudela.crucible.persistence.HibernateAdvancedLdapService</interface>
+    </component>
 
     <!-- import from the product container -->
     <component-import key="userManager" interface="com.cenqua.fisheye.user.UserManager" />

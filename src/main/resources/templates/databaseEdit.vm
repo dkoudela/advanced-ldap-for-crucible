@@ -92,7 +92,7 @@ $webResourceManager.requireResource('com.atlassian.auiplugin:aui-spinner')
     function db_testConnection() {
         var form = document.dbform;
         var params = {
-            'dbConfig.jdbcURL' :  form["dbConfig.dbName"].value ,
+            'dbConfig.dbName' :  form["dbConfig.dbName"].value ,
             'dbConfig.username' :  form["dbConfig.username"].value ,
             'dbConfig.password' :  form["dbConfig.password"].value ,
             'passwordChanged' :  form["passwordChanged"].value

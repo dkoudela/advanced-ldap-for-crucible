@@ -4,6 +4,7 @@ import com.atlassian.fisheye.plugin.web.helpers.VelocityHelper;
 import com.davidkoudela.crucible.admin.AdvancedLdapUserManager;
 import com.davidkoudela.crucible.config.AdvancedLdapDatabaseConfiguration;
 import com.davidkoudela.crucible.persistence.AdvancedLdapDatabaseConfigFactory;
+import com.davidkoudela.crucible.persistence.HibernateAdvancedLdapService;
 import org.apache.commons.lang.StringUtils;
 
 import javax.servlet.ServletException;
@@ -25,21 +26,27 @@ import java.util.Map;
 public class AdvancedLdapDatabaseAdminServlet extends HttpServlet {
     private final VelocityHelper velocityHelper;
     private AdvancedLdapUserManager advancedLdapUserManager;
+    private HibernateAdvancedLdapService hibernateAdvancedLdapService;
 
     @org.springframework.beans.factory.annotation.Autowired
     public AdvancedLdapDatabaseAdminServlet(VelocityHelper velocityHelper,
-                                                AdvancedLdapUserManager advancedLdapUserManager) {
+                                                AdvancedLdapUserManager advancedLdapUserManager,
+                                                HibernateAdvancedLdapService hibernateAdvancedLdapService) {
         this.velocityHelper = velocityHelper;
         this.advancedLdapUserManager = advancedLdapUserManager;
+        this.hibernateAdvancedLdapService = hibernateAdvancedLdapService;
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Map<String,Object> params = new HashMap<String,Object>();
+        AdvancedLdapDatabaseConfiguration advancedLdapDatabaseConfiguration = new AdvancedLdapDatabaseConfiguration();
+        setParameters(advancedLdapDatabaseConfiguration, req);
+
         if (advancedLdapUserManager.hasSysAdminPrivileges(req)) {
             if (req.getPathInfo().contains("/advancedLdapDatabaseAdminServletTest.do")) {
                 setRestDecorator(req, resp);
-                params.put("testResult", AdvancedLdapDatabaseConfigFactory.verifyDatabaseConfig());
+                params.put("testResult", this.hibernateAdvancedLdapService.verifyDatabaseConfig(advancedLdapDatabaseConfiguration));
                 velocityHelper.renderVelocityTemplate("templates/databaseTest.vm", params, resp.getWriter());
             } else {
                 setAdminMenuDecorator(req, resp);
@@ -63,9 +70,10 @@ public class AdvancedLdapDatabaseAdminServlet extends HttpServlet {
                 velocityHelper.renderVelocityTemplate("templates/databaseEdit.vm", params, resp.getWriter());
             } else if (req.getPathInfo().contains("/advancedLdapDatabaseAdminServletTest.do")) {
                 setRestDecorator(req, resp);
-                params.put("testResult", AdvancedLdapDatabaseConfigFactory.verifyDatabaseConfig());
+                params.put("testResult", this.hibernateAdvancedLdapService.verifyDatabaseConfig(advancedLdapDatabaseConfiguration));
                 velocityHelper.renderVelocityTemplate("templates/databaseTest.vm", params, resp.getWriter());
             } else {
+                this.hibernateAdvancedLdapService.initiate(advancedLdapDatabaseConfiguration);
                 setAdminMenuDecorator(req, resp);
                 velocityHelper.renderVelocityTemplate("templates/databaseView.vm", params, resp.getWriter());
             }
