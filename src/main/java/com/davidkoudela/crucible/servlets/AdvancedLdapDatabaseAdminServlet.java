@@ -72,8 +72,17 @@ public class AdvancedLdapDatabaseAdminServlet extends HttpServlet {
                 setRestDecorator(req, resp);
                 params.put("testResult", this.hibernateAdvancedLdapService.verifyDatabaseConfig(advancedLdapDatabaseConfiguration));
                 velocityHelper.renderVelocityTemplate("templates/databaseTest.vm", params, resp.getWriter());
+            } else if (req.getPathInfo().contains("/advancedLdapDatabaseAdminServletRemove.do")) {
+                this.advancedLdapDatabaseConfigurationDAO.remove();
+                AdvancedLdapDatabaseConfiguration advancedLdapDatabaseConfigurationOrigin = this.advancedLdapDatabaseConfigurationDAO.get();
+                this.hibernateAdvancedLdapService.initiate(advancedLdapDatabaseConfigurationOrigin);
+                params.put("advancedLdapDatabaseConfiguration", advancedLdapDatabaseConfigurationOrigin);
+                setAdminMenuDecorator(req, resp);
+                velocityHelper.renderVelocityTemplate("templates/databaseView.vm", params, resp.getWriter());
             } else {
+                this.advancedLdapDatabaseConfigurationDAO.store(advancedLdapDatabaseConfiguration);
                 this.hibernateAdvancedLdapService.initiate(advancedLdapDatabaseConfiguration);
+                params.put("advancedLdapDatabaseConfiguration", advancedLdapDatabaseConfiguration);
                 setAdminMenuDecorator(req, resp);
                 velocityHelper.renderVelocityTemplate("templates/databaseView.vm", params, resp.getWriter());
             }
@@ -98,8 +107,8 @@ public class AdvancedLdapDatabaseAdminServlet extends HttpServlet {
         if (Boolean.parseBoolean(StringUtils.defaultIfEmpty(request.getParameter("passwordChanged"), "false"))) {
             advancedLdapDatabaseConfiguration.setPassword(StringUtils.defaultIfEmpty(request.getParameter("dbConfig.password"), ""));
         } else {
-            // TODO: ensure the password is taken from the system as it was not provided by the user.
-            advancedLdapDatabaseConfiguration.setPassword("");
+            AdvancedLdapDatabaseConfiguration advancedLdapDatabaseConfigurationOrigin = this.advancedLdapDatabaseConfigurationDAO.get();
+            advancedLdapDatabaseConfiguration.setPassword(advancedLdapDatabaseConfigurationOrigin.getPassword());
         }
     }
 

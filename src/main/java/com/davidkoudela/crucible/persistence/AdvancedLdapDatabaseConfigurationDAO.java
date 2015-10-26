@@ -11,6 +11,7 @@ import com.davidkoudela.crucible.config.AdvancedLdapDatabaseConfiguration;
  * @since 2015-10-25
  */
 public interface AdvancedLdapDatabaseConfigurationDAO {
-    public abstract void store(AdvancedLdapDatabaseConfiguration advancedLdapDatabaseConfiguration) throws Exception;
+    public abstract void store(AdvancedLdapDatabaseConfiguration advancedLdapDatabaseConfiguration);
     public abstract AdvancedLdapDatabaseConfiguration get();
+    public abstract void remove();
 }

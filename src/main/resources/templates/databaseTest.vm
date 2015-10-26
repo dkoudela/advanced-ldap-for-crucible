@@ -3,10 +3,11 @@
     "worked": true,
 #if($testResult)
     "payload": "  \u003cdiv class=\"buttons-container\"\u003e\n  \u003cdiv class=\"aui-message closeable aui-message-success\"\u003e\n   \u003cp class=\"title\"\u003e \u003cstrong\u003eSuccess\u003c/strong\u003e  \u003c/p\u003e\n             \u003cp\u003eConnection succeeded\u003c/p\u003e\n   \u003c/div\u003e\n    \u003c/div\u003e\n       \u003cdiv class=\"buttons-container\"\u003e\n  \u003cdiv id=\"db_status\" class=\"buttons\"\u003e\n   \u003cdiv class=\"db_test\"\u003e\n            \u003cbutton id=\"db_test\" value=\"Test Connection\" class=\"aui-button\"\u003eTest Connection\u003c/button\u003e\n        \u003c/div\u003e\n    \u003c/div\u003e\n    \u003c/div\u003e\n    ",
+    "connection": true,
 #else
     "payload": "  \u003cdiv class=\"buttons-container\"\u003e\n  \u003cdiv class=\"aui-message closeable aui-message-error\"\u003e\n   \u003cp class=\"title\"\u003e \u003cstrong\u003eFailed\u003c/strong\u003e  \u003c/p\u003e\n             \u003cp\u003eUnable to connect to database\u003c/p\u003e\n   \u003c/div\u003e\n    \u003c/div\u003e\n       \u003cdiv class=\"buttons-container\"\u003e\n  \u003cdiv id=\"db_status\" class=\"buttons\"\u003e\n   \u003cdiv class=\"db_test\"\u003e\n            \u003cbutton id=\"db_test\" value=\"Test Connection\" class=\"aui-button\"\u003eTest Connection\u003c/button\u003e\n        \u003c/div\u003e\n    \u003c/div\u003e\n    \u003c/div\u003e\n    ",
-#end
     "connection": false,
+#end
     "sameUrl": true,
     "changed": true,
     "message": null

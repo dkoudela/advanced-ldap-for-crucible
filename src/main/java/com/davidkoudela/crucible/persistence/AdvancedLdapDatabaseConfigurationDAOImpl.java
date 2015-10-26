@@ -15,6 +15,9 @@ import org.springframework.stereotype.Component;
  */
 @Component("advancedLdapDatabaseConfigurationDAO")
 public class AdvancedLdapDatabaseConfigurationDAOImpl implements AdvancedLdapDatabaseConfigurationDAO {
+    private static final String databaseName = "AdvancedLdap.dbConfig.databaseName";
+    private static final String username = "AdvancedLdap.dbConfig.username";
+    private static final String password = "AdvancedLdap.dbConfig.password";
     private PluginSettingsFactory settingsFactory;
 
     public AdvancedLdapDatabaseConfigurationDAOImpl(PluginSettingsFactory settingsFactory) {
@@ -22,8 +25,11 @@ public class AdvancedLdapDatabaseConfigurationDAOImpl implements AdvancedLdapDat
     }
 
     @Override
-    public void store(AdvancedLdapDatabaseConfiguration advancedLdapDatabaseConfiguration) throws Exception {
-
+    public void store(AdvancedLdapDatabaseConfiguration advancedLdapDatabaseConfiguration) {
+        PluginSettings settings = this.settingsFactory.createGlobalSettings();
+        settings.put(this.databaseName, advancedLdapDatabaseConfiguration.getDatabaseName());
+        settings.put(this.username, advancedLdapDatabaseConfiguration.getUserName());
+        settings.put(this.password, advancedLdapDatabaseConfiguration.getPassword());
     }
 
     @Override
@@ -32,9 +38,9 @@ public class AdvancedLdapDatabaseConfigurationDAOImpl implements AdvancedLdapDat
         PluginSettings settings = this.settingsFactory.createGlobalSettings();
 
         // Get Database configuration from plugin settings first
-        advancedLdapDatabaseConfiguration.setDatabaseName((String) settings.get("AdvancedLdap.dbConfig.databaseName"));
-        advancedLdapDatabaseConfiguration.setUserName((String) settings.get("AdvancedLdap.dbConfig.username"));
-        advancedLdapDatabaseConfiguration.setPassword((String) settings.get("AdvancedLdap.dbConfig.password"));
+        advancedLdapDatabaseConfiguration.setDatabaseName((String) settings.get(this.databaseName));
+        advancedLdapDatabaseConfiguration.setUserName((String) settings.get(this.username));
+        advancedLdapDatabaseConfiguration.setPassword((String) settings.get(this.password));
 
         if (null != advancedLdapDatabaseConfiguration.getDatabaseName() &&
                 null != advancedLdapDatabaseConfiguration.getUserName() &&
@@ -56,5 +62,13 @@ public class AdvancedLdapDatabaseConfigurationDAOImpl implements AdvancedLdapDat
         advancedLdapDatabaseConfiguration.setPassword(AdvancedLdapDatabaseConfigFactory.getCrucibleDefaultDatabaseConfig().getPassword());
 
         return advancedLdapDatabaseConfiguration;
+    }
+
+    @Override
+    public void remove() {
+        PluginSettings settings = this.settingsFactory.createGlobalSettings();
+        settings.remove(this.databaseName);
+        settings.remove(this.username);
+        settings.remove(this.password);
     }
 }

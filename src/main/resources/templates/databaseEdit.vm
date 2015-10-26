@@ -61,6 +61,7 @@ $webResourceManager.requireResource('com.atlassian.auiplugin:aui-spinner')
         <div class="buttons-container">
             <div class="buttons">
                 <button id="db_save" class="aui-button" value="Save" disabled>Save</button>
+                <button id="db_reset" class="aui-button" value="Reset" disabled>Reset</button>
                 <a class="cancel" id="db_cancel" href="advancedLdapDatabaseAdminServletView.do">Cancel</a>
             </div>
         </div>
@@ -69,7 +70,7 @@ $webResourceManager.requireResource('com.atlassian.auiplugin:aui-spinner')
 
 <script type="text/javascript">
     AJS.$(".db_field input").change(function(){
-        db_disableSave(false);
+        db_disable(false);
     });
 
     AJS.$("#db_test").live("click",function(e){
@@ -99,7 +100,9 @@ $webResourceManager.requireResource('com.atlassian.auiplugin:aui-spinner')
         };
 
         var done = function(resp) {
-            document.dbform.db_save.disabled = !(resp.connection && resp.changed && resp.sameUrl);
+            var disabled = !(resp.connection && resp.changed && resp.sameUrl);
+            document.dbform.db_save.disabled = disabled;
+            document.dbform.db_reset.disabled = disabled;
         };
 
         var loading = [
@@ -117,8 +120,9 @@ $webResourceManager.requireResource('com.atlassian.auiplugin:aui-spinner')
         FECRU.AJAX.ajaxUpdate(AJS.contextPath() + "/plugins/servlet/advancedLdapDatabaseAdminServletTest.do", params, "db_elements", done, true);
     }
 
-    function db_disableSave(disable) {
+    function db_disable(disable) {
         document.dbform.db_save.disabled = disable;
+        document.dbform.db_reset.disabled = disable;
     }
 </script>
 
