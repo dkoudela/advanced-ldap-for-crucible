@@ -61,7 +61,6 @@ $webResourceManager.requireResource('com.atlassian.auiplugin:aui-spinner')
         <div class="buttons-container">
             <div class="buttons">
                 <button id="db_save" class="aui-button" value="Save" disabled>Save</button>
-                <button id="db_reset" class="aui-button" value="Reset" disabled>Reset</button>
                 <a class="cancel" id="db_cancel" href="advancedLdapDatabaseAdminServletView.do">Cancel</a>
             </div>
         </div>
@@ -100,9 +99,7 @@ $webResourceManager.requireResource('com.atlassian.auiplugin:aui-spinner')
         };
 
         var done = function(resp) {
-            var disabled = !(resp.connection && resp.changed && resp.sameUrl);
-            document.dbform.db_save.disabled = disabled;
-            document.dbform.db_reset.disabled = disabled;
+            document.dbform.db_save.disabled = !(resp.connection && resp.changed && resp.sameUrl);
         };
 
         var loading = [
@@ -122,7 +119,6 @@ $webResourceManager.requireResource('com.atlassian.auiplugin:aui-spinner')
 
     function db_disable(disable) {
         document.dbform.db_save.disabled = disable;
-        document.dbform.db_reset.disabled = disable;
     }
 </script>
 
