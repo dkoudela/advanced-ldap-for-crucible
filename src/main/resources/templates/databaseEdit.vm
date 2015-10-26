@@ -26,7 +26,6 @@ $webResourceManager.requireResource('com.atlassian.auiplugin:aui-spinner')
         </p>
         <p>To switch to a different database, specify the database's configuration settings in the form below and use
             the <em>Test Connection</em> button.</p>
-        <p>Changes to connection pool sizes require a full restart before the new settings will take effect.</p>
     </div>
 
     <form name="dbform" id="dbform" action="advancedLdapDatabaseAdminServletView.do" method="POST" class="aui">
