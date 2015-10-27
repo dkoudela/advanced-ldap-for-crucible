@@ -97,12 +97,20 @@ public class AdvancedLdapConnector {
             return this.ldapConnection;
 
         AdvancedLdapConnectionOptionsFactory advancedLdapConnectionOptionsFactory = new AdvancedLdapConnectionOptionsFactory(advancedLdapPluginConfiguration);
+
+        LDAPConnectionOptions ldapConnectionOptions = advancedLdapConnectionOptionsFactory.getConnectionOptions();
+        String ldapHost = advancedLdapConnectionOptionsFactory.getLDAPHost();
+        int ldapPort = advancedLdapConnectionOptionsFactory.getLDAPPort();
+        String ldapBindDN = this.advancedLdapPluginConfiguration.getLDAPBindDN();
+        String ldapBindPassword = this.advancedLdapPluginConfiguration.getLDAPBindPassword();
+        System.out.println("LDAP Connection parameters: ldapHost: " + ldapHost + " ldapPort: " + ldapPort + " ldapBindDN: " + ldapBindDN);
+
         return new LDAPConnection(
-                advancedLdapConnectionOptionsFactory.getConnectionOptions(),
-                advancedLdapConnectionOptionsFactory.getLDAPHost(),
-                advancedLdapConnectionOptionsFactory.getLDAPPort(),
-                this.advancedLdapPluginConfiguration.getLDAPBindDN(),
-                this.advancedLdapPluginConfiguration.getLDAPBindPassword());
+                ldapConnectionOptions,
+                ldapHost,
+                ldapPort,
+                ldapBindDN,
+                ldapBindPassword);
     }
 
     protected void setLdapConnection(LDAPConnection ldapConnection) {

@@ -6,6 +6,7 @@ import com.davidkoudela.crucible.config.AdvancedLdapDatabaseConfiguration;
 import com.davidkoudela.crucible.persistence.AdvancedLdapDatabaseConfigFactory;
 import com.davidkoudela.crucible.persistence.AdvancedLdapDatabaseConfigurationDAO;
 import com.davidkoudela.crucible.persistence.HibernateAdvancedLdapService;
+import com.davidkoudela.crucible.tasks.AdvancedLdapSynchronizationManager;
 import org.apache.commons.lang.StringUtils;
 
 import javax.servlet.ServletException;
@@ -29,16 +30,19 @@ public class AdvancedLdapDatabaseAdminServlet extends HttpServlet {
     private AdvancedLdapUserManager advancedLdapUserManager;
     private HibernateAdvancedLdapService hibernateAdvancedLdapService;
     private AdvancedLdapDatabaseConfigurationDAO advancedLdapDatabaseConfigurationDAO;
+    private AdvancedLdapSynchronizationManager advancedLdapSynchronizationManager;
 
     @org.springframework.beans.factory.annotation.Autowired
     public AdvancedLdapDatabaseAdminServlet(VelocityHelper velocityHelper,
                                                 AdvancedLdapUserManager advancedLdapUserManager,
                                                 HibernateAdvancedLdapService hibernateAdvancedLdapService,
-                                                AdvancedLdapDatabaseConfigurationDAO advancedLdapDatabaseConfigurationDAO) {
+                                                AdvancedLdapDatabaseConfigurationDAO advancedLdapDatabaseConfigurationDAO,
+                                                AdvancedLdapSynchronizationManager advancedLdapSynchronizationManager) {
         this.velocityHelper = velocityHelper;
         this.advancedLdapUserManager = advancedLdapUserManager;
         this.hibernateAdvancedLdapService = hibernateAdvancedLdapService;
         this.advancedLdapDatabaseConfigurationDAO = advancedLdapDatabaseConfigurationDAO;
+        this.advancedLdapSynchronizationManager = advancedLdapSynchronizationManager;
     }
 
     @Override
@@ -76,12 +80,14 @@ public class AdvancedLdapDatabaseAdminServlet extends HttpServlet {
                 this.advancedLdapDatabaseConfigurationDAO.remove();
                 AdvancedLdapDatabaseConfiguration advancedLdapDatabaseConfigurationOrigin = this.advancedLdapDatabaseConfigurationDAO.get();
                 this.hibernateAdvancedLdapService.initiate(advancedLdapDatabaseConfigurationOrigin);
+                this.advancedLdapSynchronizationManager.updateTimer();
                 params.put("advancedLdapDatabaseConfiguration", advancedLdapDatabaseConfigurationOrigin);
                 setAdminMenuDecorator(req, resp);
                 velocityHelper.renderVelocityTemplate("templates/databaseView.vm", params, resp.getWriter());
             } else {
                 this.advancedLdapDatabaseConfigurationDAO.store(advancedLdapDatabaseConfiguration);
                 this.hibernateAdvancedLdapService.initiate(advancedLdapDatabaseConfiguration);
+                this.advancedLdapSynchronizationManager.updateTimer();
                 params.put("advancedLdapDatabaseConfiguration", advancedLdapDatabaseConfiguration);
                 setAdminMenuDecorator(req, resp);
                 velocityHelper.renderVelocityTemplate("templates/databaseView.vm", params, resp.getWriter());
