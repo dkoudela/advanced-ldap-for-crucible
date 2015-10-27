@@ -15,18 +15,17 @@ import org.springframework.stereotype.Component;
 @Component("hibernateAdvancedLdapService")
 public class HibernateAdvancedLdapServiceImpl implements HibernateAdvancedLdapService {
     private HibernateAdvancedLdapInstance hibernateAdvancedLdapInstance;
+    private AdvancedLdapDatabaseConfigurationDAO advancedLdapDatabaseConfigurationDAO;
 
-    public HibernateAdvancedLdapServiceImpl() {
-        AdvancedLdapDatabaseConfiguration advancedLdapDatabaseConfiguration = new AdvancedLdapDatabaseConfiguration();
-        advancedLdapDatabaseConfiguration.setDatabaseName(AdvancedLdapDatabaseConfigFactory.pluginDbName);
-        advancedLdapDatabaseConfiguration.setUserName(AdvancedLdapDatabaseConfigFactory.getCrucibleDefaultDatabaseConfig().getUsername());
-        advancedLdapDatabaseConfiguration.setPassword(AdvancedLdapDatabaseConfigFactory.getCrucibleDefaultDatabaseConfig().getPassword());
-        initiate(advancedLdapDatabaseConfiguration);
+    public HibernateAdvancedLdapServiceImpl(AdvancedLdapDatabaseConfigurationDAO advancedLdapDatabaseConfigurationDAO) {
+        this.advancedLdapDatabaseConfigurationDAO = advancedLdapDatabaseConfigurationDAO;
+        initiate();
     }
 
     @Override
-    public void initiate(AdvancedLdapDatabaseConfiguration advancedLdapDatabaseConfiguration) {
+    public void initiate() {
         try {
+            AdvancedLdapDatabaseConfiguration advancedLdapDatabaseConfiguration = this.advancedLdapDatabaseConfigurationDAO.get();
             this.hibernateAdvancedLdapInstance = new HibernateAdvancedLdapInstance();
             DatabaseConfig databaseConfig = AdvancedLdapDatabaseConfigFactory.createDatabaseConfig(advancedLdapDatabaseConfiguration);
             this.hibernateAdvancedLdapInstance.setSessionFactory(HibernateSessionFactoryFactory.createHibernateSessionFactory(databaseConfig));

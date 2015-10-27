@@ -68,8 +68,7 @@ public class AdvancedLdapDatabaseAdminServlet extends HttpServlet {
 
         if (advancedLdapUserManager.hasSysAdminPrivileges(req)) {
             if (req.getPathInfo().contains("/advancedLdapDatabaseAdminServletEdit.do")) {
-                AdvancedLdapDatabaseConfiguration advancedLdapDatabaseConfigurationOrigin = this.advancedLdapDatabaseConfigurationDAO.get();
-                params.put("advancedLdapDatabaseConfiguration", advancedLdapDatabaseConfigurationOrigin);
+                params.put("advancedLdapDatabaseConfiguration", this.advancedLdapDatabaseConfigurationDAO.get());
                 setAdminMenuDecorator(req, resp);
                 velocityHelper.renderVelocityTemplate("templates/databaseEdit.vm", params, resp.getWriter());
             } else if (req.getPathInfo().contains("/advancedLdapDatabaseAdminServletTest.do")) {
@@ -78,16 +77,13 @@ public class AdvancedLdapDatabaseAdminServlet extends HttpServlet {
                 velocityHelper.renderVelocityTemplate("templates/databaseTest.vm", params, resp.getWriter());
             } else if (req.getPathInfo().contains("/advancedLdapDatabaseAdminServletRemove.do")) {
                 this.advancedLdapDatabaseConfigurationDAO.remove();
-                AdvancedLdapDatabaseConfiguration advancedLdapDatabaseConfigurationOrigin = this.advancedLdapDatabaseConfigurationDAO.get();
-                this.hibernateAdvancedLdapService.initiate(advancedLdapDatabaseConfigurationOrigin);
-                this.advancedLdapSynchronizationManager.updateTimer();
-                params.put("advancedLdapDatabaseConfiguration", advancedLdapDatabaseConfigurationOrigin);
+                reinitializeServices();
+                params.put("advancedLdapDatabaseConfiguration", this.advancedLdapDatabaseConfigurationDAO.get());
                 setAdminMenuDecorator(req, resp);
                 velocityHelper.renderVelocityTemplate("templates/databaseView.vm", params, resp.getWriter());
             } else {
                 this.advancedLdapDatabaseConfigurationDAO.store(advancedLdapDatabaseConfiguration);
-                this.hibernateAdvancedLdapService.initiate(advancedLdapDatabaseConfiguration);
-                this.advancedLdapSynchronizationManager.updateTimer();
+                reinitializeServices();
                 params.put("advancedLdapDatabaseConfiguration", advancedLdapDatabaseConfiguration);
                 setAdminMenuDecorator(req, resp);
                 velocityHelper.renderVelocityTemplate("templates/databaseView.vm", params, resp.getWriter());
@@ -96,6 +92,11 @@ public class AdvancedLdapDatabaseAdminServlet extends HttpServlet {
             setAdminMenuDecorator(req, resp);
             resp.sendRedirect(req.getContextPath() + "/admin/login-default.do");
         }
+    }
+
+    protected void reinitializeServices() {
+        this.hibernateAdvancedLdapService.initiate();
+        this.advancedLdapSynchronizationManager.updateTimer();
     }
 
     protected void setAdminMenuDecorator(HttpServletRequest req, HttpServletResponse resp) {

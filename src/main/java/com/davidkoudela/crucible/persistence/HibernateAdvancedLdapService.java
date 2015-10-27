@@ -14,7 +14,7 @@ import org.hibernate.SessionFactory;
  * @since 2015-10-24
  */
 public interface HibernateAdvancedLdapService {
-    public void initiate(AdvancedLdapDatabaseConfiguration advancedLdapDatabaseConfiguration);
+    public void initiate();
     public boolean verifyDatabaseConfig(AdvancedLdapDatabaseConfiguration advancedLdapDatabaseConfiguration);
     public HibernateAdvancedLdapInstance getInstance();
 }
