@@ -1,11 +1,9 @@
 package com.davidkoudela.crucible.persistence;
 
 import com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration;
-import com.davidkoudela.crucible.persistence.strategy.HibernateAdvancedLdapPluginConfigurationPersistenceStrategy;
 import org.hibernate.HibernateException;
 import org.hibernate.Transaction;
 import org.hibernate.classic.Session;
-import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 

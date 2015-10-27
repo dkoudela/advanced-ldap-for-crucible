@@ -1,9 +1,6 @@
 package com.davidkoudela.crucible.persistence;
 
-import com.cenqua.crucible.hibernate.DatabaseConfig;
 import com.davidkoudela.crucible.config.AdvancedLdapDatabaseConfiguration;
-import com.davidkoudela.crucible.persistence.strategy.HibernateAdvancedLdapPluginConfigurationPersistenceStrategy;
-import org.hibernate.SessionFactory;
 
 /**
  * Description: {@link HibernateAdvancedLdapService} represents an interface for managing

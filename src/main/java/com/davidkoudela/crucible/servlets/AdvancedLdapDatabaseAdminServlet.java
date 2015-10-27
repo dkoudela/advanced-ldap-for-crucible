@@ -3,7 +3,6 @@ package com.davidkoudela.crucible.servlets;
 import com.atlassian.fisheye.plugin.web.helpers.VelocityHelper;
 import com.davidkoudela.crucible.admin.AdvancedLdapUserManager;
 import com.davidkoudela.crucible.config.AdvancedLdapDatabaseConfiguration;
-import com.davidkoudela.crucible.persistence.AdvancedLdapDatabaseConfigFactory;
 import com.davidkoudela.crucible.persistence.AdvancedLdapDatabaseConfigurationDAO;
 import com.davidkoudela.crucible.persistence.HibernateAdvancedLdapService;
 import com.davidkoudela.crucible.tasks.AdvancedLdapSynchronizationManager;
