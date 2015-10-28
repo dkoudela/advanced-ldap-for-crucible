@@ -2,6 +2,7 @@ package ut.com.davidkoudela.crucible.persistence;
 
 import com.cenqua.crucible.hibernate.DBType;
 import com.cenqua.crucible.hibernate.DatabaseConfig;
+import com.davidkoudela.crucible.config.AdvancedLdapDatabaseConfiguration;
 import com.davidkoudela.crucible.persistence.AdvancedLdapDatabaseConfigFactory;
 import junit.framework.TestCase;
 import org.junit.Before;
@@ -21,6 +22,7 @@ public class AdvancedLdapDatabaseConfigFactoryTest extends TestCase {
     private static DatabaseConfig databaseConfig;
     private static DatabaseConfig databaseConfig2;
     private static DatabaseConfig databaseConfig3;
+    private static DatabaseConfig databaseConfig4;
 
     @Before
     public void init() {
@@ -32,6 +34,9 @@ public class AdvancedLdapDatabaseConfigFactoryTest extends TestCase {
         this.databaseConfig2.setUsername("crucible");
         this.databaseConfig2.setPassword("password");
         this.databaseConfig3 = new DatabaseConfig(DBType.ORACLE);
+        this.databaseConfig3.setJdbcURL("jdbc:oracle:thin:@localhost:1521:oracru");
+        this.databaseConfig4 = new DatabaseConfig(DBType.ORACLE);
+        this.databaseConfig4.setJdbcURL("jdbc:oracle:thin:@localhost:1521:oraclecrucible");
     }
 
     public static class AdvancedLdapDatabaseConfigFactoryDummy extends AdvancedLdapDatabaseConfigFactory {
@@ -41,7 +46,51 @@ public class AdvancedLdapDatabaseConfigFactoryTest extends TestCase {
     }
 
     @Test
-    public void testConstructJdbcUrl() {
+    public void testConstructJdbcUrlMySQL() {
         assertEquals("jdbc:mysql://localhost:3306/myowndb", AdvancedLdapDatabaseConfigFactoryDummy.constructJdbcUrl(this.databaseConfig, "myowndb"));
+    }
+
+    @Test
+    public void testConstructJdbcUrlOracleShort() {
+        assertEquals("jdbc:oracle:thin:@localhost:1521:myowndb", AdvancedLdapDatabaseConfigFactoryDummy.constructJdbcUrl(this.databaseConfig3, "myowndb"));
+    }
+
+    @Test
+    public void testConstructJdbcUrlOracleLong() {
+        assertEquals("jdbc:oracle:thin:@localhost:1521:myowndbwitha", AdvancedLdapDatabaseConfigFactoryDummy.constructJdbcUrl(this.databaseConfig3, "myowndbwithalongname"));
+    }
+
+    @Test
+    public void testGetCrucibleDefaultDatabaseConfig() {
+        DatabaseConfig databaseConfigLocal = AdvancedLdapDatabaseConfigFactoryDummy.getCrucibleDefaultDatabaseConfig();
+        assertEquals("org.hibernate.dialect.HSQLDialect", databaseConfigLocal.getDialect());
+        assertEquals("jdbc:hsqldb:file:C:\\atlastutorial\\advanced-ldap-for-crucible\\./var/data/crudb/crucible", databaseConfigLocal.getJdbcURL());
+    }
+
+    @Test
+    public void testExtractDatabaseNameMySQL() {
+        assertEquals("crucible", AdvancedLdapDatabaseConfigFactoryDummy.extractDatabaseName(databaseConfig));
+    }
+
+    @Test
+    public void testExtractDatabaseNameOracleShort() {
+        assertEquals("oracru", AdvancedLdapDatabaseConfigFactoryDummy.extractDatabaseName(databaseConfig3));
+    }
+
+    @Test
+    public void testExtractDatabaseNameOracleLong() {
+        assertEquals("oraclecrucible", AdvancedLdapDatabaseConfigFactoryDummy.extractDatabaseName(databaseConfig4));
+    }
+
+    @Test
+    public void testCreateDatabaseConfig() {
+        AdvancedLdapDatabaseConfiguration advancedLdapDatabaseConfiguration = new AdvancedLdapDatabaseConfiguration();
+        advancedLdapDatabaseConfiguration.setDatabaseName("myowndb");
+        advancedLdapDatabaseConfiguration.setUserName("cru");
+        advancedLdapDatabaseConfiguration.setPassword("pass");
+        DatabaseConfig databaseConfigLocal = AdvancedLdapDatabaseConfigFactoryDummy.createDatabaseConfig(advancedLdapDatabaseConfiguration);
+        assertEquals("jdbc:hsqldb:file:C:\\atlastutorial\\advanced-ldap-for-crucible\\./var/data/myowndb/crucible", databaseConfigLocal.getJdbcURL());
+        assertEquals("cru", databaseConfigLocal.getUsername());
+        assertEquals("pass", databaseConfigLocal.getPassword());
     }
 }
