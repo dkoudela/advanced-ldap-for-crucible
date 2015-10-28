@@ -23,6 +23,7 @@ public class AdvancedLdapDatabaseConfigFactoryTest extends TestCase {
     private static DatabaseConfig databaseConfig2;
     private static DatabaseConfig databaseConfig3;
     private static DatabaseConfig databaseConfig4;
+    private static AdvancedLdapDatabaseConfiguration advancedLdapDatabaseConfigurationDefault;
 
     @Before
     public void init() {
@@ -37,6 +38,10 @@ public class AdvancedLdapDatabaseConfigFactoryTest extends TestCase {
         this.databaseConfig3.setJdbcURL("jdbc:oracle:thin:@localhost:1521:oracru");
         this.databaseConfig4 = new DatabaseConfig(DBType.ORACLE);
         this.databaseConfig4.setJdbcURL("jdbc:oracle:thin:@localhost:1521:oraclecrucible");
+        this.advancedLdapDatabaseConfigurationDefault = new AdvancedLdapDatabaseConfiguration();
+        this.advancedLdapDatabaseConfigurationDefault.setDatabaseName("crucible");
+        this.advancedLdapDatabaseConfigurationDefault.setUserName("sa");
+        this.advancedLdapDatabaseConfigurationDefault.setPassword("");
     }
 
     public static class AdvancedLdapDatabaseConfigFactoryDummy extends AdvancedLdapDatabaseConfigFactory {
@@ -92,5 +97,28 @@ public class AdvancedLdapDatabaseConfigFactoryTest extends TestCase {
         assertEquals("jdbc:hsqldb:file:C:\\atlastutorial\\advanced-ldap-for-crucible\\./var/data/myowndb/crucible", databaseConfigLocal.getJdbcURL());
         assertEquals("cru", databaseConfigLocal.getUsername());
         assertEquals("pass", databaseConfigLocal.getPassword());
+    }
+
+    @Test
+    public void testVerifyDatabaseConfigDefault() {
+        assertEquals(true, AdvancedLdapDatabaseConfigFactoryDummy.verifyDatabaseConfig(this.advancedLdapDatabaseConfigurationDefault));
+    }
+
+    @Test
+    public void testVerifyDatabaseConfigNoDatabaseName() {
+        AdvancedLdapDatabaseConfiguration advancedLdapDatabaseConfiguration = new AdvancedLdapDatabaseConfiguration();
+        advancedLdapDatabaseConfiguration.setDatabaseName("");
+        advancedLdapDatabaseConfiguration.setUserName("cru");
+        advancedLdapDatabaseConfiguration.setPassword("pass");
+        assertEquals(false, AdvancedLdapDatabaseConfigFactoryDummy.verifyDatabaseConfig(advancedLdapDatabaseConfiguration));
+    }
+
+    @Test
+    public void testVerifyDatabaseConfigWrongCredentials() {
+        AdvancedLdapDatabaseConfiguration advancedLdapDatabaseConfiguration = new AdvancedLdapDatabaseConfiguration();
+        advancedLdapDatabaseConfiguration.setDatabaseName("crucible");
+        advancedLdapDatabaseConfiguration.setUserName("cru");
+        advancedLdapDatabaseConfiguration.setPassword("cible");
+        assertEquals(false, AdvancedLdapDatabaseConfigFactoryDummy.verifyDatabaseConfig(advancedLdapDatabaseConfiguration));
     }
 }
