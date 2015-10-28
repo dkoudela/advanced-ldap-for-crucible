@@ -23,7 +23,7 @@ public class HibernateAdvancedLdapServiceImpl implements HibernateAdvancedLdapSe
     }
 
     @Override
-    public void initiate() {
+    public synchronized void initiate() {
         try {
             AdvancedLdapDatabaseConfiguration advancedLdapDatabaseConfiguration = this.advancedLdapDatabaseConfigurationDAO.get();
             this.hibernateAdvancedLdapInstance = new HibernateAdvancedLdapInstance();
@@ -41,7 +41,7 @@ public class HibernateAdvancedLdapServiceImpl implements HibernateAdvancedLdapSe
     }
 
     @Override
-    public HibernateAdvancedLdapInstance getInstance() {
+    public synchronized HibernateAdvancedLdapInstance getInstance() {
         return this.hibernateAdvancedLdapInstance;
     }
 
