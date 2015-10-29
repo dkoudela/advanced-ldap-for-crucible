@@ -5,6 +5,8 @@ import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.davidkoudela.crucible.config.AdvancedLdapDatabaseConfiguration;
 import org.springframework.stereotype.Component;
 
+import java.util.function.Predicate;
+
 /**
  * Description: Implementation of {@link AdvancedLdapDatabaseConfigurationDAO} representing the Data Access Object class
  *              for {@link com.davidkoudela.crucible.config.AdvancedLdapDatabaseConfiguration}.
@@ -15,11 +17,12 @@ import org.springframework.stereotype.Component;
  */
 @Component("advancedLdapDatabaseConfigurationDAO")
 public class AdvancedLdapDatabaseConfigurationDAOImpl implements AdvancedLdapDatabaseConfigurationDAO {
-    private static final String enabled = "AdvancedLdap.dbConfig.enabled";
-    private static final String databaseName = "AdvancedLdap.dbConfig.databaseName";
-    private static final String username = "AdvancedLdap.dbConfig.username";
-    private static final String password = "AdvancedLdap.dbConfig.password";
+    protected static final String enabled = "AdvancedLdap.dbConfig.enabled";
+    protected static final String databaseName = "AdvancedLdap.dbConfig.databaseName";
+    protected static final String username = "AdvancedLdap.dbConfig.username";
+    protected static final String password = "AdvancedLdap.dbConfig.password";
     private PluginSettingsFactory settingsFactory;
+    private AdvancedLdapDatabaseConfigFactory advancedLdapDatabaseConfigFactory = null;
 
     public AdvancedLdapDatabaseConfigurationDAOImpl(PluginSettingsFactory settingsFactory) {
         this.settingsFactory = settingsFactory;
@@ -59,10 +62,10 @@ public class AdvancedLdapDatabaseConfigurationDAOImpl implements AdvancedLdapDat
             }
 
             // If it is not found in the plugin settings, try separate database introduced in the first plugin revisions
-            advancedLdapDatabaseConfiguration.setDatabaseName(AdvancedLdapDatabaseConfigFactory.pluginDbName);
-            advancedLdapDatabaseConfiguration.setUserName(AdvancedLdapDatabaseConfigFactory.getCrucibleDefaultDatabaseConfig().getUsername());
-            advancedLdapDatabaseConfiguration.setPassword(AdvancedLdapDatabaseConfigFactory.getCrucibleDefaultDatabaseConfig().getPassword());
-            if (false != AdvancedLdapDatabaseConfigFactory.verifyDatabaseConfig(advancedLdapDatabaseConfiguration)) {
+            advancedLdapDatabaseConfiguration.setDatabaseName(getAdvancedLdapDatabaseConfigFactory().pluginDbName);
+            advancedLdapDatabaseConfiguration.setUserName(getAdvancedLdapDatabaseConfigFactory().getCrucibleDefaultDatabaseConfig().getUsername());
+            advancedLdapDatabaseConfiguration.setPassword(getAdvancedLdapDatabaseConfigFactory().getCrucibleDefaultDatabaseConfig().getPassword());
+            if (false != getAdvancedLdapDatabaseConfigFactory().verifyDatabaseConfig(advancedLdapDatabaseConfiguration)) {
                 return advancedLdapDatabaseConfiguration;
             }
 
@@ -86,4 +89,15 @@ public class AdvancedLdapDatabaseConfigurationDAOImpl implements AdvancedLdapDat
             System.out.println("Cannot remove AdvancedLdapDatabaseConfiguration: " + e);
         }
     }
+
+    protected void setAdvancedLdapDatabaseConfigFactory(AdvancedLdapDatabaseConfigFactory advancedLdapDatabaseConfigFactory) {
+        this.advancedLdapDatabaseConfigFactory = advancedLdapDatabaseConfigFactory;
+    }
+
+    protected AdvancedLdapDatabaseConfigFactory getAdvancedLdapDatabaseConfigFactory() {
+        if (null == this.advancedLdapDatabaseConfigFactory)
+            return new AdvancedLdapDatabaseConfigFactory();
+        return this.advancedLdapDatabaseConfigFactory;
+    }
+
 }
