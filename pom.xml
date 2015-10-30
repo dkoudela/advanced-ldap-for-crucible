@@ -269,7 +269,7 @@
         <dependency>
             <groupId>com.atlassian.aui</groupId>
             <artifactId>auiplugin</artifactId>
-            <version>5.9.0</version>
+            <version>5.9.2</version>
         </dependency>
 
         <!-- WIRED TEST RUNNER DEPENDENCIES -->
