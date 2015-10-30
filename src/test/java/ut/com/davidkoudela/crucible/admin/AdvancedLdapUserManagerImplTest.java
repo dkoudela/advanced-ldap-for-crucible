@@ -377,7 +377,7 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
 
         try {
             advancedLdapUserManager.countActiveUsers(null);
-            advancedLdapUserManager.notifyLicenseUpdate();
+            advancedLdapUserManager.notifyLicenseUpdate(); // TODO: not supported from 3.9.1
             advancedLdapUserManager.reload(null);
             advancedLdapUserManager.validateCurrentUser(null, null);
             advancedLdapUserManager.getCurrentUser((HttpServletRequest) null);
@@ -471,7 +471,7 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
             return 0;
         }
 
-        @Override
+        @Override // TODO: not supported from 3.9.1
         public void notifyLicenseUpdate() {
 
         }

@@ -126,5 +126,18 @@ public class AdvancedLdapDatabaseConfigurationDAOImplTest extends TestCase {
 
     @Test
     public void testGetNoSettingsStoredNoSeparateDatabaseFound() {
+
+    }
+
+    @Test
+    public void testRemove() {
+        AdvancedLdapDatabaseConfigurationDAOImplDummy advancedLdapDatabaseConfigurationDAOImplDummy = new AdvancedLdapDatabaseConfigurationDAOImplDummy(this.pluginSettingsFactory);
+        Mockito.when(this.pluginSettingsFactory.createGlobalSettings()).thenReturn(this.pluginSettings);
+        Mockito.when(this.pluginSettings.put(ArgumentCaptor.forClass(String.class).capture(), this.argumentCaptorEnable.capture())).thenReturn(null);
+
+        advancedLdapDatabaseConfigurationDAOImplDummy.remove();
+
+        Mockito.verify(this.pluginSettingsFactory, Mockito.times(1)).createGlobalSettings();
+        Mockito.verify(this.pluginSettings, Mockito.times(1)).put(advancedLdapDatabaseConfigurationDAOImplDummy.getEnabled(), Boolean.FALSE.toString());
     }
 }
