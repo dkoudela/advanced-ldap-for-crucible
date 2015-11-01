@@ -52,9 +52,10 @@ public class AdvancedLdapDatabaseConfigurationDAOImpl implements AdvancedLdapDat
             advancedLdapDatabaseConfiguration.setDatabaseName((String) settings.get(this.databaseName));
             advancedLdapDatabaseConfiguration.setUserName((String) settings.get(this.username));
             advancedLdapDatabaseConfiguration.setPassword((String) settings.get(this.password));
+            Object enabledValue = settings.get(this.enabled);
 
-            if (null != settings.get(this.enabled) &&
-                    0 == ((String) settings.get(this.enabled)).compareTo(Boolean.TRUE.toString()) &&
+            if (null != enabledValue &&
+                    0 == ((String) enabledValue).compareTo(Boolean.TRUE.toString()) &&
                     null != advancedLdapDatabaseConfiguration.getDatabaseName() &&
                     null != advancedLdapDatabaseConfiguration.getUserName() &&
                     null != advancedLdapDatabaseConfiguration.getPassword()) {

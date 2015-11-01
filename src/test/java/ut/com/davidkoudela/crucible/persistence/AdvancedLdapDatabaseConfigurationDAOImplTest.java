@@ -31,16 +31,12 @@ import org.powermock.modules.junit4.PowerMockRunner;
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({PluginSettingsFactory.class, PluginSettings.class, AdvancedLdapDatabaseConfigFactory.class})
-@PowerMockIgnore("javax.management.*")
+//@PowerMockIgnore("javax.management.*")
 public class AdvancedLdapDatabaseConfigurationDAOImplTest extends TestCase {
     private static PluginSettingsFactory pluginSettingsFactory;
     private static PluginSettings pluginSettings;
     private static AdvancedLdapDatabaseConfigFactory advancedLdapDatabaseConfigFactory;
     private static DatabaseConfig databaseConfig;
-    private static ArgumentCaptor<String> argumentCaptorEnable;
-    private static ArgumentCaptor<String> argumentCaptorDatabaseName;
-    private static ArgumentCaptor<String> argumentCaptorUsername;
-    private static ArgumentCaptor<String> argumentCaptorPassword;
 
     public class AdvancedLdapDatabaseConfigurationDAOImplDummy extends AdvancedLdapDatabaseConfigurationDAOImpl {
         public AdvancedLdapDatabaseConfigurationDAOImplDummy(PluginSettingsFactory settingsFactory) {
@@ -62,10 +58,6 @@ public class AdvancedLdapDatabaseConfigurationDAOImplTest extends TestCase {
         this.pluginSettingsFactory = PowerMock.createMock(PluginSettingsFactory.class);
         this.pluginSettings = PowerMock.createMock(PluginSettings.class);
         this.advancedLdapDatabaseConfigFactory = PowerMock.createMock(AdvancedLdapDatabaseConfigFactory.class);
-        this.argumentCaptorEnable = ArgumentCaptor.forClass(String.class);
-        this.argumentCaptorDatabaseName = ArgumentCaptor.forClass(String.class);
-        this.argumentCaptorUsername = ArgumentCaptor.forClass(String.class);
-        this.argumentCaptorPassword = ArgumentCaptor.forClass(String.class);
         this.databaseConfig = new DatabaseConfig(DBType.ORACLE, "jdbc:oracle:thin:@localhost:1521:crucible", "crucible", "pwd", DriverSource.BUNDLED, 5, 20);
     }
 
@@ -96,7 +88,6 @@ public class AdvancedLdapDatabaseConfigurationDAOImplTest extends TestCase {
         EasyMock.expect(this.pluginSettings.get(advancedLdapDatabaseConfigurationDAOImplDummy.getUsername())).andReturn("sa");
         EasyMock.expect(this.pluginSettings.get(advancedLdapDatabaseConfigurationDAOImplDummy.getPassword())).andReturn("pwd");
         EasyMock.expect(this.pluginSettings.get(advancedLdapDatabaseConfigurationDAOImplDummy.getEnabled())).andReturn(Boolean.TRUE.toString());
-        EasyMock.expect(this.pluginSettings.get(advancedLdapDatabaseConfigurationDAOImplDummy.getEnabled())).andReturn(Boolean.TRUE.toString());
 
         PowerMock.replayAll();
         AdvancedLdapDatabaseConfiguration advancedLdapDatabaseConfiguration = advancedLdapDatabaseConfigurationDAOImplDummy.get();
@@ -125,23 +116,48 @@ public class AdvancedLdapDatabaseConfigurationDAOImplTest extends TestCase {
 
         PowerMock.replayAll();
         AdvancedLdapDatabaseConfiguration advancedLdapDatabaseConfiguration = advancedLdapDatabaseConfigurationDAOImplDummy.get();
-        PowerMock.verifyAll();
+
+        assertEquals("crucibleadldb", advancedLdapDatabaseConfiguration.getDatabaseName());
+        assertEquals("sa", advancedLdapDatabaseConfiguration.getUserName());
+        assertEquals("", advancedLdapDatabaseConfiguration.getPassword());
     }
 
     @Test
     public void testGetNoSettingsStoredNoSeparateDatabaseFound() {
+        AdvancedLdapDatabaseConfigurationDAOImplDummy advancedLdapDatabaseConfigurationDAOImplDummy = new AdvancedLdapDatabaseConfigurationDAOImplDummy(this.pluginSettingsFactory);
+        advancedLdapDatabaseConfigurationDAOImplDummy.setAdvancedLdapDatabaseConfigFactory(this.advancedLdapDatabaseConfigFactory);
+        AdvancedLdapDatabaseConfiguration advancedLdapDatabaseConfigurationDefault = new AdvancedLdapDatabaseConfiguration();
+        advancedLdapDatabaseConfigurationDefault.setDatabaseName(AdvancedLdapDatabaseConfigFactory.pluginDbName);
+        advancedLdapDatabaseConfigurationDefault.setUserName("sa");
+        advancedLdapDatabaseConfigurationDefault.setPassword("pwd");
 
+        EasyMock.expect(this.pluginSettingsFactory.createGlobalSettings()).andReturn(this.pluginSettings);
+        EasyMock.expect(this.pluginSettings.get(advancedLdapDatabaseConfigurationDAOImplDummy.getDatabaseName())).andReturn("crucible");
+        EasyMock.expect(this.pluginSettings.get(advancedLdapDatabaseConfigurationDAOImplDummy.getUsername())).andReturn("sa");
+        EasyMock.expect(this.pluginSettings.get(advancedLdapDatabaseConfigurationDAOImplDummy.getPassword())).andReturn("pwd");
+        EasyMock.expect(this.pluginSettings.get(advancedLdapDatabaseConfigurationDAOImplDummy.getEnabled())).andReturn(Boolean.FALSE.toString());
+        EasyMock.expect(this.advancedLdapDatabaseConfigFactory.verifyDatabaseConfig(advancedLdapDatabaseConfigurationDefault)).andReturn(false);
+        EasyMock.expect(this.advancedLdapDatabaseConfigFactory.getCrucibleDefaultDatabaseConfig()).andReturn(this.databaseConfig).times(3);
+        EasyMock.expect(this.advancedLdapDatabaseConfigFactory.extractDatabaseName(this.databaseConfig)).andReturn("crucible");
+
+        PowerMock.replayAll();
+        AdvancedLdapDatabaseConfiguration advancedLdapDatabaseConfiguration = advancedLdapDatabaseConfigurationDAOImplDummy.get();
+
+        assertEquals("crucible", advancedLdapDatabaseConfiguration.getDatabaseName());
+        assertEquals("sa", advancedLdapDatabaseConfiguration.getUserName());
+        assertEquals("", advancedLdapDatabaseConfiguration.getPassword());
     }
 
     @Test
     public void testRemove() {
         AdvancedLdapDatabaseConfigurationDAOImplDummy advancedLdapDatabaseConfigurationDAOImplDummy = new AdvancedLdapDatabaseConfigurationDAOImplDummy(this.pluginSettingsFactory);
-        Mockito.when(this.pluginSettingsFactory.createGlobalSettings()).thenReturn(this.pluginSettings);
-        Mockito.when(this.pluginSettings.put(ArgumentCaptor.forClass(String.class).capture(), this.argumentCaptorEnable.capture())).thenReturn(null);
+        advancedLdapDatabaseConfigurationDAOImplDummy.setAdvancedLdapDatabaseConfigFactory(this.advancedLdapDatabaseConfigFactory);
 
+        EasyMock.expect(this.pluginSettingsFactory.createGlobalSettings()).andReturn(this.pluginSettings);
+        EasyMock.expect(this.pluginSettings.put(advancedLdapDatabaseConfigurationDAOImplDummy.getEnabled(), Boolean.FALSE.toString())).andReturn(null);
+
+        PowerMock.replayAll();
         advancedLdapDatabaseConfigurationDAOImplDummy.remove();
-
-        Mockito.verify(this.pluginSettingsFactory, Mockito.times(1)).createGlobalSettings();
-        Mockito.verify(this.pluginSettings, Mockito.times(1)).put(advancedLdapDatabaseConfigurationDAOImplDummy.getEnabled(), Boolean.FALSE.toString());
+        PowerMock.verifyAll();
     }
 }
