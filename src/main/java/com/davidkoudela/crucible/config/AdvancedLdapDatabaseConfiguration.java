@@ -56,4 +56,9 @@ public class AdvancedLdapDatabaseConfiguration {
         }
         return isEqual;
     }
+
+    public String toString() {
+        return "{ databaseName=\"" + this.databaseName + "\", userName=\"" + this.userName + "\", password=\"" + this.password + "\" }";
+    }
+
 }
