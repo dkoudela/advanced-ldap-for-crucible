@@ -41,18 +41,18 @@ public class AdvancedLdapDatabaseConfiguration {
         boolean isEqual = false;
         if (this.getClass() == obj.getClass()) {
             AdvancedLdapDatabaseConfiguration givenObj = (AdvancedLdapDatabaseConfiguration) obj;
-            if (null != this.databaseName && null != givenObj.databaseName &&
-                    null != this.userName && null != givenObj.userName &&
-                    null != this.password && null != givenObj.password) {
-                if (0 == this.databaseName.compareTo(givenObj.databaseName) &&
-                        0 == this.userName.compareTo(givenObj.userName) &&
-                        0 == this.password.compareTo(givenObj.password)) {
-                    isEqual = true;
-                }
-            } else {
-                // TODO: null comparison
-            }
 
+            boolean databaseNamesVerification = (
+                    (null == this.databaseName && null == givenObj.databaseName) ||
+                    (null != this.databaseName && null != givenObj.databaseName && 0 == this.databaseName.compareTo(givenObj.databaseName)));
+            boolean userNameVerification = (
+                    (null == this.userName && null == givenObj.userName) ||
+                    (null != this.userName && null != givenObj.userName && 0 == this.userName.compareTo(givenObj.userName)));
+            boolean passwordVerification = (
+                    (null == this.password && null == givenObj.password) ||
+                    (null != this.password && null != givenObj.password && 0 == this.password.compareTo(givenObj.password)));
+
+            isEqual = databaseNamesVerification && userNameVerification && passwordVerification;
         }
         return isEqual;
     }
