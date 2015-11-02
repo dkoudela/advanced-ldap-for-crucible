@@ -22,7 +22,6 @@ public class AdvancedLdapDatabaseConfigurationDAOImpl implements AdvancedLdapDat
     protected static final String username = "AdvancedLdap.dbConfig.username";
     protected static final String password = "AdvancedLdap.dbConfig.password";
     private PluginSettingsFactory settingsFactory;
-    private AdvancedLdapDatabaseConfigFactory advancedLdapDatabaseConfigFactory = null;
 
     public AdvancedLdapDatabaseConfigurationDAOImpl(PluginSettingsFactory settingsFactory) {
         this.settingsFactory = settingsFactory;
@@ -63,10 +62,10 @@ public class AdvancedLdapDatabaseConfigurationDAOImpl implements AdvancedLdapDat
             }
 
             // If it is not found in the plugin settings, try separate database introduced in the first plugin revisions
-            advancedLdapDatabaseConfiguration.setDatabaseName(getAdvancedLdapDatabaseConfigFactory().pluginDbName);
-            advancedLdapDatabaseConfiguration.setUserName(getAdvancedLdapDatabaseConfigFactory().getCrucibleDefaultDatabaseConfig().getUsername());
-            advancedLdapDatabaseConfiguration.setPassword(getAdvancedLdapDatabaseConfigFactory().getCrucibleDefaultDatabaseConfig().getPassword());
-            if (false != getAdvancedLdapDatabaseConfigFactory().verifyDatabaseConfig(advancedLdapDatabaseConfiguration)) {
+            advancedLdapDatabaseConfiguration.setDatabaseName(AdvancedLdapDatabaseConfigFactory.pluginDbName);
+            advancedLdapDatabaseConfiguration.setUserName(AdvancedLdapDatabaseConfigFactory.getCrucibleDefaultDatabaseConfig().getUsername());
+            advancedLdapDatabaseConfiguration.setPassword(AdvancedLdapDatabaseConfigFactory.getCrucibleDefaultDatabaseConfig().getPassword());
+            if (false != AdvancedLdapDatabaseConfigFactory.verifyDatabaseConfig(advancedLdapDatabaseConfiguration)) {
                 return advancedLdapDatabaseConfiguration;
             }
 
@@ -89,16 +88,6 @@ public class AdvancedLdapDatabaseConfigurationDAOImpl implements AdvancedLdapDat
         } catch (Exception e) {
             System.out.println("Cannot remove AdvancedLdapDatabaseConfiguration: " + e);
         }
-    }
-
-    protected void setAdvancedLdapDatabaseConfigFactory(AdvancedLdapDatabaseConfigFactory advancedLdapDatabaseConfigFactory) {
-        this.advancedLdapDatabaseConfigFactory = advancedLdapDatabaseConfigFactory;
-    }
-
-    protected AdvancedLdapDatabaseConfigFactory getAdvancedLdapDatabaseConfigFactory() {
-        if (null == this.advancedLdapDatabaseConfigFactory)
-            return new AdvancedLdapDatabaseConfigFactory();
-        return this.advancedLdapDatabaseConfigFactory;
     }
 
 }

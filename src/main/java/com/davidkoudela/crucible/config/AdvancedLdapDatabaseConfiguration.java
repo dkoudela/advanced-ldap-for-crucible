@@ -35,4 +35,25 @@ public class AdvancedLdapDatabaseConfiguration {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        boolean isEqual = false;
+        if (this.getClass() == obj.getClass()) {
+            AdvancedLdapDatabaseConfiguration givenObj = (AdvancedLdapDatabaseConfiguration) obj;
+            if (null != this.databaseName && null != givenObj.databaseName &&
+                    null != this.userName && null != givenObj.userName &&
+                    null != this.password && null != givenObj.password) {
+                if (0 == this.databaseName.compareTo(givenObj.databaseName) &&
+                        0 == this.userName.compareTo(givenObj.userName) &&
+                        0 == this.password.compareTo(givenObj.password)) {
+                    isEqual = true;
+                }
+            } else {
+                // TODO: null comparison
+            }
+
+        }
+        return isEqual;
+    }
 }
