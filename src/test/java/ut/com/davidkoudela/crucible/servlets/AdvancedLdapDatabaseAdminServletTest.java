@@ -115,4 +115,122 @@ public class AdvancedLdapDatabaseAdminServletTest extends TestCase {
 
         Mockito.verify(resp).sendRedirect("fecru/admin/login-default.do");
     }
+
+    @Test
+    public void testDoPostWithAdminPermissionsAdminEdit() throws ServletException, IOException {
+        AdvancedLdapDatabaseConfiguration advancedLdapDatabaseConfiguration = new AdvancedLdapDatabaseConfiguration();
+        advancedLdapDatabaseConfiguration.setDatabaseName("crucible");
+        advancedLdapDatabaseConfiguration.setUserName("sa");
+        advancedLdapDatabaseConfiguration.setPassword("pwd");
+        Mockito.when(this.advancedLdapDatabaseConfigurationDAO.get()).thenReturn(advancedLdapDatabaseConfiguration);
+        Mockito.when(this.advancedLdapUserManager.hasSysAdminPrivileges(ArgumentCaptor.forClass(HttpServletRequest.class).capture())).thenReturn(true);
+        Mockito.doNothing().when(this.velocityHelper).renderVelocityTemplate(argumentCaptorString.capture(),
+                argumentCaptorMap.capture(), argumentCaptorPrintWriter.capture());
+
+        AdvancedLdapDatabaseAdminServletDummy advancedLdapDatabaseAdminServletDummy = new AdvancedLdapDatabaseAdminServletDummy(velocityHelper, advancedLdapUserManager, hibernateAdvancedLdapService, advancedLdapDatabaseConfigurationDAO, advancedLdapSynchronizationManager);
+
+        HttpServletRequest req = Mockito.mock(HttpServletRequest.class);
+        Mockito.when(req.getParameter("dbConfig.dbName")).thenReturn("crucible");
+        Mockito.when(req.getParameter("dbConfig.username")).thenReturn("sa");
+        Mockito.when(req.getParameter("passwordChanged")).thenReturn("true");
+        Mockito.when(req.getParameter("dbConfig.password")).thenReturn("pwd");
+        Mockito.when(req.getPathInfo()).thenReturn("/advancedLdapDatabaseAdminServletEdit.do");
+        HttpServletResponse resp = Mockito.mock(HttpServletResponse.class);
+        advancedLdapDatabaseAdminServletDummy.doPost(req, resp);
+
+        assertEquals("templates/databaseEdit.vm", argumentCaptorString.getValue());
+        assertEquals(1, argumentCaptorMap.getValue().size());
+        assertEquals("[advancedLdapDatabaseConfiguration]", argumentCaptorMap.getValue().keySet().toString());
+        AdvancedLdapDatabaseConfiguration advancedLdapDatabaseConfigurationResult = (AdvancedLdapDatabaseConfiguration) argumentCaptorMap.getValue().get("advancedLdapDatabaseConfiguration");
+        assertEquals("{ databaseName=\"crucible\", userName=\"sa\", password=\"pwd\" }", advancedLdapDatabaseConfigurationResult.toString());
+    }
+
+    @Test
+    public void testDoPostWithAdminPermissionsAdminTest() throws ServletException, IOException {
+        AdvancedLdapDatabaseConfiguration advancedLdapDatabaseConfiguration = new AdvancedLdapDatabaseConfiguration();
+        advancedLdapDatabaseConfiguration.setDatabaseName("crucible");
+        advancedLdapDatabaseConfiguration.setUserName("sa");
+        advancedLdapDatabaseConfiguration.setPassword("pwd");
+        Mockito.when(this.advancedLdapDatabaseConfigurationDAO.get()).thenReturn(advancedLdapDatabaseConfiguration);
+        Mockito.when(this.advancedLdapUserManager.hasSysAdminPrivileges(ArgumentCaptor.forClass(HttpServletRequest.class).capture())).thenReturn(true);
+        Mockito.doNothing().when(this.velocityHelper).renderVelocityTemplate(argumentCaptorString.capture(),
+                argumentCaptorMap.capture(), argumentCaptorPrintWriter.capture());
+
+        AdvancedLdapDatabaseAdminServletDummy advancedLdapDatabaseAdminServletDummy = new AdvancedLdapDatabaseAdminServletDummy(velocityHelper, advancedLdapUserManager, hibernateAdvancedLdapService, advancedLdapDatabaseConfigurationDAO, advancedLdapSynchronizationManager);
+
+        HttpServletRequest req = Mockito.mock(HttpServletRequest.class);
+        Mockito.when(req.getParameter("dbConfig.dbName")).thenReturn("crucible");
+        Mockito.when(req.getParameter("dbConfig.username")).thenReturn("sa");
+        Mockito.when(req.getParameter("passwordChanged")).thenReturn("true");
+        Mockito.when(req.getParameter("dbConfig.password")).thenReturn("pwd");
+        Mockito.when(req.getPathInfo()).thenReturn("/advancedLdapDatabaseAdminServletTest.do");
+        HttpServletResponse resp = Mockito.mock(HttpServletResponse.class);
+        advancedLdapDatabaseAdminServletDummy.doPost(req, resp);
+
+        assertEquals("templates/databaseTest.vm", argumentCaptorString.getValue());
+        assertEquals(1, argumentCaptorMap.getValue().size());
+        assertEquals("[testResult]", argumentCaptorMap.getValue().keySet().toString());
+        Boolean testResult = (Boolean) argumentCaptorMap.getValue().get("testResult");
+        assertEquals(false, testResult.booleanValue());
+    }
+
+    @Test
+    public void testDoPostWithAdminPermissionsAdminRemove() throws ServletException, IOException {
+        AdvancedLdapDatabaseConfiguration advancedLdapDatabaseConfiguration = new AdvancedLdapDatabaseConfiguration();
+        advancedLdapDatabaseConfiguration.setDatabaseName("crucible");
+        advancedLdapDatabaseConfiguration.setUserName("sa");
+        advancedLdapDatabaseConfiguration.setPassword("pwd");
+        Mockito.doNothing().when(this.advancedLdapDatabaseConfigurationDAO).remove();
+        Mockito.when(this.advancedLdapDatabaseConfigurationDAO.get()).thenReturn(advancedLdapDatabaseConfiguration);
+        Mockito.when(this.advancedLdapUserManager.hasSysAdminPrivileges(ArgumentCaptor.forClass(HttpServletRequest.class).capture())).thenReturn(true);
+        Mockito.doNothing().when(this.velocityHelper).renderVelocityTemplate(argumentCaptorString.capture(),
+                argumentCaptorMap.capture(), argumentCaptorPrintWriter.capture());
+
+        AdvancedLdapDatabaseAdminServletDummy advancedLdapDatabaseAdminServletDummy = new AdvancedLdapDatabaseAdminServletDummy(velocityHelper, advancedLdapUserManager, hibernateAdvancedLdapService, advancedLdapDatabaseConfigurationDAO, advancedLdapSynchronizationManager);
+
+        HttpServletRequest req = Mockito.mock(HttpServletRequest.class);
+        Mockito.when(req.getParameter("dbConfig.dbName")).thenReturn("crucible");
+        Mockito.when(req.getParameter("dbConfig.username")).thenReturn("sa");
+        Mockito.when(req.getParameter("passwordChanged")).thenReturn("true");
+        Mockito.when(req.getParameter("dbConfig.password")).thenReturn("pwd");
+        Mockito.when(req.getPathInfo()).thenReturn("/advancedLdapDatabaseAdminServletRemove.do");
+        HttpServletResponse resp = Mockito.mock(HttpServletResponse.class);
+        advancedLdapDatabaseAdminServletDummy.doPost(req, resp);
+
+        assertEquals("templates/databaseView.vm", argumentCaptorString.getValue());
+        assertEquals(1, argumentCaptorMap.getValue().size());
+        assertEquals("[advancedLdapDatabaseConfiguration]", argumentCaptorMap.getValue().keySet().toString());
+        AdvancedLdapDatabaseConfiguration advancedLdapDatabaseConfigurationResult = (AdvancedLdapDatabaseConfiguration) argumentCaptorMap.getValue().get("advancedLdapDatabaseConfiguration");
+        assertEquals("{ databaseName=\"crucible\", userName=\"sa\", password=\"pwd\" }", advancedLdapDatabaseConfigurationResult.toString());
+    }
+
+    @Test
+    public void testDoPostWithAdminPermissionsAdminOther() throws ServletException, IOException {
+        AdvancedLdapDatabaseConfiguration advancedLdapDatabaseConfiguration = new AdvancedLdapDatabaseConfiguration();
+        advancedLdapDatabaseConfiguration.setDatabaseName("crucible");
+        advancedLdapDatabaseConfiguration.setUserName("sa");
+        advancedLdapDatabaseConfiguration.setPassword("pwd");
+        Mockito.doNothing().when(this.advancedLdapDatabaseConfigurationDAO).store(advancedLdapDatabaseConfiguration);
+        Mockito.when(this.advancedLdapDatabaseConfigurationDAO.get()).thenReturn(advancedLdapDatabaseConfiguration);
+        Mockito.when(this.advancedLdapUserManager.hasSysAdminPrivileges(ArgumentCaptor.forClass(HttpServletRequest.class).capture())).thenReturn(true);
+        Mockito.doNothing().when(this.velocityHelper).renderVelocityTemplate(argumentCaptorString.capture(),
+                argumentCaptorMap.capture(), argumentCaptorPrintWriter.capture());
+
+        AdvancedLdapDatabaseAdminServletDummy advancedLdapDatabaseAdminServletDummy = new AdvancedLdapDatabaseAdminServletDummy(velocityHelper, advancedLdapUserManager, hibernateAdvancedLdapService, advancedLdapDatabaseConfigurationDAO, advancedLdapSynchronizationManager);
+
+        HttpServletRequest req = Mockito.mock(HttpServletRequest.class);
+        Mockito.when(req.getParameter("dbConfig.dbName")).thenReturn("crucible");
+        Mockito.when(req.getParameter("dbConfig.username")).thenReturn("sa");
+        Mockito.when(req.getParameter("passwordChanged")).thenReturn("true");
+        Mockito.when(req.getParameter("dbConfig.password")).thenReturn("pwd");
+        Mockito.when(req.getPathInfo()).thenReturn("/advancedLdapDatabaseAdminServletOther.do");
+        HttpServletResponse resp = Mockito.mock(HttpServletResponse.class);
+        advancedLdapDatabaseAdminServletDummy.doPost(req, resp);
+
+        assertEquals("templates/databaseView.vm", argumentCaptorString.getValue());
+        assertEquals(1, argumentCaptorMap.getValue().size());
+        assertEquals("[advancedLdapDatabaseConfiguration]", argumentCaptorMap.getValue().keySet().toString());
+        AdvancedLdapDatabaseConfiguration advancedLdapDatabaseConfigurationResult = (AdvancedLdapDatabaseConfiguration) argumentCaptorMap.getValue().get("advancedLdapDatabaseConfiguration");
+        assertEquals("{ databaseName=\"crucible\", userName=\"sa\", password=\"pwd\" }", advancedLdapDatabaseConfigurationResult.toString());
+    }
 }

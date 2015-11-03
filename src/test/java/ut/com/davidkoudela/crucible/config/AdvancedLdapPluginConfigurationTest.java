@@ -34,6 +34,7 @@ public class AdvancedLdapPluginConfigurationTest extends TestCase {
         advancedLdapPluginConfiguration.setGIDAttributeKey("gid");
         advancedLdapPluginConfiguration.setGroupDisplayNameKey("member");
         advancedLdapPluginConfiguration.setUserNamesKey("names");
+        advancedLdapPluginConfiguration.setRecordRevision("666");
 
         assertEquals(1, advancedLdapPluginConfiguration.getId());
         assertEquals(2, advancedLdapPluginConfiguration.getConnectTimeoutMillis());
@@ -53,5 +54,6 @@ public class AdvancedLdapPluginConfigurationTest extends TestCase {
         assertEquals("gid", advancedLdapPluginConfiguration.getGIDAttributeKey());
         assertEquals("member", advancedLdapPluginConfiguration.getGroupDisplayNameKey());
         assertEquals("names", advancedLdapPluginConfiguration.getUserNamesKey());
+        assertEquals("666", advancedLdapPluginConfiguration.getRecordRevision());
     }
 }
