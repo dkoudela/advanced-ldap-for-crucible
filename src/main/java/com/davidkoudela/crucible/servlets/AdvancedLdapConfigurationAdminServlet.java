@@ -1,5 +1,6 @@
 package com.davidkoudela.crucible.servlets;
 
+import com.atlassian.crucible.spi.FisheyePluginUtilities;
 import com.atlassian.fisheye.plugin.web.helpers.VelocityHelper;
 import com.davidkoudela.crucible.admin.AdvancedLdapUserManager;
 import com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration;
@@ -28,16 +29,19 @@ public class AdvancedLdapConfigurationAdminServlet extends HttpServlet {
     private HibernateAdvancedLdapPluginConfigurationDAO hibernateAdvancedLdapPluginConfigurationDAO;
     private AdvancedLdapSynchronizationManager advancedLdapSynchronizationManager;
     private AdvancedLdapUserManager advancedLdapUserManager;
+    private FisheyePluginUtilities fisheyePluginUtilities;
 
     @org.springframework.beans.factory.annotation.Autowired
     public AdvancedLdapConfigurationAdminServlet(VelocityHelper velocityHelper,
                                                  HibernateAdvancedLdapPluginConfigurationDAO hibernateAdvancedLdapPluginConfigurationDAO,
                                                  AdvancedLdapSynchronizationManager advancedLdapSynchronizationManager,
-                                                 AdvancedLdapUserManager advancedLdapUserManager) {
+                                                 AdvancedLdapUserManager advancedLdapUserManager,
+                                                 FisheyePluginUtilities fisheyePluginUtilities) {
         this.velocityHelper = velocityHelper;
         this.hibernateAdvancedLdapPluginConfigurationDAO = hibernateAdvancedLdapPluginConfigurationDAO;
         this.advancedLdapSynchronizationManager = advancedLdapSynchronizationManager;
         this.advancedLdapUserManager = advancedLdapUserManager;
+        this.fisheyePluginUtilities = fisheyePluginUtilities;
     }
 
     @Override
@@ -49,6 +53,8 @@ public class AdvancedLdapConfigurationAdminServlet extends HttpServlet {
             AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = this.hibernateAdvancedLdapPluginConfigurationDAO.get();
 
             params.put("advancedLdapPluginConfiguration", advancedLdapPluginConfiguration);
+            params.put("request", req);
+            params.put("STATICDIR", this.fisheyePluginUtilities.getStaticDir());
             velocityHelper.renderVelocityTemplate("templates/configureView.vm", params, resp.getWriter());
         } else {
             resp.sendRedirect(req.getContextPath() + "/admin/login-default.do");
@@ -64,6 +70,8 @@ public class AdvancedLdapConfigurationAdminServlet extends HttpServlet {
             AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = this.hibernateAdvancedLdapPluginConfigurationDAO.get();
             if (req.getPathInfo().contains("/advancedLdapConfigurationAdminServletEdit.do")) {
                 params.put("advancedLdapPluginConfiguration", advancedLdapPluginConfiguration);
+                params.put("request", req);
+                params.put("STATICDIR", this.fisheyePluginUtilities.getStaticDir());
                 velocityHelper.renderVelocityTemplate("templates/configureEdit.vm", params, resp.getWriter());
             } else if (req.getPathInfo().contains("/advancedLdapConfigurationAdminServletRemove.do")) {
                 try {
@@ -74,6 +82,8 @@ public class AdvancedLdapConfigurationAdminServlet extends HttpServlet {
                 }
                 advancedLdapPluginConfiguration = this.hibernateAdvancedLdapPluginConfigurationDAO.get();
                 params.put("advancedLdapPluginConfiguration", advancedLdapPluginConfiguration);
+                params.put("request", req);
+                params.put("STATICDIR", this.fisheyePluginUtilities.getStaticDir());
                 velocityHelper.renderVelocityTemplate("templates/configureView.vm", params, resp.getWriter());
             } else if (req.getPathInfo().contains("/advancedLdapConfigurationAdminServletSync.do")) {
                 try {
@@ -82,6 +92,8 @@ public class AdvancedLdapConfigurationAdminServlet extends HttpServlet {
                     System.out.println("AdvancedLdapConfigurationAdminServlet.doPost: LDAP manual sync failed: " + e);
                 }
                 params.put("advancedLdapPluginConfiguration", advancedLdapPluginConfiguration);
+                params.put("request", req);
+                params.put("STATICDIR", this.fisheyePluginUtilities.getStaticDir());
                 velocityHelper.renderVelocityTemplate("templates/configureView.vm", params, resp.getWriter());
             } else {
                 setParameters(advancedLdapPluginConfiguration, req);
@@ -92,6 +104,8 @@ public class AdvancedLdapConfigurationAdminServlet extends HttpServlet {
                     System.out.println("AdvancedLdapConfigurationAdminServlet.doPost: hibernateAdvancedLdapPluginConfigurationDAO.store failed: " + e);
                 }
                 params.put("advancedLdapPluginConfiguration", advancedLdapPluginConfiguration);
+                params.put("request", req);
+                params.put("STATICDIR", this.fisheyePluginUtilities.getStaticDir());
                 velocityHelper.renderVelocityTemplate("templates/configureView.vm", params, resp.getWriter());
             }
         } else {

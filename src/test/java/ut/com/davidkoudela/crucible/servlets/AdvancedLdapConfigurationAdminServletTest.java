@@ -1,5 +1,7 @@
 package ut.com.davidkoudela.crucible.servlets;
 
+import com.atlassian.crucible.spi.FisheyePluginUtilities;
+import com.atlassian.crucible.spi.impl.DefaultFisheyePluginUtilities;
 import com.atlassian.fisheye.plugin.web.helpers.DefaultVelocityHelper;
 import com.atlassian.fisheye.plugin.web.helpers.VelocityHelper;
 import com.cenqua.fisheye.user.DefaultUserManager;
@@ -47,10 +49,11 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
     private static ArgumentCaptor<Map> argumentCaptorMap;
     private static ArgumentCaptor<PrintWriter> argumentCaptorPrintWriter;
     private static AdvancedLdapSynchronizationManager advancedLdapSynchronizationManager;
+    private static FisheyePluginUtilities fisheyePluginUtilities;
 
     public class AdvancedLdapConfigurationAdminServletDummy extends AdvancedLdapConfigurationAdminServlet {
-        public AdvancedLdapConfigurationAdminServletDummy(VelocityHelper velocityHelper, HibernateAdvancedLdapPluginConfigurationDAO hibernateAdvancedLdapPluginConfigurationDAO, AdvancedLdapSynchronizationManager advancedLdapSynchronizationManager, AdvancedLdapUserManager advancedLdapUserManager) {
-            super(velocityHelper, hibernateAdvancedLdapPluginConfigurationDAO, advancedLdapSynchronizationManager, advancedLdapUserManager);
+        public AdvancedLdapConfigurationAdminServletDummy(VelocityHelper velocityHelper, HibernateAdvancedLdapPluginConfigurationDAO hibernateAdvancedLdapPluginConfigurationDAO, AdvancedLdapSynchronizationManager advancedLdapSynchronizationManager, AdvancedLdapUserManager advancedLdapUserManager, FisheyePluginUtilities fisheyePluginUtilities) {
+            super(velocityHelper, hibernateAdvancedLdapPluginConfigurationDAO, advancedLdapSynchronizationManager, advancedLdapUserManager, fisheyePluginUtilities);
         }
 
         public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -71,6 +74,7 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
         advancedLdapTimerTrigger = new AdvancedLdapTimerTrigger();
         userManager = Mockito.mock(DefaultUserManager.class);
         advancedLdapUserManager = Mockito.mock(AdvancedLdapUserManagerImpl.class);
+        fisheyePluginUtilities = Mockito.mock(FisheyePluginUtilities.class);
 
         Mockito.when(hibernateAdvancedLdapPluginConfigurationDAO.get()).thenReturn(advancedLdapPluginConfiguration);
         argumentCaptorHttpServletRequest = ArgumentCaptor.forClass(HttpServletRequest.class);
@@ -89,15 +93,15 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
         Mockito.when(advancedLdapUserManager.hasSysAdminPrivileges(argumentCaptorHttpServletRequest.capture())).thenReturn(true);
 
         AdvancedLdapConfigurationAdminServletDummy advancedLdapConfigurationAdminServlet = new AdvancedLdapConfigurationAdminServletDummy(
-                velocityHelper, hibernateAdvancedLdapPluginConfigurationDAO, advancedLdapSynchronizationManager, advancedLdapUserManager);
+                velocityHelper, hibernateAdvancedLdapPluginConfigurationDAO, advancedLdapSynchronizationManager, advancedLdapUserManager, fisheyePluginUtilities);
 
         HttpServletRequest req = Mockito.mock(HttpServletRequest.class);
         HttpServletResponse resp = Mockito.mock(HttpServletResponse.class);
         advancedLdapConfigurationAdminServlet.doGet(req, resp);
 
         assertEquals("templates/configureView.vm", argumentCaptorString.getValue());
-        assertEquals(1, argumentCaptorMap.getValue().size());
-        assertEquals("[advancedLdapPluginConfiguration]", argumentCaptorMap.getValue().keySet().toString());
+        assertEquals(3, argumentCaptorMap.getValue().size());
+        assertEquals("[request, advancedLdapPluginConfiguration, STATICDIR]", argumentCaptorMap.getValue().keySet().toString());
         AdvancedLdapPluginConfiguration advancedLdapPluginConfigurationParam = (AdvancedLdapPluginConfiguration) argumentCaptorMap.getValue().get("advancedLdapPluginConfiguration");
         assertEquals("{ id=\"0\", connectTimeoutMillis=\"10000\", responseTimeoutMillis=\"10000\", LDAPPageSize=\"99\", LDAPSyncPeriod=\"3600\", LDAPUrl=\"url\", LDAPBindDN=\"\", LDAPBindPassword=\"\", LDAPBaseDN=\"\", userFilterKey=\"\", displayNameAttributeKey=\"\", emailAttributeKey=\"\", UIDAttributeKey=\"\", userGroupNamesKey=\"\", groupFilterKey=\"\", GIDAttributeKey=\"\", groupDisplayNameKey=\"\", userNamesKey=\"\" }", advancedLdapPluginConfigurationParam.toString());
     }
@@ -107,7 +111,7 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
         Mockito.when(advancedLdapUserManager.hasSysAdminPrivileges(argumentCaptorHttpServletRequest.capture())).thenReturn(false);
 
         AdvancedLdapConfigurationAdminServletDummy advancedLdapConfigurationAdminServlet = new AdvancedLdapConfigurationAdminServletDummy(
-                velocityHelper, hibernateAdvancedLdapPluginConfigurationDAO, advancedLdapSynchronizationManager, advancedLdapUserManager);
+                velocityHelper, hibernateAdvancedLdapPluginConfigurationDAO, advancedLdapSynchronizationManager, advancedLdapUserManager, fisheyePluginUtilities);
 
         HttpServletRequest req = Mockito.mock(HttpServletRequest.class);
         HttpServletResponse resp = Mockito.mock(HttpServletResponse.class);
@@ -122,7 +126,7 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
         Mockito.when(advancedLdapUserManager.hasSysAdminPrivileges(argumentCaptorHttpServletRequest.capture())).thenReturn(true);
 
         AdvancedLdapConfigurationAdminServletDummy advancedLdapConfigurationAdminServlet = new AdvancedLdapConfigurationAdminServletDummy(
-                velocityHelper, hibernateAdvancedLdapPluginConfigurationDAO, advancedLdapSynchronizationManager, advancedLdapUserManager);
+                velocityHelper, hibernateAdvancedLdapPluginConfigurationDAO, advancedLdapSynchronizationManager, advancedLdapUserManager, fisheyePluginUtilities);
 
         HttpServletRequest req = Mockito.mock(HttpServletRequest.class);
         Mockito.when(req.getPathInfo()).thenReturn("/advancedLdapConfigurationAdminServletEdit.do");
@@ -130,8 +134,8 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
         advancedLdapConfigurationAdminServlet.doPost(req, resp);
 
         assertEquals("templates/configureEdit.vm", argumentCaptorString.getValue());
-        assertEquals(1, argumentCaptorMap.getValue().size());
-        assertEquals("[advancedLdapPluginConfiguration]", argumentCaptorMap.getValue().keySet().toString());
+        assertEquals(3, argumentCaptorMap.getValue().size());
+        assertEquals("[request, advancedLdapPluginConfiguration, STATICDIR]", argumentCaptorMap.getValue().keySet().toString());
         AdvancedLdapPluginConfiguration advancedLdapPluginConfigurationParam = (AdvancedLdapPluginConfiguration) argumentCaptorMap.getValue().get("advancedLdapPluginConfiguration");
         assertEquals("{ id=\"0\", connectTimeoutMillis=\"10000\", responseTimeoutMillis=\"10000\", LDAPPageSize=\"99\", LDAPSyncPeriod=\"3600\", LDAPUrl=\"url\", LDAPBindDN=\"\", LDAPBindPassword=\"\", LDAPBaseDN=\"\", userFilterKey=\"\", displayNameAttributeKey=\"\", emailAttributeKey=\"\", UIDAttributeKey=\"\", userGroupNamesKey=\"\", groupFilterKey=\"\", GIDAttributeKey=\"\", groupDisplayNameKey=\"\", userNamesKey=\"\" }", advancedLdapPluginConfigurationParam.toString());
     }
@@ -142,7 +146,7 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
         Mockito.doNothing().when(hibernateAdvancedLdapPluginConfigurationDAO).remove(0);
 
         AdvancedLdapConfigurationAdminServletDummy advancedLdapConfigurationAdminServlet = new AdvancedLdapConfigurationAdminServletDummy(
-                velocityHelper, hibernateAdvancedLdapPluginConfigurationDAO, advancedLdapSynchronizationManager, advancedLdapUserManager);
+                velocityHelper, hibernateAdvancedLdapPluginConfigurationDAO, advancedLdapSynchronizationManager, advancedLdapUserManager, fisheyePluginUtilities);
 
         HttpServletRequest req = Mockito.mock(HttpServletRequest.class);
         Mockito.when(req.getPathInfo()).thenReturn("/advancedLdapConfigurationAdminServletRemove.do");
@@ -150,8 +154,8 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
         advancedLdapConfigurationAdminServlet.doPost(req, resp);
 
         assertEquals("templates/configureView.vm", argumentCaptorString.getValue());
-        assertEquals(1, argumentCaptorMap.getValue().size());
-        assertEquals("[advancedLdapPluginConfiguration]", argumentCaptorMap.getValue().keySet().toString());
+        assertEquals(3, argumentCaptorMap.getValue().size());
+        assertEquals("[request, advancedLdapPluginConfiguration, STATICDIR]", argumentCaptorMap.getValue().keySet().toString());
         AdvancedLdapPluginConfiguration advancedLdapPluginConfigurationParam = (AdvancedLdapPluginConfiguration) argumentCaptorMap.getValue().get("advancedLdapPluginConfiguration");
         assertEquals("{ id=\"0\", connectTimeoutMillis=\"10000\", responseTimeoutMillis=\"10000\", LDAPPageSize=\"99\", LDAPSyncPeriod=\"3600\", LDAPUrl=\"url\", LDAPBindDN=\"\", LDAPBindPassword=\"\", LDAPBaseDN=\"\", userFilterKey=\"\", displayNameAttributeKey=\"\", emailAttributeKey=\"\", UIDAttributeKey=\"\", userGroupNamesKey=\"\", groupFilterKey=\"\", GIDAttributeKey=\"\", groupDisplayNameKey=\"\", userNamesKey=\"\" }", advancedLdapPluginConfigurationParam.toString());
     }
@@ -161,7 +165,7 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
         Mockito.when(advancedLdapUserManager.hasSysAdminPrivileges(argumentCaptorHttpServletRequest.capture())).thenReturn(true);
 
         AdvancedLdapConfigurationAdminServletDummy advancedLdapConfigurationAdminServlet = new AdvancedLdapConfigurationAdminServletDummy(
-                velocityHelper, hibernateAdvancedLdapPluginConfigurationDAO, advancedLdapSynchronizationManager, advancedLdapUserManager);
+                velocityHelper, hibernateAdvancedLdapPluginConfigurationDAO, advancedLdapSynchronizationManager, advancedLdapUserManager, fisheyePluginUtilities);
 
         HttpServletRequest req = Mockito.mock(HttpServletRequest.class);
         Mockito.when(req.getPathInfo()).thenReturn("/advancedLdapConfigurationAdminServletSync.do");
@@ -169,8 +173,8 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
         advancedLdapConfigurationAdminServlet.doPost(req, resp);
 
         assertEquals("templates/configureView.vm", argumentCaptorString.getValue());
-        assertEquals(1, argumentCaptorMap.getValue().size());
-        assertEquals("[advancedLdapPluginConfiguration]", argumentCaptorMap.getValue().keySet().toString());
+        assertEquals(3, argumentCaptorMap.getValue().size());
+        assertEquals("[request, advancedLdapPluginConfiguration, STATICDIR]", argumentCaptorMap.getValue().keySet().toString());
         AdvancedLdapPluginConfiguration advancedLdapPluginConfigurationParam = (AdvancedLdapPluginConfiguration) argumentCaptorMap.getValue().get("advancedLdapPluginConfiguration");
         assertEquals("{ id=\"0\", connectTimeoutMillis=\"10000\", responseTimeoutMillis=\"10000\", LDAPPageSize=\"99\", LDAPSyncPeriod=\"3600\", LDAPUrl=\"url\", LDAPBindDN=\"\", LDAPBindPassword=\"\", LDAPBaseDN=\"\", userFilterKey=\"\", displayNameAttributeKey=\"\", emailAttributeKey=\"\", UIDAttributeKey=\"\", userGroupNamesKey=\"\", groupFilterKey=\"\", GIDAttributeKey=\"\", groupDisplayNameKey=\"\", userNamesKey=\"\" }", advancedLdapPluginConfigurationParam.toString());
     }
@@ -181,7 +185,7 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
         Mockito.doNothing().when(hibernateAdvancedLdapPluginConfigurationDAO).store(advancedLdapPluginConfiguration, true);
 
         AdvancedLdapConfigurationAdminServletDummy advancedLdapConfigurationAdminServlet = new AdvancedLdapConfigurationAdminServletDummy(
-                velocityHelper, hibernateAdvancedLdapPluginConfigurationDAO, advancedLdapSynchronizationManager, advancedLdapUserManager);
+                velocityHelper, hibernateAdvancedLdapPluginConfigurationDAO, advancedLdapSynchronizationManager, advancedLdapUserManager, fisheyePluginUtilities);
 
         HttpServletRequest req = Mockito.mock(HttpServletRequest.class);
         Mockito.when(req.getPathInfo()).thenReturn("/advancedLdapConfigurationAdminServletOther.do");
@@ -190,8 +194,8 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
         advancedLdapConfigurationAdminServlet.doPost(req, resp);
 
         assertEquals("templates/configureView.vm", argumentCaptorString.getValue());
-        assertEquals(1, argumentCaptorMap.getValue().size());
-        assertEquals("[advancedLdapPluginConfiguration]", argumentCaptorMap.getValue().keySet().toString());
+        assertEquals(3, argumentCaptorMap.getValue().size());
+        assertEquals("[request, advancedLdapPluginConfiguration, STATICDIR]", argumentCaptorMap.getValue().keySet().toString());
         AdvancedLdapPluginConfiguration advancedLdapPluginConfigurationParam = (AdvancedLdapPluginConfiguration) argumentCaptorMap.getValue().get("advancedLdapPluginConfiguration");
         assertEquals("{ id=\"0\", connectTimeoutMillis=\"10000\", responseTimeoutMillis=\"10000\", LDAPPageSize=\"99\", LDAPSyncPeriod=\"3600\", LDAPUrl=\"url\", LDAPBindDN=\"\", LDAPBindPassword=\"\", LDAPBaseDN=\"\", userFilterKey=\"\", displayNameAttributeKey=\"\", emailAttributeKey=\"\", UIDAttributeKey=\"\", userGroupNamesKey=\"\", groupFilterKey=\"\", GIDAttributeKey=\"\", groupDisplayNameKey=\"\", userNamesKey=\"\" }", advancedLdapPluginConfigurationParam.toString());
     }
@@ -201,7 +205,7 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
         Mockito.when(advancedLdapUserManager.hasSysAdminPrivileges(argumentCaptorHttpServletRequest.capture())).thenReturn(false);
 
         AdvancedLdapConfigurationAdminServletDummy advancedLdapConfigurationAdminServlet = new AdvancedLdapConfigurationAdminServletDummy(
-                velocityHelper, hibernateAdvancedLdapPluginConfigurationDAO, advancedLdapSynchronizationManager, advancedLdapUserManager);
+                velocityHelper, hibernateAdvancedLdapPluginConfigurationDAO, advancedLdapSynchronizationManager, advancedLdapUserManager, fisheyePluginUtilities);
 
         HttpServletRequest req = Mockito.mock(HttpServletRequest.class);
         HttpServletResponse resp = Mockito.mock(HttpServletResponse.class);

@@ -13,12 +13,14 @@
     <!-- aui resource -->
     <web-resource key="aui">
         <dependency>com.atlassian.auiplugin:ajs</dependency>
+        <dependency>com.atlassian.auiplugin:aui-experimental-iconfont</dependency>
         <context>atl.general</context>
     </web-resource>
 
     <!-- add web resources -->
     <web-resource key="advanced-ldap-for-crucible-resources" name="advanced-ldap-for-crucible Web Resources">
         <dependency>com.atlassian.auiplugin:ajs</dependency>
+        <dependency>com.atlassian.auiplugin:aui-experimental-iconfont</dependency>
         
         <resource type="download" name="advanced-ldap-for-crucible.css" location="/css/advanced-ldap-for-crucible.css"/>
         <resource type="download" name="advanced-ldap-for-crucible.js" location="/js/advanced-ldap-for-crucible.js"/>
@@ -26,6 +28,11 @@
 
         <context>advanced-ldap-for-crucible</context>
     </web-resource>
+    <resource type="download" name="advanced-ldap-for-crucible.css" location="/css/advanced-ldap-for-crucible.css">
+        <property key="content-type" value="text/css" />
+    </resource>
+
+
     <web-section key="advanced-ldap-config-section" name="Advanced-Ldap-Configuration-Section" location="system.admin" weight="250">
         <label key="com.davidkoudela.crucible.advanced-ldap-config.websection.label" />
     </web-section>
