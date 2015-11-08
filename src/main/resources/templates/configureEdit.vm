@@ -1,5 +1,8 @@
 <html>
 <head>
+$webResourceManager.requireResource('com.atlassian.auiplugin:ajs')
+$webResourceManager.requireResource('com.atlassian.auiplugin:aui-experimental-iconfont')
+$webResourceManager.requireResource('com.davidkoudela.crucible.advanced-ldap-for-crucible:advanced-ldap-for-crucible-resources')
 </head>
 <body>
     #if ($statusMessage)
@@ -18,154 +21,206 @@
 <div class="formPane-holder">
     <div class="formPane">
         <form accept-charset="UTF-8" method="post" onSubmit="trimFormTextFields(this);" action="advancedLdapConfigurationAdminServletView.do" class="aui long-label">
-            <div class="field-group">
-                <label>URL</label>
-                <tr>
-                    <td class="tdLabel"></td>
-                    <td>
-                        <input type="text" name="ldap.url" value="$advancedLdapPluginConfiguration.getLDAPUrl()" id="ldap_url" class="text"/>
-                    </td>
-                </tr>
+            <div id="toggle-server-settings" class="toggle-section">
+                <div class="toggle-head">
+                    <h3><span id="toggle-icon-server-settings" class="toggle-icon">
+                        <span id="server-settings-toggle-arrow" class="aui-icon aui-icon-small aui-iconfont-arrows-down"></span>
+                    </span>Server Settings</h3>
+                </div>
+                <div id="server-settings" class="toggle-body">
+                    <div class="field-group">
+                        <label>URL</label>
+                        <tr>
+                            <td class="tdLabel"></td>
+                            <td>
+                                <input type="text" name="ldap.url" value="$advancedLdapPluginConfiguration.getLDAPUrl()" id="ldap_url" class="text"/>
+                            </td>
+                        </tr>
+                    </div>
+                    <div class="field-group">
+                        <label>Initial bind DN</label>
+                        <tr>
+                            <td class="tdLabel"></td>
+                            <td>
+                                <input type="text" name="ldap.initialDn" value="$advancedLdapPluginConfiguration.getLDAPBindDN()" class="text long-field"/>
+                            </td>
+                        </tr>
+                    </div>
+                    <div class="field-group">
+                        <label>Initial bind password</label>
+                        <tr>
+                            <td class="tdLabel"></td>
+                            <td>
+                                <input type="password" name="ldap.initialSecret" value="$advancedLdapPluginConfiguration.getLDAPBindPassword()" id="ldap_initialSecret" class="password"/>
+                            </td>
+                        </tr>
+                    </div>
+                </div>
             </div>
-            <div class="field-group">
-                <label>Base DN</label>
-                <tr>
-                    <td class="tdLabel"></td>
-                    <td>
-                        <input type="text" name="ldap.baseDn" value="$advancedLdapPluginConfiguration.getLDAPBaseDN()" id="ldap_baseDn" class="text long-field"/>
-                    </td>
-                </tr>
+            <div id="toggle-server-ldap-schema" class="toggle-section">
+                <div class="toggle-head">
+                    <h3><span id="toggle-icon-ldap-schema" class="toggle-icon">
+                        <span id="ldap-schema-toggle-arrow" class="aui-icon aui-icon-small aui-iconfont-arrows-down"></span>
+                    </span>LDAP Schema</h3>
+                </div>
+                <div id="ldap-schema" class="toggle-body">
+                    <div class="field-group">
+                        <label>Base DN</label>
+                        <tr>
+                            <td class="tdLabel"></td>
+                            <td>
+                                <input type="text" name="ldap.baseDn" value="$advancedLdapPluginConfiguration.getLDAPBaseDN()" id="ldap_baseDn" class="text long-field"/>
+                            </td>
+                        </tr>
+                    </div>
+                    <div class="field-group">
+                        <label>User Filter</label>
+                        <tr>
+                            <td class="tdLabel"></td>
+                            <td>
+                                <input type="text" name="ldap.filter" value="$advancedLdapPluginConfiguration.getUserFilterKey()" id="ldap_filter" class="text long-field"/>
+                            </td>
+                        </tr>
+                    </div>
+                    <div class="field-group">
+                        <label>Group Filter</label>
+                        <tr>
+                            <td class="tdLabel"></td>
+                            <td>
+                                <input type="text" name="ldap.groupFilter" value="$advancedLdapPluginConfiguration.getGroupFilterKey()" id="ldap_groupFilter" class="text long-field"/>
+                            </td>
+                        </tr>
+                    </div>
+                </div>
             </div>
-            <div class="field-group">
-                <label>User Filter</label>
-                <tr>
-                    <td class="tdLabel"></td>
-                    <td>
-                        <input type="text" name="ldap.filter" value="$advancedLdapPluginConfiguration.getUserFilterKey()" id="ldap_filter" class="text long-field"/>
-                    </td>
-                </tr>
+            <div id="toggle-user-schema" class="toggle-section">
+                <div class="toggle-head">
+                    <h3><span id="toggle-icon-user-schema" class="toggle-icon">
+                        <span id="user-schema-toggle-arrow" class="aui-icon aui-icon-small aui-iconfont-arrows-down"></span>
+                    </span>User Schema Settings</h3>
+                </div>
+                <div id="user-schema" class="toggle-body">
+                    <div class="field-group">
+                        <label>UID attribute</label>
+                        <tr>
+                            <td class="tdLabel"></td>
+                            <td>
+                                <input type="text" name="ldap.uidAttr" value="$advancedLdapPluginConfiguration.getUIDAttributeKey()" id="ldap_uidAttr" class="text"/>
+                            </td>
+                        </tr>
+                    </div>
+                    <div class="field-group">
+                        <label>Email attribute</label>
+                        <tr>
+                            <td class="tdLabel"></td>
+                            <td>
+                                <input type="text" name="ldap.emailAttr" value="$advancedLdapPluginConfiguration.getEmailAttributeKey()" id="ldap_emailAttr" class="text"/>
+                            </td>
+                        </tr>
+                    </div>
+                    <div class="field-group">
+                        <label>User display name attribute</label>
+                        <tr>
+                            <td class="tdLabel"></td>
+                            <td>
+                                <input type="text" name="ldap.displaynameAttr" value="$advancedLdapPluginConfiguration.getDisplayNameAttributeKey()" id="ldap_displaynameAttr" class="text"/>
+                            </td>
+                        </tr>
+                    </div>
+                </div>
             </div>
-            <div class="field-group">
-                <label>UID attribute</label>
-                <tr>
-                    <td class="tdLabel"></td>
-                    <td>
-                        <input type="text" name="ldap.uidAttr" value="$advancedLdapPluginConfiguration.getUIDAttributeKey()" id="ldap_uidAttr" class="text"/>
-                    </td>
-                </tr>
+            <div id="toggle-group-schema" class="toggle-section">
+                <div class="toggle-head">
+                    <h3><span id="toggle-icon-group-schema" class="toggle-icon">
+                        <span id="group-schema-toggle-arrow" class="aui-icon aui-icon-small aui-iconfont-arrows-down"></span>
+                    </span>Group Schema Settings</h3>
+                </div>
+                <div id="group-schema" class="toggle-body">
+                    <div class="field-group">
+                        <label>GID attribute</label>
+                        <tr>
+                            <td class="tdLabel"></td>
+                            <td>
+                                <input type="text" name="ldap.gidAttr" value="$advancedLdapPluginConfiguration.getGIDAttributeKey()" id="ldap_gidAttr" class="text"/>
+                            </td>
+                        </tr>
+                    </div>
+                    <div class="field-group">
+                        <label>Group display name attribute</label>
+                        <tr>
+                            <td class="tdLabel"></td>
+                            <td>
+                                <input type="text" name="ldap.groupDisplaynameAttr" value="$advancedLdapPluginConfiguration.getGroupDisplayNameKey()" id="ldap_groupDisplaynameAttr" class="text"/>
+                            </td>
+                        </tr>
+                    </div>
+                </div>
             </div>
-            <div class="field-group">
-                <label>Email attribute</label>
-                <tr>
-                    <td class="tdLabel"></td>
-                    <td>
-                        <input type="text" name="ldap.emailAttr" value="$advancedLdapPluginConfiguration.getEmailAttributeKey()" id="ldap_emailAttr" class="text"/>
-                    </td>
-                </tr>
+            <div id="toggle-membership-schema" class="toggle-section">
+                <div class="toggle-head">
+                    <h3><span id="toggle-icon-membership-schema" class="toggle-icon">
+                        <span id="membership-schema-toggle-arrow" class="aui-icon aui-icon-small aui-iconfont-arrows-down"></span>
+                    </span>Membership Schema Settings</h3>
+                </div>
+                <div id="membership-schema" class="toggle-body">
+                    <div class="field-group">
+                        <label>User group names attribute</label>
+                        <tr>
+                            <td class="tdLabel"></td>
+                            <td>
+                                <input type="text" name="ldap.userGroupNamesAttr" value="$advancedLdapPluginConfiguration.getUserGroupNamesKey()" id="ldap_userGroupNamesAttr" class="text"/>
+                            </td>
+                        </tr>
+                    </div>
+                    <div class="field-group">
+                        <label>Group user names attribute</label>
+                        <tr>
+                            <td class="tdLabel"></td>
+                            <td>
+                                <input type="text" name="ldap.groupUsernameAttr" value="$advancedLdapPluginConfiguration.getUserNamesKey()" id="ldap_groupUsernameAttr" class="text"/>
+                            </td>
+                        </tr>
+                    </div>
+                </div>
             </div>
-            <div class="field-group">
-                <label>User display name attribute</label>
-                <tr>
-                    <td class="tdLabel"></td>
-                    <td>
-                        <input type="text" name="ldap.displaynameAttr" value="$advancedLdapPluginConfiguration.getDisplayNameAttributeKey()" id="ldap_displaynameAttr" class="text"/>
-                    </td>
-                </tr>
-            </div>
-            <div class="field-group">
-                <label>Server Timeout</label>
-                <tr>
-                    <td class="tdLabel"></td>
-                    <td>
-                        <input type="text" name="ldap.serverTimeout" value="$advancedLdapPluginConfiguration.getResponseTimeoutMillis()" id="ldap_serverTimeout" class="text"/>
-                    </td>
-                </tr>
+            <div id="toggle-advanced-settings" class="toggle-section">
+                <div class="toggle-head">
+                    <h3><span id="toggle-icon-advanced-settings" class="toggle-icon">
+                        <span id="advanced-settings-toggle-arrow" class="aui-icon aui-icon-small aui-iconfont-arrows-down"></span>
+                    </span>Advanced Settings</h3>
+                </div>
+                <div id="advanced-settings" class="toggle-body">
+                    <div class="field-group">
+                        <label>Server Timeout</label>
+                        <tr>
+                            <td class="tdLabel"></td>
+                            <td>
+                                <input type="text" name="ldap.serverTimeout" value="$advancedLdapPluginConfiguration.getResponseTimeoutMillis()" id="ldap_serverTimeout" class="text"/>
+                            </td>
+                        </tr>
 
-            </div>
-            <div class="field-group">
-                <label>Synchronise Period</label>
-                <tr>
-                    <td class="tdLabel"></td>
-                    <td>
-                        <input type="text" name="ldap.resyncPeriod" value="$advancedLdapPluginConfiguration.getLDAPSyncPeriod()" id="ldap_resyncPeriod" class="text"/>
-                    </td>
-                </tr>
-            </div>
-            <div class="field-group">
-                <label>Ldap Page Size</label>
-                <tr>
-                    <td class="tdLabel"></td>
-                    <td>
-                        <input type="text" name="ldap.pageSize" value="$advancedLdapPluginConfiguration.getLDAPPageSize()" id="ldap_pageSize" class="text"/>
-                    </td>
-                </tr>
-            </div>
-            <div class="field-group">
-                <label>Initial bind DN</label>
-                <tr>
-                    <td class="tdLabel"></td>
-                    <td>
-                        <input type="text" name="ldap.initialDn" value="$advancedLdapPluginConfiguration.getLDAPBindDN()" class="text long-field"/>
-                    </td>
-                </tr>
-            </div>
-            <div class="field-group">
-                <label>Initial bind password</label>
-                <tr>
-                    <td class="tdLabel"></td>
-                    <td>
-                        <input type="password" name="ldap.initialSecret" value="$advancedLdapPluginConfiguration.getLDAPBindPassword()" id="ldap_initialSecret" class="password"/>
-                    </td>
-                </tr>
+                    </div>
+                    <div class="field-group">
+                        <label>Synchronise Period</label>
+                        <tr>
+                            <td class="tdLabel"></td>
+                            <td>
+                                <input type="text" name="ldap.resyncPeriod" value="$advancedLdapPluginConfiguration.getLDAPSyncPeriod()" id="ldap_resyncPeriod" class="text"/>
+                            </td>
+                    </div>
+                    <div class="field-group">
+                        <label>Ldap Page Size</label>
+                        <tr>
+                            <td class="tdLabel"></td>
+                            <td>
+                                <input type="text" name="ldap.pageSize" value="$advancedLdapPluginConfiguration.getLDAPPageSize()" id="ldap_pageSize" class="text"/>
+                            </td>
+                        </tr>
+                    </div>
+                </div>
             </div>
 
-            <div class="field-group">
-                <label>User group names attribute</label>
-                <tr>
-                    <td class="tdLabel"></td>
-                    <td>
-                        <input type="text" name="ldap.userGroupNamesAttr" value="$advancedLdapPluginConfiguration.getUserGroupNamesKey()" id="ldap_userGroupNamesAttr" class="text"/>
-                    </td>
-                </tr>
-            </div>
-            <div class="field-group">
-                <label>Group Filter</label>
-                <tr>
-                    <td class="tdLabel"></td>
-                    <td>
-                        <input type="text" name="ldap.groupFilter" value="$advancedLdapPluginConfiguration.getGroupFilterKey()" id="ldap_groupFilter" class="text long-field"/>
-                    </td>
-                </tr>
-            </div>
-            <div class="field-group">
-                <label>GID attribute</label>
-                <tr>
-                    <td class="tdLabel"></td>
-                    <td>
-                        <input type="text" name="ldap.gidAttr" value="$advancedLdapPluginConfiguration.getGIDAttributeKey()" id="ldap_gidAttr" class="text"/>
-                    </td>
-                </tr>
-            </div>
-            <div class="field-group">
-                <label>Group display name attribute</label>
-                <tr>
-                    <td class="tdLabel"></td>
-                    <td>
-                        <input type="text" name="ldap.groupDisplaynameAttr" value="$advancedLdapPluginConfiguration.getGroupDisplayNameKey()" id="ldap_groupDisplaynameAttr" class="text"/>
-                    </td>
-                </tr>
-            </div>
-            <div class="field-group">
-                <label>Group user names attribute</label>
-                <tr>
-                    <td class="tdLabel"></td>
-                    <td>
-                        <input type="text" name="ldap.groupUsernameAttr" value="$advancedLdapPluginConfiguration.getUserNamesKey()" id="ldap_groupUsernameAttr" class="text"/>
-                    </td>
-                </tr>
-            </div>
-
-            <div class="buttons-container">
+            <div class="advanced-ldap-buttons-container">
                 <div class="buttons">
                     <input type="submit" value="Apply" class="aui-button aui-button-primary">
                     <a class="cancel" href="advancedLdapConfigurationAdminServletView.do">Cancel</a>

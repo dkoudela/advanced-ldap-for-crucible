@@ -10,17 +10,12 @@
     <!-- add i18n resource -->
     <resource type="i18n" name="i18n" location="advanced-ldap-for-crucible"/>
 
-    <!-- aui resource -->
-    <web-resource key="aui">
-        <dependency>com.atlassian.auiplugin:ajs</dependency>
-        <dependency>com.atlassian.auiplugin:aui-experimental-iconfont</dependency>
-        <context>atl.general</context>
-    </web-resource>
-
     <!-- add web resources -->
     <web-resource key="advanced-ldap-for-crucible-resources" name="advanced-ldap-for-crucible Web Resources">
         <dependency>com.atlassian.auiplugin:ajs</dependency>
         <dependency>com.atlassian.auiplugin:aui-experimental-iconfont</dependency>
+        <dependency>com.atlassian.auiplugin:aui-messages</dependency>
+        <dependency>com.atlassian.auiplugin:aui-spinner</dependency>
         
         <resource type="download" name="advanced-ldap-for-crucible.css" location="/css/advanced-ldap-for-crucible.css"/>
         <resource type="download" name="advanced-ldap-for-crucible.js" location="/js/advanced-ldap-for-crucible.js"/>

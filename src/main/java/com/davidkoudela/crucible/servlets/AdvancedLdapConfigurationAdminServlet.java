@@ -2,6 +2,7 @@ package com.davidkoudela.crucible.servlets;
 
 import com.atlassian.crucible.spi.FisheyePluginUtilities;
 import com.atlassian.fisheye.plugin.web.helpers.VelocityHelper;
+import com.cenqua.fisheye.web.tags.WebResourceManagerUtil;
 import com.davidkoudela.crucible.admin.AdvancedLdapUserManager;
 import com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration;
 import com.davidkoudela.crucible.persistence.HibernateAdvancedLdapPluginConfigurationDAO;
@@ -55,6 +56,7 @@ public class AdvancedLdapConfigurationAdminServlet extends HttpServlet {
             params.put("advancedLdapPluginConfiguration", advancedLdapPluginConfiguration);
             params.put("request", req);
             params.put("STATICDIR", this.fisheyePluginUtilities.getStaticDir());
+            params.put("webResourceManager", WebResourceManagerUtil.class);
             velocityHelper.renderVelocityTemplate("templates/configureView.vm", params, resp.getWriter());
         } else {
             resp.sendRedirect(req.getContextPath() + "/admin/login-default.do");
@@ -66,12 +68,13 @@ public class AdvancedLdapConfigurationAdminServlet extends HttpServlet {
         Map<String,Object> params = new HashMap<String,Object>();
         req.setAttribute("decorator", "atl.admin");
         resp.setContentType("text/html");
+        params.put("request", req);
+        params.put("STATICDIR", this.fisheyePluginUtilities.getStaticDir());
+        params.put("webResourceManager", WebResourceManagerUtil.class);
         if (advancedLdapUserManager.hasSysAdminPrivileges(req)) {
             AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = this.hibernateAdvancedLdapPluginConfigurationDAO.get();
             if (req.getPathInfo().contains("/advancedLdapConfigurationAdminServletEdit.do")) {
                 params.put("advancedLdapPluginConfiguration", advancedLdapPluginConfiguration);
-                params.put("request", req);
-                params.put("STATICDIR", this.fisheyePluginUtilities.getStaticDir());
                 velocityHelper.renderVelocityTemplate("templates/configureEdit.vm", params, resp.getWriter());
             } else if (req.getPathInfo().contains("/advancedLdapConfigurationAdminServletRemove.do")) {
                 try {
@@ -82,8 +85,6 @@ public class AdvancedLdapConfigurationAdminServlet extends HttpServlet {
                 }
                 advancedLdapPluginConfiguration = this.hibernateAdvancedLdapPluginConfigurationDAO.get();
                 params.put("advancedLdapPluginConfiguration", advancedLdapPluginConfiguration);
-                params.put("request", req);
-                params.put("STATICDIR", this.fisheyePluginUtilities.getStaticDir());
                 velocityHelper.renderVelocityTemplate("templates/configureView.vm", params, resp.getWriter());
             } else if (req.getPathInfo().contains("/advancedLdapConfigurationAdminServletSync.do")) {
                 try {
@@ -92,8 +93,6 @@ public class AdvancedLdapConfigurationAdminServlet extends HttpServlet {
                     System.out.println("AdvancedLdapConfigurationAdminServlet.doPost: LDAP manual sync failed: " + e);
                 }
                 params.put("advancedLdapPluginConfiguration", advancedLdapPluginConfiguration);
-                params.put("request", req);
-                params.put("STATICDIR", this.fisheyePluginUtilities.getStaticDir());
                 velocityHelper.renderVelocityTemplate("templates/configureView.vm", params, resp.getWriter());
             } else {
                 setParameters(advancedLdapPluginConfiguration, req);
@@ -104,8 +103,6 @@ public class AdvancedLdapConfigurationAdminServlet extends HttpServlet {
                     System.out.println("AdvancedLdapConfigurationAdminServlet.doPost: hibernateAdvancedLdapPluginConfigurationDAO.store failed: " + e);
                 }
                 params.put("advancedLdapPluginConfiguration", advancedLdapPluginConfiguration);
-                params.put("request", req);
-                params.put("STATICDIR", this.fisheyePluginUtilities.getStaticDir());
                 velocityHelper.renderVelocityTemplate("templates/configureView.vm", params, resp.getWriter());
             }
         } else {

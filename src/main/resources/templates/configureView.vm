@@ -5,7 +5,6 @@ $webResourceManager.requireResource('com.atlassian.auiplugin:aui-experimental-ic
 $webResourceManager.requireResource('com.davidkoudela.crucible.advanced-ldap-for-crucible:advanced-ldap-for-crucible-resources')
 </head>
 <body>
-<link rel="stylesheet" href="$request.contextPath/download/resources/com.davidkoudela.crucible.advanced-ldap-for-crucible/advanced-ldap-for-crucible.css" type="text/css"/>
 
     #if ($statusMessage)
     <div class="aui-message info closeable">
@@ -18,8 +17,6 @@ $webResourceManager.requireResource('com.davidkoudela.crucible.advanced-ldap-for
     <div id="ldap-admin-title" class="gwt-Label GBRQCM4CIB">
         Advanced LDAP configuration
     </div>
-    <!--link rel="stylesheet" href="$request.contextPath/$STATICDIR/main.css" type="text/css" />
-    <link rel="stylesheet" href="$request.contextPath/$STATICDIR/admin.css" type="text/css" /-->
 </div>
 
 <div id="decorated-admin-content" style="display: block;">
@@ -28,101 +25,123 @@ $webResourceManager.requireResource('com.davidkoudela.crucible.advanced-ldap-for
 
             <h2>Advanced LDAP Authentication settings <a href="https://github.com/dkoudela/advanced-ldap-for-crucible/wiki/User-Documentation"title="Help on LDAP authentication configuration"target="fecruhelp"><span class="aui-icon aui-icon-small aui-iconfont-help inline-help-icon">&nbsp;&nbsp;&nbsp;</span></a>
             </h2>
-
-            <!--button id="toggle-butt-hide" class="aui-button">Hide</button>
-            <button id="toggle-butt-show" class="aui-button">Show</button-->
-            <div id="toggle-server-settings" class="toggle-section collapsed">
+            <div id="toggle-server-settings" class="toggle-section">
                 <div class="toggle-head">
-                    <div id="toggle-icon-server-settings">
+                    <h3><span id="toggle-icon-server-settings" class="toggle-icon">
                         <span id="server-settings-toggle-arrow" class="aui-icon aui-icon-small aui-iconfont-arrows-down"></span>
-                    </div>
-                    <h3>Server Settings</h3>
+                    </span>Server Settings</h3>
                 </div>
                 <div id="server-settings" class="toggle-body">
                     <div class="field-group">
                         <label>URL</label>
                         <span class="field-value">$advancedLdapPluginConfiguration.getLDAPUrl()</span>
                     </div>
+                    <div class="field-group">
+                        <label>Initial bind user</label>
+                        <span class="field-value">$advancedLdapPluginConfiguration.getLDAPBindDN()</span>
+                    </div>
+
                 </div>
             </div>
-            <div id="toggle-server-ldap-schema" class="toggle-section collapsed">
+            <div id="toggle-server-ldap-schema" class="toggle-section">
                 <div class="toggle-head">
-                    <div id="toggle-icon-ldap-schema">
+                    <h3><span id="toggle-icon-ldap-schema" class="toggle-icon">
                         <span id="ldap-schema-toggle-arrow" class="aui-icon aui-icon-small aui-iconfont-arrows-down"></span>
-                    </div>
-                    <h3>LDAP Schema</h3>
+                    </span>LDAP Schema</h3>
                 </div>
                 <div id="ldap-schema" class="toggle-body">
                     <div class="field-group">
                         <label>Base DN</label>
                         <span class="field-value">$advancedLdapPluginConfiguration.getLDAPBaseDN()</span>
                     </div>
+                    <div class="field-group">
+                        <label>User Filter</label>
+                        <span class="field-value">$advancedLdapPluginConfiguration.getUserFilterKey()</span>
+                    </div>
+                    <div class="field-group">
+                        <label>Group Filter</label>
+                        <span class="field-value">$advancedLdapPluginConfiguration.getGroupFilterKey()</span>
+                    </div>
+                </div>
+            </div>
+            <div id="toggle-user-schema" class="toggle-section">
+                <div class="toggle-head">
+                    <h3><span id="toggle-icon-user-schema" class="toggle-icon">
+                        <span id="user-schema-toggle-arrow" class="aui-icon aui-icon-small aui-iconfont-arrows-down"></span>
+                    </span>User Schema Settings</h3>
+                </div>
+                <div id="user-schema" class="toggle-body">
+                    <div class="field-group">
+                        <label>UID attribute</label>
+                        <span class="field-value">$advancedLdapPluginConfiguration.getUIDAttributeKey()</span>
+                    </div>
+                    <div class="field-group">
+                        <label>Email attribute</label>
+                        <span class="field-value">$advancedLdapPluginConfiguration.getEmailAttributeKey()</span>
+                    </div>
+                    <div class="field-group">
+                        <label>User display name attribute</label>
+                        <span class="field-value">$advancedLdapPluginConfiguration.getDisplayNameAttributeKey()</span>
+                    </div>
+                </div>
+            </div>
+            <div id="toggle-group-schema" class="toggle-section">
+                <div class="toggle-head">
+                    <h3><span id="toggle-icon-group-schema" class="toggle-icon">
+                        <span id="group-schema-toggle-arrow" class="aui-icon aui-icon-small aui-iconfont-arrows-down"></span>
+                    </span>Group Schema Settings</h3>
+                </div>
+                <div id="group-schema" class="toggle-body">
+                    <div class="field-group">
+                        <label>GID attribute</label>
+                        <span class="field-value">$advancedLdapPluginConfiguration.getGIDAttributeKey()</span>
+                    </div>
+                    <div class="field-group">
+                        <label>Group display name attribute</label>
+                        <span class="field-value">$advancedLdapPluginConfiguration.getGroupDisplayNameKey()</span>
+                    </div>
+                </div>
+            </div>
+            <div id="toggle-membership-schema" class="toggle-section">
+                <div class="toggle-head">
+                    <h3><span id="toggle-icon-membership-schema" class="toggle-icon">
+                        <span id="membership-schema-toggle-arrow" class="aui-icon aui-icon-small aui-iconfont-arrows-down"></span>
+                    </span>Membership Schema Settings</h3>
+                </div>
+                <div id="membership-schema" class="toggle-body">
+                    <div class="field-group">
+                        <label>User group names attribute</label>
+                        <span class="field-value">$advancedLdapPluginConfiguration.getUserGroupNamesKey()</span>
+                    </div>
+                    <div class="field-group">
+                        <label>Group user names attribute</label>
+                        <span class="field-value">$advancedLdapPluginConfiguration.getUserNamesKey()</span>
+                    </div>
+                </div>
+            </div>
+            <div id="toggle-advanced-settings" class="toggle-section">
+                <div class="toggle-head">
+                    <h3><span id="toggle-icon-advanced-settings" class="toggle-icon">
+                        <span id="advanced-settings-toggle-arrow" class="aui-icon aui-icon-small aui-iconfont-arrows-down"></span>
+                    </span>Advanced Settings</h3>
+                </div>
+                <div id="advanced-settings" class="toggle-body">
+                    <div class="field-group">
+                        <label>Server Timeout</label>
+                        <span class="field-value">$advancedLdapPluginConfiguration.getResponseTimeoutMillis()</span>
+                    </div>
+                    <div class="field-group">
+                        <label>Synchronise Period</label>
+                        <span class="field-value">$advancedLdapPluginConfiguration.getLDAPSyncPeriod()</span>
+                    </div>
+                    <div class="field-group">
+                        <label>Ldap Page Size</label>
+                        <span class="field-value">$advancedLdapPluginConfiguration.getLDAPPageSize()</span>
+                    </div>
                 </div>
             </div>
 
-            <div class="field-group">
-                <label>URL</label>
-                <span class="field-value">$advancedLdapPluginConfiguration.getLDAPUrl()</span>
-            </div>
-            <div class="field-group">
-                <label>Base DN</label>
-                <span class="field-value">$advancedLdapPluginConfiguration.getLDAPBaseDN()</span>
-            </div>
-            <div class="field-group">
-                <label>User Filter</label>
-                <span class="field-value">$advancedLdapPluginConfiguration.getUserFilterKey()</span>
-            </div>
-            <div class="field-group">
-                <label>UID attribute</label>
-                <span class="field-value">$advancedLdapPluginConfiguration.getUIDAttributeKey()</span>
-            </div>
-            <div class="field-group">
-                <label>Email attribute</label>
-                <span class="field-value">$advancedLdapPluginConfiguration.getEmailAttributeKey()</span>
-            </div>
-            <div class="field-group">
-                <label>User display name attribute</label>
-                <span class="field-value">$advancedLdapPluginConfiguration.getDisplayNameAttributeKey()</span>
-            </div>
-            <div class="field-group">
-                <label>Server Timeout</label>
-                <span class="field-value">$advancedLdapPluginConfiguration.getResponseTimeoutMillis()</span>
-            </div>
-            <div class="field-group">
-                <label>Synchronise Period</label>
-                <span class="field-value">$advancedLdapPluginConfiguration.getLDAPSyncPeriod()</span>
-            </div>
-            <div class="field-group">
-                <label>Ldap Page Size</label>
-                <span class="field-value">$advancedLdapPluginConfiguration.getLDAPPageSize()</span>
-            </div>
-            <div class="field-group">
-                <label>Initial bind user</label>
-                <span class="field-value">$advancedLdapPluginConfiguration.getLDAPBindDN()</span>
-            </div>
-
-            <div class="field-group">
-                <label>User group names attribute</label>
-                <span class="field-value">$advancedLdapPluginConfiguration.getUserGroupNamesKey()</span>
-            </div>
-            <div class="field-group">
-                <label>Group Filter</label>
-                <span class="field-value">$advancedLdapPluginConfiguration.getGroupFilterKey()</span>
-            </div>
-            <div class="field-group">
-                <label>GID attribute</label>
-                <span class="field-value">$advancedLdapPluginConfiguration.getGIDAttributeKey()</span>
-            </div>
-            <div class="field-group">
-                <label>Group display name attribute</label>
-                <span class="field-value">$advancedLdapPluginConfiguration.getGroupDisplayNameKey()</span>
-            </div>
-            <div class="field-group">
-                <label>Group user names attribute</label>
-                <span class="field-value">$advancedLdapPluginConfiguration.getUserNamesKey()</span>
-            </div>
-
-            <div class="buttons-container">
+            <div class="advanced-ldap-buttons-container">
                 <div class="buttons">
                     <input type="button" class="aui-button" id="ldap-resync" value="Re-Sync">*
                     <input type="button" class="aui-button" id="ldap-edit" value="Edit">
@@ -144,17 +163,23 @@ $webResourceManager.requireResource('com.davidkoudela.crucible.advanced-ldap-for
                                 FECRU.XSRF.postUri("advancedLdapConfigurationAdminServletRemove.do");
                             });
 
-                            AJS.$("#toggle-butt-hide").click(function() {
-                                AJS.$("#server-settings").hide();
-                            });
-                            AJS.$("#toggle-butt-show").click(function() {
-                                AJS.$("#server-settings").show();
-                            });
                             AJS.$("#server-settings-toggle-arrow").click(function() {
                                 toggleSection("#server-settings");
                             });
                             AJS.$("#ldap-schema-toggle-arrow").click(function() {
                                 toggleSection("#ldap-schema");
+                            });
+                            AJS.$("#user-schema-toggle-arrow").click(function() {
+                                toggleSection("#user-schema");
+                            });
+                            AJS.$("#group-schema-toggle-arrow").click(function() {
+                                toggleSection("#group-schema");
+                            });
+                            AJS.$("#membership-schema-toggle-arrow").click(function() {
+                                toggleSection("#membership-schema");
+                            });
+                            AJS.$("#advanced-settings-toggle-arrow").click(function() {
+                                toggleSection("#advanced-settings");
                             });
 
                             function toggleSection(element) {

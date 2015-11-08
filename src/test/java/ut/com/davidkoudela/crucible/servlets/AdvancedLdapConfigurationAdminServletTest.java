@@ -100,8 +100,8 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
         advancedLdapConfigurationAdminServlet.doGet(req, resp);
 
         assertEquals("templates/configureView.vm", argumentCaptorString.getValue());
-        assertEquals(3, argumentCaptorMap.getValue().size());
-        assertEquals("[request, advancedLdapPluginConfiguration, STATICDIR]", argumentCaptorMap.getValue().keySet().toString());
+        assertEquals(4, argumentCaptorMap.getValue().size());
+        assertEquals("[request, advancedLdapPluginConfiguration, webResourceManager, STATICDIR]", argumentCaptorMap.getValue().keySet().toString());
         AdvancedLdapPluginConfiguration advancedLdapPluginConfigurationParam = (AdvancedLdapPluginConfiguration) argumentCaptorMap.getValue().get("advancedLdapPluginConfiguration");
         assertEquals("{ id=\"0\", connectTimeoutMillis=\"10000\", responseTimeoutMillis=\"10000\", LDAPPageSize=\"99\", LDAPSyncPeriod=\"3600\", LDAPUrl=\"url\", LDAPBindDN=\"\", LDAPBindPassword=\"\", LDAPBaseDN=\"\", userFilterKey=\"\", displayNameAttributeKey=\"\", emailAttributeKey=\"\", UIDAttributeKey=\"\", userGroupNamesKey=\"\", groupFilterKey=\"\", GIDAttributeKey=\"\", groupDisplayNameKey=\"\", userNamesKey=\"\" }", advancedLdapPluginConfigurationParam.toString());
     }
@@ -134,8 +134,8 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
         advancedLdapConfigurationAdminServlet.doPost(req, resp);
 
         assertEquals("templates/configureEdit.vm", argumentCaptorString.getValue());
-        assertEquals(3, argumentCaptorMap.getValue().size());
-        assertEquals("[request, advancedLdapPluginConfiguration, STATICDIR]", argumentCaptorMap.getValue().keySet().toString());
+        assertEquals(4, argumentCaptorMap.getValue().size());
+        assertEquals("[request, advancedLdapPluginConfiguration, webResourceManager, STATICDIR]", argumentCaptorMap.getValue().keySet().toString());
         AdvancedLdapPluginConfiguration advancedLdapPluginConfigurationParam = (AdvancedLdapPluginConfiguration) argumentCaptorMap.getValue().get("advancedLdapPluginConfiguration");
         assertEquals("{ id=\"0\", connectTimeoutMillis=\"10000\", responseTimeoutMillis=\"10000\", LDAPPageSize=\"99\", LDAPSyncPeriod=\"3600\", LDAPUrl=\"url\", LDAPBindDN=\"\", LDAPBindPassword=\"\", LDAPBaseDN=\"\", userFilterKey=\"\", displayNameAttributeKey=\"\", emailAttributeKey=\"\", UIDAttributeKey=\"\", userGroupNamesKey=\"\", groupFilterKey=\"\", GIDAttributeKey=\"\", groupDisplayNameKey=\"\", userNamesKey=\"\" }", advancedLdapPluginConfigurationParam.toString());
     }
@@ -154,8 +154,8 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
         advancedLdapConfigurationAdminServlet.doPost(req, resp);
 
         assertEquals("templates/configureView.vm", argumentCaptorString.getValue());
-        assertEquals(3, argumentCaptorMap.getValue().size());
-        assertEquals("[request, advancedLdapPluginConfiguration, STATICDIR]", argumentCaptorMap.getValue().keySet().toString());
+        assertEquals(4, argumentCaptorMap.getValue().size());
+        assertEquals("[request, advancedLdapPluginConfiguration, webResourceManager, STATICDIR]", argumentCaptorMap.getValue().keySet().toString());
         AdvancedLdapPluginConfiguration advancedLdapPluginConfigurationParam = (AdvancedLdapPluginConfiguration) argumentCaptorMap.getValue().get("advancedLdapPluginConfiguration");
         assertEquals("{ id=\"0\", connectTimeoutMillis=\"10000\", responseTimeoutMillis=\"10000\", LDAPPageSize=\"99\", LDAPSyncPeriod=\"3600\", LDAPUrl=\"url\", LDAPBindDN=\"\", LDAPBindPassword=\"\", LDAPBaseDN=\"\", userFilterKey=\"\", displayNameAttributeKey=\"\", emailAttributeKey=\"\", UIDAttributeKey=\"\", userGroupNamesKey=\"\", groupFilterKey=\"\", GIDAttributeKey=\"\", groupDisplayNameKey=\"\", userNamesKey=\"\" }", advancedLdapPluginConfigurationParam.toString());
     }
@@ -173,8 +173,8 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
         advancedLdapConfigurationAdminServlet.doPost(req, resp);
 
         assertEquals("templates/configureView.vm", argumentCaptorString.getValue());
-        assertEquals(3, argumentCaptorMap.getValue().size());
-        assertEquals("[request, advancedLdapPluginConfiguration, STATICDIR]", argumentCaptorMap.getValue().keySet().toString());
+        assertEquals(4, argumentCaptorMap.getValue().size());
+        assertEquals("[request, advancedLdapPluginConfiguration, webResourceManager, STATICDIR]", argumentCaptorMap.getValue().keySet().toString());
         AdvancedLdapPluginConfiguration advancedLdapPluginConfigurationParam = (AdvancedLdapPluginConfiguration) argumentCaptorMap.getValue().get("advancedLdapPluginConfiguration");
         assertEquals("{ id=\"0\", connectTimeoutMillis=\"10000\", responseTimeoutMillis=\"10000\", LDAPPageSize=\"99\", LDAPSyncPeriod=\"3600\", LDAPUrl=\"url\", LDAPBindDN=\"\", LDAPBindPassword=\"\", LDAPBaseDN=\"\", userFilterKey=\"\", displayNameAttributeKey=\"\", emailAttributeKey=\"\", UIDAttributeKey=\"\", userGroupNamesKey=\"\", groupFilterKey=\"\", GIDAttributeKey=\"\", groupDisplayNameKey=\"\", userNamesKey=\"\" }", advancedLdapPluginConfigurationParam.toString());
     }
@@ -194,8 +194,8 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
         advancedLdapConfigurationAdminServlet.doPost(req, resp);
 
         assertEquals("templates/configureView.vm", argumentCaptorString.getValue());
-        assertEquals(3, argumentCaptorMap.getValue().size());
-        assertEquals("[request, advancedLdapPluginConfiguration, STATICDIR]", argumentCaptorMap.getValue().keySet().toString());
+        assertEquals(4, argumentCaptorMap.getValue().size());
+        assertEquals("[request, advancedLdapPluginConfiguration, webResourceManager, STATICDIR]", argumentCaptorMap.getValue().keySet().toString());
         AdvancedLdapPluginConfiguration advancedLdapPluginConfigurationParam = (AdvancedLdapPluginConfiguration) argumentCaptorMap.getValue().get("advancedLdapPluginConfiguration");
         assertEquals("{ id=\"0\", connectTimeoutMillis=\"10000\", responseTimeoutMillis=\"10000\", LDAPPageSize=\"99\", LDAPSyncPeriod=\"3600\", LDAPUrl=\"url\", LDAPBindDN=\"\", LDAPBindPassword=\"\", LDAPBaseDN=\"\", userFilterKey=\"\", displayNameAttributeKey=\"\", emailAttributeKey=\"\", UIDAttributeKey=\"\", userGroupNamesKey=\"\", groupFilterKey=\"\", GIDAttributeKey=\"\", groupDisplayNameKey=\"\", userNamesKey=\"\" }", advancedLdapPluginConfigurationParam.toString());
     }
