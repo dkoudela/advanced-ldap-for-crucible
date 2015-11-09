@@ -2,6 +2,7 @@ package com.davidkoudela.crucible.ldap.model;
 
 import com.davidkoudela.crucible.ldap.connect.AdvancedLdapSearchResultBuilder;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Description: {@link AdvancedLdapGroupSearchResultBuilder} extends an interface {@link AdvancedLdapSearchResultBuilder}
@@ -13,4 +14,5 @@ import java.util.List;
  */
 public interface AdvancedLdapGroupSearchResultBuilder extends AdvancedLdapSearchResultBuilder {
     public List<AdvancedLdapGroup> getGroups();
+    public Set<String> getGroupNames();
 }

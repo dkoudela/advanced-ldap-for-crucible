@@ -9,7 +9,9 @@ import com.unboundid.ldap.sdk.Attribute;
 import com.unboundid.ldap.sdk.SearchScope;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Description: Implementation of {@link AdvancedLdapPersonSearchResultBuilder} build capabilities for
@@ -25,6 +27,7 @@ public class AdvancedLdapPersonBuilder implements AdvancedLdapPersonSearchResult
     private Boolean followMembers = false;
     private AdvancedLdapConnector advancedLdapConnector = null;
     private AdvancedLdapGroupBuilder advancedLdapGroupBuilder = null;
+    private Set<String> personNames = new HashSet<String>();
 
     public AdvancedLdapPersonBuilder(AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration, Boolean followMembers) {
         this.advancedLdapPluginConfiguration = advancedLdapPluginConfiguration;
@@ -37,40 +40,48 @@ public class AdvancedLdapPersonBuilder implements AdvancedLdapPersonSearchResult
     }
 
     @Override
+    public Set<String> getPersonNames() {
+        return this.personNames;
+    }
+
+    @Override
     public void handlePagedSearchResult(SearchResultEntry searchResultEntry) {
         AdvancedLdapPerson advancedLdapPerson = new AdvancedLdapPerson();
         advancedLdapPerson.setUid(searchResultEntry.getAttributeValue(this.advancedLdapPluginConfiguration.getUIDAttributeKey()));
         advancedLdapPerson.setDisplayName(searchResultEntry.getAttributeValue(this.advancedLdapPluginConfiguration.getDisplayNameAttributeKey()));
         advancedLdapPerson.setEmail(searchResultEntry.getAttributeValue(this.advancedLdapPluginConfiguration.getEmailAttributeKey()));
 
-        if (this.followMembers) {
-            List<AdvancedLdapGroup> groupList = new ArrayList<AdvancedLdapGroup>();
-            if (searchResultEntry.hasAttribute(this.advancedLdapPluginConfiguration.getUserGroupNamesKey())) {
-                Attribute groupDns = searchResultEntry.getAttribute(this.advancedLdapPluginConfiguration.getUserGroupNamesKey());
-                for (String groupDn : groupDns.getValues()) {
-                    System.out.println("AdvancedLdapPersonBuilder: Group: " + groupDn);
-                    try {
-                        SearchRequest searchRequest = new SearchRequest(groupDn, SearchScope.BASE,
-                                AdvancedLdapSearchFilterFactory.getSearchFilterForAllGroups(this.advancedLdapPluginConfiguration.getGroupFilterKey()));
-                        AdvancedLdapConnector advancedLdapConnector = getAdvancedLdapConnector();
-                        AdvancedLdapGroupBuilder advancedLdapGroupBuilder = getAdvancedLdapGroupBuilder();
-                        advancedLdapConnector.ldapPagedSearch(searchRequest, advancedLdapGroupBuilder);
+        if (false == this.getPersonNames().contains(advancedLdapPerson.getUid())) {
+            if (this.followMembers) {
+                List<AdvancedLdapGroup> groupList = new ArrayList<AdvancedLdapGroup>();
+                if (searchResultEntry.hasAttribute(this.advancedLdapPluginConfiguration.getUserGroupNamesKey())) {
+                    Attribute groupDns = searchResultEntry.getAttribute(this.advancedLdapPluginConfiguration.getUserGroupNamesKey());
+                    for (String groupDn : groupDns.getValues()) {
+                        System.out.println("AdvancedLdapPersonBuilder: Group: " + groupDn);
+                        try {
+                            SearchRequest searchRequest = new SearchRequest(groupDn, SearchScope.BASE,
+                                    AdvancedLdapSearchFilterFactory.getSearchFilterForAllGroups(this.advancedLdapPluginConfiguration.getGroupFilterKey()));
+                            AdvancedLdapConnector advancedLdapConnector = getAdvancedLdapConnector();
+                            AdvancedLdapGroupBuilder advancedLdapGroupBuilder = getAdvancedLdapGroupBuilder();
+                            advancedLdapConnector.ldapPagedSearch(searchRequest, advancedLdapGroupBuilder);
 
-                        List foundGroupsInLdap = advancedLdapGroupBuilder.getGroups();
-                        if (1 != foundGroupsInLdap.size()) {
-                            System.out.println("AdvancedLdapPersonBuilder: group search returned "+ foundGroupsInLdap.size() + " entries");
-                            continue;
+                            List foundGroupsInLdap = advancedLdapGroupBuilder.getGroups();
+                            if (1 != foundGroupsInLdap.size()) {
+                                System.out.println("AdvancedLdapPersonBuilder: group search returned " + foundGroupsInLdap.size() + " entries");
+                                continue;
+                            }
+                            groupList.addAll(foundGroupsInLdap);
+
+                        } catch (Exception e) {
+                            System.out.println("AdvancedLdapPersonBuilder: group search failed: " + groupDn + " Exception: " + e);
                         }
-                        groupList.addAll(foundGroupsInLdap);
-
-                    } catch (Exception e) {
-                        System.out.println("AdvancedLdapPersonBuilder: group search failed: " + groupDn + " Exception: " + e);
                     }
                 }
+                advancedLdapPerson.setGroupList(groupList);
             }
-            advancedLdapPerson.setGroupList(groupList);
+            this.advancedLdapPersonList.add(advancedLdapPerson);
+            this.personNames.add(advancedLdapPerson.getUid());
         }
-        this.advancedLdapPersonList.add(advancedLdapPerson);
     }
 
     protected void setAdvancedLdapConnector(AdvancedLdapConnector advancedLdapConnector) {
