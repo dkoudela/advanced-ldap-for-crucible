@@ -22,6 +22,7 @@ import com.davidkoudela.crucible.persistence.HibernateAdvancedLdapUserDAOImpl;
 import com.davidkoudela.crucible.ldap.connect.AdvancedLdapConnector;
 import com.davidkoudela.crucible.ldap.connect.AdvancedLdapSearchResultBuilder;
 import com.davidkoudela.crucible.ldap.model.*;
+import com.davidkoudela.crucible.statistics.AdvancedLdapGroupUserSyncCount;
 import com.unboundid.ldap.sdk.SearchRequest;
 import junit.framework.TestCase;
 import org.junit.Before;
@@ -230,8 +231,9 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
         AdvancedLdapUserManager advancedLdapUserManager = new AdvancedLdapUserManagerImpl(this.userManager, this.hibernateAdvancedLdapPluginConfigurationDAO, this.hibernateAdvancedLdapUserDAO);
         AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = new AdvancedLdapPluginConfiguration();
         Mockito.when(hibernateAdvancedLdapPluginConfigurationDAO.get()).thenReturn(advancedLdapPluginConfiguration);
+        AdvancedLdapGroupUserSyncCount advancedLdapGroupUserSyncCount = new AdvancedLdapGroupUserSyncCount();
 
-        advancedLdapUserManager.loadGroups();
+        advancedLdapUserManager.loadGroups(advancedLdapGroupUserSyncCount);
 
         Mockito.verify(this.userManager, Mockito.times(0)).builtInGroupExists(this.argumentCaptorGID.capture());
     }
@@ -246,8 +248,9 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
         advancedLdapPluginConfiguration.setGroupFilterKey("(&(objectCategory=cn=Group*)(sAMAccountName=${USERNAME}))");
         Mockito.when(hibernateAdvancedLdapPluginConfigurationDAO.get()).thenReturn(advancedLdapPluginConfiguration);
         Mockito.doNothing().when(this.advancedLdapConnector).ldapPagedSearch(this.argumentCaptorSearchRequest.capture(), this.argumentCaptorAdvancedLdapGroupBuilder.capture());
+        AdvancedLdapGroupUserSyncCount advancedLdapGroupUserSyncCount = new AdvancedLdapGroupUserSyncCount();
 
-        advancedLdapUserManager.loadGroups();
+        advancedLdapUserManager.loadGroups(advancedLdapGroupUserSyncCount);
 
         Mockito.verify(this.userManager, Mockito.times(0)).builtInGroupExists(this.argumentCaptorGID.capture());
     }
@@ -264,8 +267,9 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
         Mockito.when(hibernateAdvancedLdapPluginConfigurationDAO.get()).thenReturn(advancedLdapPluginConfiguration);
         Mockito.when(this.advancedLdapGroupBuilder.getGroups()).thenReturn(this.advancedLdapGroups);
         Mockito.doNothing().when(this.advancedLdapConnector).ldapPagedSearch(this.argumentCaptorSearchRequest.capture(), this.argumentCaptorAdvancedLdapGroupBuilder.capture());
+        AdvancedLdapGroupUserSyncCount advancedLdapGroupUserSyncCount = new AdvancedLdapGroupUserSyncCount();
 
-        advancedLdapUserManager.loadGroups();
+        advancedLdapUserManager.loadGroups(advancedLdapGroupUserSyncCount);
 
         Mockito.verify(this.userManager, Mockito.times(1)).builtInGroupExists("group");
         Mockito.verify(this.userManager, Mockito.times(1)).addBuiltInGroup("group");
@@ -285,8 +289,9 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
         Mockito.when(hibernateAdvancedLdapPluginConfigurationDAO.get()).thenReturn(advancedLdapPluginConfiguration);
         Mockito.when(this.advancedLdapGroupBuilder.getGroups()).thenReturn(this.advancedLdapGroups2);
         Mockito.doNothing().when(this.advancedLdapConnector).ldapPagedSearch(this.argumentCaptorSearchRequest.capture(), this.argumentCaptorAdvancedLdapGroupBuilder.capture());
+        AdvancedLdapGroupUserSyncCount advancedLdapGroupUserSyncCount = new AdvancedLdapGroupUserSyncCount();
 
-        advancedLdapUserManager.loadGroups();
+        advancedLdapUserManager.loadGroups(advancedLdapGroupUserSyncCount);
 
         Mockito.verify(this.userManager, Mockito.times(1)).builtInGroupExists("group");
         Mockito.verify(this.userManager, Mockito.times(1)).addBuiltInGroup("group");
@@ -305,8 +310,8 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
 
         advancedLdapUserManager.verifyUserCredentials("dkoudela", "pwd");
 
-        Mockito.verify(this.advancedLdapConnector, Mockito.times(0)).ldapPagedSearch(new ArgumentCaptor<SearchRequest>().capture(),
-                new ArgumentCaptor<AdvancedLdapSearchResultBuilder>().capture());
+        Mockito.verify(this.advancedLdapConnector, Mockito.times(0)).ldapPagedSearch(ArgumentCaptor.forClass(SearchRequest.class).capture(),
+                ArgumentCaptor.forClass(AdvancedLdapSearchResultBuilder.class).capture());
     }
 
     @Test
@@ -319,8 +324,8 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
 
         advancedLdapUserManager.verifyUserCredentials("dkoudela", "pwd");
 
-        Mockito.verify(this.advancedLdapConnector, Mockito.times(0)).ldapPagedSearch(new ArgumentCaptor<SearchRequest>().capture(),
-                new ArgumentCaptor<AdvancedLdapSearchResultBuilder>().capture());
+        Mockito.verify(this.advancedLdapConnector, Mockito.times(0)).ldapPagedSearch(ArgumentCaptor.forClass(SearchRequest.class).capture(),
+                ArgumentCaptor.forClass(AdvancedLdapSearchResultBuilder.class).capture());
     }
 
     @Test

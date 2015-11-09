@@ -5,6 +5,7 @@ import com.atlassian.fisheye.plugin.web.helpers.VelocityHelper;
 import com.davidkoudela.crucible.admin.AdvancedLdapUserManager;
 import com.davidkoudela.crucible.admin.AdvancedLdapUserManagerImpl;
 import com.davidkoudela.crucible.servlets.AdvancedLdapConfigurationTestServlet;
+import com.davidkoudela.crucible.statistics.AdvancedLdapGroupUserSyncCount;
 import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -60,7 +61,7 @@ public class AdvancedLdapConfigurationTestServletTest extends TestCase {
         argumentCaptorMap = ArgumentCaptor.forClass(Map.class);
         argumentCaptorPrintWriter = ArgumentCaptor.forClass(PrintWriter.class);
         Mockito.doNothing().when(velocityHelper).renderVelocityTemplate(argumentCaptorString.capture(), argumentCaptorMap.capture(), argumentCaptorPrintWriter.capture());
-        Mockito.doNothing().when(advancedLdapUserManager).loadGroups();
+        Mockito.doNothing().when(advancedLdapUserManager).loadGroups(ArgumentCaptor.forClass(AdvancedLdapGroupUserSyncCount.class).capture());
     }
 
     @Test

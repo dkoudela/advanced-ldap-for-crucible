@@ -2,6 +2,7 @@ package com.davidkoudela.crucible.admin;
 
 import com.atlassian.crucible.spi.data.UserData;
 import com.cenqua.fisheye.user.UserManager;
+import com.davidkoudela.crucible.statistics.AdvancedLdapGroupUserSyncCount;
 
 /**
  * Description: {@link AdvancedLdapUserManager} represents an interface used by
@@ -14,6 +15,6 @@ import com.cenqua.fisheye.user.UserManager;
  */
 public interface AdvancedLdapUserManager extends UserManager {
     void loadUser(UserData userData);
-    void loadGroups();
+    void loadGroups(AdvancedLdapGroupUserSyncCount advancedLdapGroupUserSyncCount);
     boolean verifyUserCredentials(String username, String password);
 }

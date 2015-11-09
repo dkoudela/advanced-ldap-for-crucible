@@ -19,13 +19,16 @@ import com.davidkoudela.crucible.persistence.HibernateAdvancedLdapUserDAO;
 import com.davidkoudela.crucible.ldap.connect.AdvancedLdapConnector;
 import com.davidkoudela.crucible.ldap.connect.AdvancedLdapSearchFilterFactory;
 import com.davidkoudela.crucible.ldap.model.*;
+import com.davidkoudela.crucible.statistics.AdvancedLdapGroupUserSyncCount;
 import com.unboundid.ldap.sdk.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspContext;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Description: Implementation of {@link AdvancedLdapUserManager} providing managed LDAP users with their groups.
@@ -106,7 +109,7 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
     }
 
     @Override
-    public void loadGroups() {
+    public void loadGroups(AdvancedLdapGroupUserSyncCount advancedLdapGroupUserSyncCount) {
         this.advancedLdapPluginConfiguration = hibernateAdvancedLdapPluginConfigurationDAO.get();
 
         System.out.println("AdvancedLdapUserManagerImpl.loadGroups START");
@@ -124,20 +127,25 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
         advancedLdapConnector.ldapPagedSearch(searchRequest, advancedLdapGroupBuilder);
         List<AdvancedLdapGroup> groups = advancedLdapGroupBuilder.getGroups();
 
+        advancedLdapGroupUserSyncCount.setGroupCountTotal(groups.size());
+        Set<String> noDuplicatedUID = new HashSet<String>();
         for (AdvancedLdapGroup advancedLdapGroup : groups) {
             String GID = advancedLdapGroup.getNormalizedGID();
             System.out.println("AdvancedLdapUserManagerImpl: GID: " + GID);
             if (!this.userManager.builtInGroupExists(GID)) {
                 System.out.println("AdvancedLdapUserManagerImpl: GID added: " + GID);
+                advancedLdapGroupUserSyncCount.incrementGroupCountNew();
                 this.userManager.addBuiltInGroup(GID);
             }
 
             for (AdvancedLdapPerson advancedLdapPerson : advancedLdapGroup.getPersonList()) {
                 String UID = advancedLdapPerson.getUid();
                 System.out.println("AdvancedLdapUserManagerImpl: UID: " + UID);
+                noDuplicatedUID.add(UID);
                 try {
                     if (!this.userManager.userExists(UID)) {
                         System.out.println("AdvancedLdapUserManagerImpl: UID does not exist in Crucible: " + UID);
+                        advancedLdapGroupUserSyncCount.incrementUserCountNew();
                         this.hibernateAdvancedLdapUserDAO.create(UID, advancedLdapPerson.getDisplayName(), advancedLdapPerson.getEmail());
                     }
                     if (!this.userManager.isUserInGroup(GID, advancedLdapPerson.getUid())) {
@@ -150,6 +158,7 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
                 }
             }
         }
+        advancedLdapGroupUserSyncCount.setUserCountTotal(noDuplicatedUID.size());
 
         System.out.println("AdvancedLdapUserManagerImpl.loadGroups END");
     }

@@ -1,6 +1,8 @@
 package com.davidkoudela.crucible.tasks;
 
 import com.davidkoudela.crucible.admin.AdvancedLdapUserManager;
+import com.davidkoudela.crucible.statistics.AdvancedLdapGroupUserSyncCount;
+import com.google.common.base.Stopwatch;
 
 import java.util.Date;
 import java.util.TimerTask;
@@ -22,8 +24,17 @@ public class AdvancedLdapSynchronizationTask extends TimerTask {
 
     @Override
     public void run() {
-        System.out.println("Timer task started at:"+new Date());
-        this.advancedLdapUserManager.loadGroups();
-        System.out.println("Timer task ended at:" + new Date());
+        Stopwatch timer = new Stopwatch();
+        timer.start();
+        System.out.println("Timer task started at:" + new Date());
+        AdvancedLdapGroupUserSyncCount advancedLdapGroupUserSyncCount = new AdvancedLdapGroupUserSyncCount();
+        this.advancedLdapUserManager.loadGroups(advancedLdapGroupUserSyncCount);
+        System.out.println("Timer task ended at: " + new Date());
+        timer.stop();
+        System.out.println("Timer task duration: " + timer);
+        System.out.println("Groups total: " + advancedLdapGroupUserSyncCount.getGroupCountTotal());
+        System.out.println("Groups new:   " + advancedLdapGroupUserSyncCount.getGroupCountNew());
+        System.out.println("Users total:  " + advancedLdapGroupUserSyncCount.getUserCountTotal());
+        System.out.println("Users new:    " + advancedLdapGroupUserSyncCount.getUserCountNew());
     }
 }

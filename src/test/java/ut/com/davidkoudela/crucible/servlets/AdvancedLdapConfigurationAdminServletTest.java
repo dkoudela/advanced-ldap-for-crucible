@@ -11,6 +11,7 @@ import com.davidkoudela.crucible.admin.AdvancedLdapUserManagerImpl;
 import com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration;
 import com.davidkoudela.crucible.persistence.HibernateAdvancedLdapPluginConfigurationDAO;
 import com.davidkoudela.crucible.servlets.AdvancedLdapConfigurationAdminServlet;
+import com.davidkoudela.crucible.statistics.AdvancedLdapGroupUserSyncCount;
 import com.davidkoudela.crucible.tasks.AdvancedLdapSynchronizationManager;
 import com.davidkoudela.crucible.tasks.AdvancedLdapSynchronizationManagerImpl;
 import com.davidkoudela.crucible.timer.AdvancedLdapTimerTrigger;
@@ -82,7 +83,7 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
         argumentCaptorMap = ArgumentCaptor.forClass(Map.class);
         argumentCaptorPrintWriter = ArgumentCaptor.forClass(PrintWriter.class);
         Mockito.doNothing().when(velocityHelper).renderVelocityTemplate(argumentCaptorString.capture(), argumentCaptorMap.capture(), argumentCaptorPrintWriter.capture());
-        Mockito.doNothing().when(advancedLdapUserManager).loadGroups();
+        Mockito.doNothing().when(advancedLdapUserManager).loadGroups(ArgumentCaptor.forClass(AdvancedLdapGroupUserSyncCount.class).capture());
 
         advancedLdapSynchronizationManager =
                 new AdvancedLdapSynchronizationManagerImpl(hibernateAdvancedLdapPluginConfigurationDAO, advancedLdapTimerTrigger, advancedLdapUserManager);
