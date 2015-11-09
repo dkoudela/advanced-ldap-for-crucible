@@ -129,6 +129,7 @@ public class AdvancedLdapConfigurationAdminServlet extends HttpServlet {
         advancedLdapPluginConfiguration.setGIDAttributeKey(StringUtils.defaultIfEmpty(request.getParameter("ldap.gidAttr"), ""));
         advancedLdapPluginConfiguration.setGroupDisplayNameKey(StringUtils.defaultIfEmpty(request.getParameter("ldap.groupDisplaynameAttr"), ""));
         advancedLdapPluginConfiguration.setUserNamesKey(StringUtils.defaultIfEmpty(request.getParameter("ldap.groupUsernameAttr"), ""));
+        advancedLdapPluginConfiguration.setNestedGroupsEnabled(Boolean.parseBoolean(StringUtils.defaultIfEmpty(request.getParameter("ldap.nestedGroupsEnabled"), "False")));
     }
 
 }

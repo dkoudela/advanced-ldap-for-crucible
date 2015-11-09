@@ -11,6 +11,7 @@ import javax.persistence.Entity;
  */
 @Entity
 public class AdvancedLdapPluginConfiguration {
+    public static final String RECORD_REVISION = "1.0";
     private int id;
     private int connectTimeoutMillis = 10000;
     private int responseTimeoutMillis = 10000;
@@ -29,7 +30,8 @@ public class AdvancedLdapPluginConfiguration {
     private String GIDAttributeKey = "";
     private String groupDisplayNameKey = "";
     private String userNamesKey = "";
-    private String recordRevision = "1.0";
+    private String recordRevision = RECORD_REVISION;
+    private Boolean nestedGroupsEnabled = false;
 
     public int getId() {
         return id;
@@ -105,6 +107,10 @@ public class AdvancedLdapPluginConfiguration {
 
     public String getRecordRevision() {
         return recordRevision;
+    }
+
+    public Boolean isNestedGroupsEnabled() {
+        return nestedGroupsEnabled;
     }
 
     public void setId(int id) {
@@ -183,6 +189,14 @@ public class AdvancedLdapPluginConfiguration {
         this.recordRevision = recordRevision;
     }
 
+    public void setNestedGroupsEnabled(Boolean nestedGroupsEnabled) {
+        if (null == nestedGroupsEnabled)
+            this.nestedGroupsEnabled = false;
+        else
+            this.nestedGroupsEnabled = nestedGroupsEnabled;
+    }
+
+
     public String toString() {
         return "{ id=\"" + id + "\", connectTimeoutMillis=\"" + connectTimeoutMillis + "\", responseTimeoutMillis=\"" + responseTimeoutMillis +
                 "\", LDAPPageSize=\"" + LDAPPageSize + "\", LDAPSyncPeriod=\"" + LDAPSyncPeriod + "\", LDAPUrl=\"" + LDAPUrl +
@@ -191,6 +205,6 @@ public class AdvancedLdapPluginConfiguration {
                 "\", emailAttributeKey=\"" + emailAttributeKey + "\", UIDAttributeKey=\"" + UIDAttributeKey +
                 "\", userGroupNamesKey=\"" + userGroupNamesKey + "\", groupFilterKey=\"" + groupFilterKey +
                 "\", GIDAttributeKey=\"" + GIDAttributeKey + "\", groupDisplayNameKey=\"" + groupDisplayNameKey +
-                "\", userNamesKey=\"" + userNamesKey + "\" }";
+                "\", userNamesKey=\"" + userNamesKey + "\", nestedGroupsEnabled=\"" + nestedGroupsEnabled + "\" }";
     }
 }

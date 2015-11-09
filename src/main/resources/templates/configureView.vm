@@ -138,6 +138,10 @@ $webResourceManager.requireResource('com.davidkoudela.crucible.advanced-ldap-for
                         <label>Ldap Page Size</label>
                         <span class="field-value">$advancedLdapPluginConfiguration.getLDAPPageSize()</span>
                     </div>
+                    <div class="field-group">
+                        <label>Enable Nested Groups</label>
+                        <input class="checkbox" type="checkbox" disabled value="true" #if ($advancedLdapPluginConfiguration.isNestedGroupsEnabled()) checked="checked"#end ></input>
+                    </div>
                 </div>
             </div>
 

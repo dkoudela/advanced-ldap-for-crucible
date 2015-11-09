@@ -35,6 +35,7 @@ public class AdvancedLdapPluginConfigurationTest extends TestCase {
         advancedLdapPluginConfiguration.setGroupDisplayNameKey("member");
         advancedLdapPluginConfiguration.setUserNamesKey("names");
         advancedLdapPluginConfiguration.setRecordRevision("666");
+        advancedLdapPluginConfiguration.setNestedGroupsEnabled(true);
 
         assertEquals(1, advancedLdapPluginConfiguration.getId());
         assertEquals(2, advancedLdapPluginConfiguration.getConnectTimeoutMillis());
@@ -55,5 +56,6 @@ public class AdvancedLdapPluginConfigurationTest extends TestCase {
         assertEquals("member", advancedLdapPluginConfiguration.getGroupDisplayNameKey());
         assertEquals("names", advancedLdapPluginConfiguration.getUserNamesKey());
         assertEquals("666", advancedLdapPluginConfiguration.getRecordRevision());
+        assertEquals(true, advancedLdapPluginConfiguration.isNestedGroupsEnabled().booleanValue());
     }
 }

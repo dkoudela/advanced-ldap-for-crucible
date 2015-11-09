@@ -49,3 +49,7 @@ form.aui .advanced-ldap-buttons-container > .buttons {
 form.aui .buttons-container > .buttons > * {
     font-size: 14px;
 }
+
+form.aui .checkbox {
+    margin-top: 10px;
+}

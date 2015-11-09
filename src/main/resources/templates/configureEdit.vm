@@ -217,6 +217,15 @@ $webResourceManager.requireResource('com.davidkoudela.crucible.advanced-ldap-for
                             </td>
                         </tr>
                     </div>
+                    <div class="field-group">
+                        <label>Enable Nested Groups</label>
+                        <tr>
+                            <td class="tdLabel"></td>
+                            <td>
+                                <input type="checkbox" name="ldap.nestedGroupsEnabled" value="true" id="ldap_nestedGroupsEnabled" class="checkbox" value="true" #if ($advancedLdapPluginConfiguration.isNestedGroupsEnabled()) checked="checked"#end />
+                            </td>
+                        </tr>
+                    </div>
                 </div>
             </div>
 

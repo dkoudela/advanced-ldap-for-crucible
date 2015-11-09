@@ -76,7 +76,8 @@ public class HibernateAdvancedLdapPluginConfigurationDAOImpl implements Hibernat
 
             testConnection(session);
 
-            List advancedLdapPluginConfigurationList = session.createQuery("FROM com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration").list();
+            List advancedLdapPluginConfigurationList = session.createQuery(
+                    "FROM com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration WHERE RECORD_REVISION = '" + AdvancedLdapPluginConfiguration.RECORD_REVISION + "'").list();
             if (advancedLdapPluginConfigurationList == null || advancedLdapPluginConfigurationList.isEmpty())
                 advancedLdapPluginConfiguration = new AdvancedLdapPluginConfiguration();
             else
