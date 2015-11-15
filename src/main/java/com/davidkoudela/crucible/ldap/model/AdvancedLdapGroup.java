@@ -28,7 +28,8 @@ public class AdvancedLdapGroup {
         if (0 != dictionary.length) {
             for (String replaceChar : dictionary) {
                 if (!replaceChar.isEmpty())
-                    normalizedGID = normalizedGID.replace(replaceChar, "-");
+                    for (char aChar : replaceChar.toCharArray())
+                        normalizedGID = normalizedGID.replace(aChar, '-');
             }
         }
         return normalizedGID;
