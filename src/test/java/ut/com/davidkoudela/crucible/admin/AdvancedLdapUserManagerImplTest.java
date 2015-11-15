@@ -52,7 +52,7 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
     private static HibernateAdvancedLdapPluginConfigurationDAO hibernateAdvancedLdapPluginConfigurationDAO;
     private static AdvancedLdapConnector advancedLdapConnector = null;
     private static AdvancedLdapPersonBuilder advancedLdapPersonBuilder = null;
-    private static AdvancedLdapGroupBuilder advancedLdapGroupBuilder = null;
+    private static AdvancedLdapNestedGroupBuilder advancedLdapNestedGroupBuilder = null;
     private static ArrayList<AdvancedLdapPerson> advancedLdapPersons;
     private static ArrayList<AdvancedLdapPerson> advancedLdapPersons2;
     private static ArrayList<AdvancedLdapGroup> advancedLdapGroups;
@@ -83,8 +83,8 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
             super.setAdvancedLdapPersonBuilder(advancedLdapPersonBuilder);
         }
 
-        public void setAdvancedLdapGroupBuilder(AdvancedLdapGroupBuilder advancedLdapGroupBuilder) {
-            super.setAdvancedLdapGroupSearchResultBuilder(advancedLdapGroupBuilder);
+        public void setAdvancedLdapGroupBuilder(AdvancedLdapNestedGroupSearchResultBuilder advancedLdapNestedGroupSearchResultBuilder) {
+            super.setAdvancedLdapNestedGroupSearchResultBuilder(advancedLdapNestedGroupSearchResultBuilder);
         }
 
         public void setAdvancedLdapBindBuilder(AdvancedLdapBindBuilder advancedLdapBindBuilder) {
@@ -98,7 +98,7 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
         this.hibernateAdvancedLdapPluginConfigurationDAO = Mockito.mock(HibernateAdvancedLdapPluginConfigurationDAO.class);
         this.advancedLdapConnector = Mockito.mock(AdvancedLdapConnector.class);
         this.advancedLdapPersonBuilder = Mockito.mock(AdvancedLdapPersonBuilder.class);
-        this.advancedLdapGroupBuilder = Mockito.mock(AdvancedLdapGroupBuilder.class);
+        this.advancedLdapNestedGroupBuilder = Mockito.mock(AdvancedLdapNestedGroupBuilder.class);
         this.advancedLdapPersons = new ArrayList<AdvancedLdapPerson>();
         this.advancedLdapPersons2 = new ArrayList<AdvancedLdapPerson>();
         AdvancedLdapPerson advancedLdapPerson = new AdvancedLdapPerson();
@@ -263,9 +263,9 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
         advancedLdapPluginConfiguration.setLDAPUrl("url");
         advancedLdapPluginConfiguration.setLDAPBaseDN("ou=example, dc=com");
         advancedLdapPluginConfiguration.setGroupFilterKey("(&(objectCategory=cn=Group*)(sAMAccountName=${USERNAME}))");
-        advancedLdapUserManager.setAdvancedLdapGroupBuilder(this.advancedLdapGroupBuilder);
+        advancedLdapUserManager.setAdvancedLdapGroupBuilder(this.advancedLdapNestedGroupBuilder);
         Mockito.when(hibernateAdvancedLdapPluginConfigurationDAO.get()).thenReturn(advancedLdapPluginConfiguration);
-        Mockito.when(this.advancedLdapGroupBuilder.getGroups()).thenReturn(this.advancedLdapGroups);
+        Mockito.when(this.advancedLdapNestedGroupBuilder.getGroups()).thenReturn(this.advancedLdapGroups);
         Mockito.doNothing().when(this.advancedLdapConnector).ldapPagedSearch(this.argumentCaptorSearchRequest.capture(), this.argumentCaptorAdvancedLdapGroupBuilder.capture());
         AdvancedLdapGroupUserSyncCount advancedLdapGroupUserSyncCount = new AdvancedLdapGroupUserSyncCount();
 
@@ -285,9 +285,9 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
         advancedLdapPluginConfiguration.setLDAPUrl("url");
         advancedLdapPluginConfiguration.setLDAPBaseDN("ou=example, dc=com");
         advancedLdapPluginConfiguration.setGroupFilterKey("(&(objectCategory=cn=Group*)(sAMAccountName=${USERNAME}))");
-        advancedLdapUserManager.setAdvancedLdapGroupBuilder(this.advancedLdapGroupBuilder);
+        advancedLdapUserManager.setAdvancedLdapGroupBuilder(this.advancedLdapNestedGroupBuilder);
         Mockito.when(hibernateAdvancedLdapPluginConfigurationDAO.get()).thenReturn(advancedLdapPluginConfiguration);
-        Mockito.when(this.advancedLdapGroupBuilder.getGroups()).thenReturn(this.advancedLdapGroups2);
+        Mockito.when(this.advancedLdapNestedGroupBuilder.getGroups()).thenReturn(this.advancedLdapGroups2);
         Mockito.doNothing().when(this.advancedLdapConnector).ldapPagedSearch(this.argumentCaptorSearchRequest.capture(), this.argumentCaptorAdvancedLdapGroupBuilder.capture());
         AdvancedLdapGroupUserSyncCount advancedLdapGroupUserSyncCount = new AdvancedLdapGroupUserSyncCount();
 

@@ -44,7 +44,7 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
     private AdvancedLdapConnector advancedLdapConnector = null;
     private AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = null;
     private AdvancedLdapPersonBuilder advancedLdapPersonBuilder = null;
-    private AdvancedLdapGroupSearchResultBuilder advancedLdapGroupSearchResultBuilder = null;
+    private AdvancedLdapNestedGroupSearchResultBuilder advancedLdapNestedGroupSearchResultBuilder = null;
     private AdvancedLdapBindBuilder advancedLdapBindBuilder = null;
     private HibernateAdvancedLdapUserDAO hibernateAdvancedLdapUserDAO = null;
 
@@ -123,11 +123,12 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
         }
 
         AdvancedLdapConnector advancedLdapConnector = getAdvancedLdapConnector();
-        AdvancedLdapGroupSearchResultBuilder AdvancedLdapGroupSearchResultBuilder = getAdvancedLdapGroupSearchResultBuilder();
-        advancedLdapConnector.ldapPagedSearch(searchRequest, AdvancedLdapGroupSearchResultBuilder);
-        List<AdvancedLdapGroup> groups = AdvancedLdapGroupSearchResultBuilder.getGroups();
+        AdvancedLdapNestedGroupSearchResultBuilder advancedLdapNestedGroupSearchResultBuilder = getAdvancedLdapNestedGroupSearchResultBuilder();
+        advancedLdapConnector.ldapPagedSearch(searchRequest, advancedLdapNestedGroupSearchResultBuilder);
+        List<AdvancedLdapGroup> groups = advancedLdapNestedGroupSearchResultBuilder.getGroups();
 
-        advancedLdapGroupUserSyncCount.setGroupCountTotal(AdvancedLdapGroupSearchResultBuilder.getGroupNames().size());
+        advancedLdapGroupUserSyncCount.setGroupCountTotal(advancedLdapNestedGroupSearchResultBuilder.getGroupNames().size());
+        advancedLdapGroupUserSyncCount.setNestedGroupCount(advancedLdapNestedGroupSearchResultBuilder.getNestedGroups().size());
         Set<String> noDuplicatedUID = new HashSet<String>();
         for (AdvancedLdapGroup advancedLdapGroup : groups) {
             String GID = advancedLdapGroup.getNormalizedGID();
@@ -160,7 +161,8 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
         }
         advancedLdapGroupUserSyncCount.setUserCountTotal(noDuplicatedUID.size());
 
-        System.out.println("AdvancedLdapUserManagerImpl: nonperson DNs: " + AdvancedLdapGroupSearchResultBuilder.getNonpersonDns().toString());
+        System.out.println("AdvancedLdapUserManagerImpl: nonperson DNs: " + advancedLdapNestedGroupSearchResultBuilder.getNonpersonDns().toString());
+        System.out.println("AdvancedLdapUserManagerImpl: nested groups: " + advancedLdapNestedGroupSearchResultBuilder.getNestedGroups().toString());
         System.out.println("AdvancedLdapUserManagerImpl.loadGroups END");
     }
 
@@ -216,14 +218,14 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
         this.advancedLdapPersonBuilder = advancedLdapPersonBuilder;
     }
 
-    protected AdvancedLdapGroupSearchResultBuilder getAdvancedLdapGroupSearchResultBuilder() {
-        if (null != this.advancedLdapGroupSearchResultBuilder)
-            return this.advancedLdapGroupSearchResultBuilder;
+    protected AdvancedLdapNestedGroupSearchResultBuilder getAdvancedLdapNestedGroupSearchResultBuilder() {
+        if (null != this.advancedLdapNestedGroupSearchResultBuilder)
+            return this.advancedLdapNestedGroupSearchResultBuilder;
         return new AdvancedLdapNestedGroupBuilder(this.advancedLdapPluginConfiguration, true);
     }
 
-    protected void setAdvancedLdapGroupSearchResultBuilder(AdvancedLdapGroupSearchResultBuilder AdvancedLdapGroupSearchResultBuilder) {
-        this.advancedLdapGroupSearchResultBuilder = AdvancedLdapGroupSearchResultBuilder;
+    protected void setAdvancedLdapNestedGroupSearchResultBuilder(AdvancedLdapNestedGroupSearchResultBuilder advancedLdapNestedGroupSearchResultBuilder) {
+        this.advancedLdapNestedGroupSearchResultBuilder = advancedLdapNestedGroupSearchResultBuilder;
     }
 
     protected AdvancedLdapBindBuilder getAdvancedLdapBindBuilder(String password) {

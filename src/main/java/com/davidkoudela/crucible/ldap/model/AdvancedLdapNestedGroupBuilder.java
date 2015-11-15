@@ -21,7 +21,7 @@ import java.util.Set;
  * @author dkoudela
  * @since 2015-11-15
  */
-public class AdvancedLdapNestedGroupBuilder implements AdvancedLdapGroupSearchResultBuilder {
+public class AdvancedLdapNestedGroupBuilder implements AdvancedLdapNestedGroupSearchResultBuilder {
     private AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration;
     private List<AdvancedLdapGroup> advancedLdapGroupList = new ArrayList<AdvancedLdapGroup>();
     private Boolean followMembers = false;
@@ -30,6 +30,7 @@ public class AdvancedLdapNestedGroupBuilder implements AdvancedLdapGroupSearchRe
     private Set<String> groupNames = new HashSet<String>();
     private Set<String> nonpersonDns = new HashSet<String>();
     private Set<String> nonpersonDnsQueue = new HashSet<String>();
+    private Set<String> nestedGroups = new HashSet<String>();
 
     public AdvancedLdapNestedGroupBuilder(AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration, Boolean followMembers) {
         this.advancedLdapPluginConfiguration = advancedLdapPluginConfiguration;
@@ -49,6 +50,11 @@ public class AdvancedLdapNestedGroupBuilder implements AdvancedLdapGroupSearchRe
     @Override
     public Set<String> getNonpersonDns() {
         return this.nonpersonDns;
+    }
+
+    @Override
+    public Set<String> getNestedGroups() {
+        return nestedGroups;
     }
 
     @Override
@@ -81,6 +87,7 @@ public class AdvancedLdapNestedGroupBuilder implements AdvancedLdapGroupSearchRe
 
                             this.advancedLdapGroupList.addAll(foundNestedGroupsInLdap);
                             this.groupNames.addAll(currentAdvancedLdapGroupBuilder.getGroupNames());
+                            this.nestedGroups.add(currentNonpersonDn);
                             for (String newNonpersonDn : currentAdvancedLdapGroupBuilder.getNonpersonDns()) {
                                 if (false == this.nonpersonDns.contains(newNonpersonDn) && false == this.nonpersonDnsQueue.contains(newNonpersonDn)) {
                                     this.nonpersonDnsQueue.add(newNonpersonDn);

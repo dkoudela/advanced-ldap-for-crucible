@@ -12,6 +12,7 @@ public class AdvancedLdapGroupUserSyncCount {
     private int userCountNew = 0;
     private int groupCountTotal = 0;
     private int groupCountNew = 0;
+    private int nestedGroupCount = 0;
 
     public int getUserCountTotal() {
         return userCountTotal;
@@ -51,5 +52,13 @@ public class AdvancedLdapGroupUserSyncCount {
 
     public void incrementGroupCountNew() {
         this.groupCountNew++;
+    }
+
+    public int getNestedGroupCount() {
+        return nestedGroupCount;
+    }
+
+    public void setNestedGroupCount(int nestedGroupCount) {
+        this.nestedGroupCount = nestedGroupCount;
     }
 }

@@ -32,9 +32,10 @@ public class AdvancedLdapSynchronizationTask extends TimerTask {
         System.out.println("Timer task ended at: " + new Date());
         timer.stop();
         System.out.println("Timer task duration: " + timer);
-        System.out.println("Groups total: " + advancedLdapGroupUserSyncCount.getGroupCountTotal());
-        System.out.println("Groups new:   " + advancedLdapGroupUserSyncCount.getGroupCountNew());
-        System.out.println("Users total:  " + advancedLdapGroupUserSyncCount.getUserCountTotal());
-        System.out.println("Users new:    " + advancedLdapGroupUserSyncCount.getUserCountNew());
+        System.out.println("Groups total:  " + advancedLdapGroupUserSyncCount.getGroupCountTotal());
+        System.out.println("Groups new:    " + advancedLdapGroupUserSyncCount.getGroupCountNew());
+        System.out.println("Nested Groups: " + advancedLdapGroupUserSyncCount.getNestedGroupCount());
+        System.out.println("Users total:   " + advancedLdapGroupUserSyncCount.getUserCountTotal());
+        System.out.println("Users new:     " + advancedLdapGroupUserSyncCount.getUserCountNew());
     }
 }
