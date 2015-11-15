@@ -84,7 +84,7 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
         }
 
         public void setAdvancedLdapGroupBuilder(AdvancedLdapGroupBuilder advancedLdapGroupBuilder) {
-            super.setAdvancedLdapGroupBuilder(advancedLdapGroupBuilder);
+            super.setAdvancedLdapGroupSearchResultBuilder(advancedLdapGroupBuilder);
         }
 
         public void setAdvancedLdapBindBuilder(AdvancedLdapBindBuilder advancedLdapBindBuilder) {

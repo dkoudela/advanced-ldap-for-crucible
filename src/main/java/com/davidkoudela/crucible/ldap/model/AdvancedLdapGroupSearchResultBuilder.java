@@ -15,4 +15,5 @@ import java.util.Set;
 public interface AdvancedLdapGroupSearchResultBuilder extends AdvancedLdapSearchResultBuilder {
     public List<AdvancedLdapGroup> getGroups();
     public Set<String> getGroupNames();
+    public Set<String> getNonpersonDns();
 }

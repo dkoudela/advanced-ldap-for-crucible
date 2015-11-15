@@ -28,6 +28,7 @@ public class AdvancedLdapGroupBuilder implements AdvancedLdapGroupSearchResultBu
     private AdvancedLdapConnector advancedLdapConnector = null;
     private AdvancedLdapPersonBuilder advancedLdapPersonBuilder = null;
     private Set<String> groupNames = new HashSet<String>();
+    private Set<String> nonpersonDns = new HashSet<String>();
 
     public AdvancedLdapGroupBuilder(AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration, Boolean followMembers) {
         this.advancedLdapPluginConfiguration = advancedLdapPluginConfiguration;
@@ -42,6 +43,11 @@ public class AdvancedLdapGroupBuilder implements AdvancedLdapGroupSearchResultBu
     @Override
     public Set<String> getGroupNames() {
         return this.groupNames;
+    }
+
+    @Override
+    public Set<String> getNonpersonDns() {
+        return nonpersonDns;
     }
 
     @Override
@@ -65,7 +71,11 @@ public class AdvancedLdapGroupBuilder implements AdvancedLdapGroupSearchResultBu
                             advancedLdapConnector.ldapPagedSearch(searchRequest, advancedLdapPersonBuilder);
 
                             List foundPersonsInLdap = advancedLdapPersonBuilder.getPersons();
-                            if (1 != foundPersonsInLdap.size()) {
+                            if (0 == foundPersonsInLdap.size()) {
+                                System.out.println("AdvancedLdapGroupBuilder: potential nested group: " + personDn);
+                                this.nonpersonDns.add(personDn);
+                                continue;
+                            } else if (1 != foundPersonsInLdap.size()) {
                                 System.out.println("AdvancedLdapGroupBuilder: person search returned " + foundPersonsInLdap.size() + " entries");
                                 continue;
                             }

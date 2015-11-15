@@ -44,7 +44,7 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
     private AdvancedLdapConnector advancedLdapConnector = null;
     private AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = null;
     private AdvancedLdapPersonBuilder advancedLdapPersonBuilder = null;
-    private AdvancedLdapGroupBuilder advancedLdapGroupBuilder = null;
+    private AdvancedLdapGroupSearchResultBuilder advancedLdapGroupSearchResultBuilder = null;
     private AdvancedLdapBindBuilder advancedLdapBindBuilder = null;
     private HibernateAdvancedLdapUserDAO hibernateAdvancedLdapUserDAO = null;
 
@@ -123,11 +123,11 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
         }
 
         AdvancedLdapConnector advancedLdapConnector = getAdvancedLdapConnector();
-        AdvancedLdapGroupBuilder advancedLdapGroupBuilder = getAdvancedLdapGroupBuilder();
-        advancedLdapConnector.ldapPagedSearch(searchRequest, advancedLdapGroupBuilder);
-        List<AdvancedLdapGroup> groups = advancedLdapGroupBuilder.getGroups();
+        AdvancedLdapGroupSearchResultBuilder AdvancedLdapGroupSearchResultBuilder = getAdvancedLdapGroupSearchResultBuilder();
+        advancedLdapConnector.ldapPagedSearch(searchRequest, AdvancedLdapGroupSearchResultBuilder);
+        List<AdvancedLdapGroup> groups = AdvancedLdapGroupSearchResultBuilder.getGroups();
 
-        advancedLdapGroupUserSyncCount.setGroupCountTotal(groups.size());
+        advancedLdapGroupUserSyncCount.setGroupCountTotal(AdvancedLdapGroupSearchResultBuilder.getGroupNames().size());
         Set<String> noDuplicatedUID = new HashSet<String>();
         for (AdvancedLdapGroup advancedLdapGroup : groups) {
             String GID = advancedLdapGroup.getNormalizedGID();
@@ -160,6 +160,7 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
         }
         advancedLdapGroupUserSyncCount.setUserCountTotal(noDuplicatedUID.size());
 
+        System.out.println("AdvancedLdapUserManagerImpl: nonperson DNs: " + AdvancedLdapGroupSearchResultBuilder.getNonpersonDns().toString());
         System.out.println("AdvancedLdapUserManagerImpl.loadGroups END");
     }
 
@@ -215,14 +216,14 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
         this.advancedLdapPersonBuilder = advancedLdapPersonBuilder;
     }
 
-    protected AdvancedLdapGroupBuilder getAdvancedLdapGroupBuilder() {
-        if (null != this.advancedLdapGroupBuilder)
-            return this.advancedLdapGroupBuilder;
-        return new AdvancedLdapGroupBuilder(this.advancedLdapPluginConfiguration, true);
+    protected AdvancedLdapGroupSearchResultBuilder getAdvancedLdapGroupSearchResultBuilder() {
+        if (null != this.advancedLdapGroupSearchResultBuilder)
+            return this.advancedLdapGroupSearchResultBuilder;
+        return new AdvancedLdapNestedGroupBuilder(this.advancedLdapPluginConfiguration, true);
     }
 
-    protected void setAdvancedLdapGroupBuilder(AdvancedLdapGroupBuilder advancedLdapGroupBuilder) {
-        this.advancedLdapGroupBuilder = advancedLdapGroupBuilder;
+    protected void setAdvancedLdapGroupSearchResultBuilder(AdvancedLdapGroupSearchResultBuilder AdvancedLdapGroupSearchResultBuilder) {
+        this.advancedLdapGroupSearchResultBuilder = AdvancedLdapGroupSearchResultBuilder;
     }
 
     protected AdvancedLdapBindBuilder getAdvancedLdapBindBuilder(String password) {
