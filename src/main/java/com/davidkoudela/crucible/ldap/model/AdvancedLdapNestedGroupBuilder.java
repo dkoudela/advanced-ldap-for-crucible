@@ -89,7 +89,9 @@ public class AdvancedLdapNestedGroupBuilder implements AdvancedLdapNestedGroupSe
                             this.groupNames.addAll(currentAdvancedLdapGroupBuilder.getGroupNames());
                             this.nestedGroups.add(currentNonpersonDn);
                             for (String newNonpersonDn : currentAdvancedLdapGroupBuilder.getNonpersonDns()) {
-                                if (false == this.nonpersonDns.contains(newNonpersonDn) && false == this.nonpersonDnsQueue.contains(newNonpersonDn)) {
+                                if (false == this.nonpersonDns.contains(newNonpersonDn) &&
+                                        false == this.nonpersonDnsQueue.contains(newNonpersonDn) &&
+                                        false == currentNonpersonDns.contains(newNonpersonDn)) {
                                     this.nonpersonDnsQueue.add(newNonpersonDn);
                                 }
                             }
