@@ -21,6 +21,10 @@ import org.mockito.runners.MockitoJUnitRunner;
 public class AdvancedLdapConnectionOptionsFactoryTest extends TestCase {
     private static AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration;
     private static AdvancedLdapConnectionOptionsFactory advancedLdapConnectionOptionsFactory;
+    private static AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration2;
+    private static AdvancedLdapConnectionOptionsFactory advancedLdapConnectionOptionsFactory2;
+    private static AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration3;
+    private static AdvancedLdapConnectionOptionsFactory advancedLdapConnectionOptionsFactory3;
 
     @Before
     public void init() throws LDAPException {
@@ -29,6 +33,12 @@ public class AdvancedLdapConnectionOptionsFactoryTest extends TestCase {
         this.advancedLdapPluginConfiguration.setConnectTimeoutMillis(1);
         this.advancedLdapPluginConfiguration.setResponseTimeoutMillis(2);
         this.advancedLdapConnectionOptionsFactory = new AdvancedLdapConnectionOptionsFactory(this.advancedLdapPluginConfiguration);
+        this.advancedLdapPluginConfiguration2 = new AdvancedLdapPluginConfiguration();
+        this.advancedLdapPluginConfiguration2.setLDAPUrl("ldaps://ldap.jumpcloud.com");
+        this.advancedLdapConnectionOptionsFactory2 = new AdvancedLdapConnectionOptionsFactory(this.advancedLdapPluginConfiguration2);
+        this.advancedLdapPluginConfiguration3 = new AdvancedLdapPluginConfiguration();
+        this.advancedLdapPluginConfiguration3.setLDAPUrl("ldap://ldap.jumpcloud.com");
+        this.advancedLdapConnectionOptionsFactory3 = new AdvancedLdapConnectionOptionsFactory(this.advancedLdapPluginConfiguration3);
     }
 
     @Test
@@ -47,5 +57,25 @@ public class AdvancedLdapConnectionOptionsFactoryTest extends TestCase {
     @Test
     public void testGetLDAPPort() throws LDAPException {
         assertEquals(389,advancedLdapConnectionOptionsFactory.getLDAPPort());
+    }
+
+    @Test
+    public void testGetLDAPPortSslNotSpecified() throws LDAPException {
+        assertEquals(636,advancedLdapConnectionOptionsFactory2.getLDAPPort());
+    }
+
+    @Test
+    public void testIsSslBasedOnSslBased() {
+        assertEquals(true, advancedLdapConnectionOptionsFactory2.isSslBased());
+    }
+
+    @Test
+    public void testGetLDAPPortNonSslNotSpecified() throws LDAPException {
+        assertEquals(389,advancedLdapConnectionOptionsFactory3.getLDAPPort());
+    }
+
+    @Test
+    public void testIsSslBasedOnNonSslBased() {
+        assertEquals(false, advancedLdapConnectionOptionsFactory3.isSslBased());
     }
 }

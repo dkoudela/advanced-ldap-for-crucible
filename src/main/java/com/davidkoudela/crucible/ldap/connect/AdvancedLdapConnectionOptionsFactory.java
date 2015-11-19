@@ -37,4 +37,8 @@ public class AdvancedLdapConnectionOptionsFactory {
     public int getLDAPPort() {
         return this.ldapurl.getPort();
     }
+
+    public boolean isSslBased() {
+        return this.ldapurl.getScheme().contains("ldaps");
+    }
 }

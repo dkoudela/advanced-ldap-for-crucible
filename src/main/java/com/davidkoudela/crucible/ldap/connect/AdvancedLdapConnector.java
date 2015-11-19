@@ -6,6 +6,16 @@ import com.unboundid.ldap.sdk.*;
 import com.unboundid.ldap.sdk.controls.SimplePagedResultsControl;
 import com.unboundid.util.LDAPTestUtils;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+
 /**
  * Description: {@link AdvancedLdapConnector} provides methods for retrieving LDAP data from the remove LDAP server.
  * Copyright (C) 2015 David Koudela
@@ -92,7 +102,7 @@ public class AdvancedLdapConnector {
         return result;
     }
 
-    protected LDAPConnection getLdapConnection() throws LDAPException {
+    protected LDAPConnection getLdapConnection() throws LDAPException, KeyManagementException, NoSuchAlgorithmException {
         if (null != this.ldapConnection)
             return this.ldapConnection;
 
@@ -105,6 +115,15 @@ public class AdvancedLdapConnector {
         String ldapBindPassword = this.advancedLdapPluginConfiguration.getLDAPBindPassword();
         System.out.println("LDAP Connection parameters: ldapHost: " + ldapHost + " ldapPort: " + ldapPort + " ldapBindDN: " + ldapBindDN);
 
+        if (advancedLdapConnectionOptionsFactory.isSslBased()) {
+            return new LDAPConnection(
+                    getSocketFactory(),
+                    ldapConnectionOptions,
+                    ldapHost,
+                    ldapPort,
+                    ldapBindDN,
+                    ldapBindPassword);
+        }
         return new LDAPConnection(
                 ldapConnectionOptions,
                 ldapHost,
@@ -115,5 +134,26 @@ public class AdvancedLdapConnector {
 
     protected void setLdapConnection(LDAPConnection ldapConnection) {
         this.ldapConnection = ldapConnection;
+    }
+
+    private SSLSocketFactory getSocketFactory() throws NoSuchAlgorithmException, KeyManagementException {
+        TrustManager[] byPassTrustManagers = new TrustManager[] {
+                new X509TrustManager() {
+                    public X509Certificate[] getAcceptedIssuers() {
+                        return new X509Certificate[0];
+                    }
+                    @Override
+                    public void checkClientTrusted(java.security.cert.X509Certificate[] x509Certificates, String s) throws CertificateException {
+                    }
+
+                    @Override
+                    public void checkServerTrusted(java.security.cert.X509Certificate[] x509Certificates, String s) throws CertificateException {
+                    }
+                }
+        };
+        SSLContext sc = SSLContext.getInstance("SSL");
+        sc.init(null, byPassTrustManagers, new SecureRandom());
+
+        return sc.getSocketFactory();
     }
 }
