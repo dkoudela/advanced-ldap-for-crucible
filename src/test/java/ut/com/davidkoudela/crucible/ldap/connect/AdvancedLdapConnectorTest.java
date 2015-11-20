@@ -16,6 +16,8 @@ import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,13 +37,17 @@ public class AdvancedLdapConnectorTest extends TestCase {
     private LDAPConnection ldapConnection;
     private SearchResult searchResult;
 
-    public class AdvancedLdapConnectorDummy extends AdvancedLdapConnector {
+    public static class AdvancedLdapConnectorDummy extends AdvancedLdapConnector {
         public AdvancedLdapConnectorDummy(AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration) {
             super(advancedLdapPluginConfiguration);
         }
 
         public void setLdapConnection(LDAPConnection ldapConnection) {
             super.setLdapConnection(ldapConnection);
+        }
+
+        public LDAPConnection getLdapConnection() throws LDAPException, NoSuchAlgorithmException, KeyManagementException {
+            return super.getLdapConnection();
         }
     }
 
@@ -52,6 +58,7 @@ public class AdvancedLdapConnectorTest extends TestCase {
         this.advancedLdapPluginConfiguration.setConnectTimeoutMillis(1);
         this.advancedLdapPluginConfiguration.setResponseTimeoutMillis(2);
         this.advancedLdapPluginConfiguration.setUserFilterKey("(&(objectCategory=cn=Person*)(sAMAccountName=${USERNAME}))");
+
         this.ldapConnection = PowerMock.createMock(LDAPConnection.class);
         this.searchResult = PowerMock.createMock(SearchResult.class);
         this.advancedLdapSearchResultBuilder = Mockito.mock(AdvancedLdapGroupBuilder.class);
