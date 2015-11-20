@@ -202,7 +202,6 @@ public class AdvancedLdapNestedGroupBuilderTest extends TestCase {
         this.advancedLdapNestedGroupBuilderDummy = new AdvancedLdapNestedGroupBuilderDummy(this.advancedLdapPluginConfiguration2, false);
         this.advancedLdapNestedGroupBuilderDummy.setAdvancedLdapConnector(this.advancedLdapConnector);
         this.advancedLdapNestedGroupBuilderDummy.setAdvancedLdapGroupBuilder(this.advancedLdapGroupBuilder);
-        this.advancedLdapPluginConfiguration.setNestedGroupsEnabled(false);
         List<AdvancedLdapGroup> advancedLdapGroupList = new ArrayList<AdvancedLdapGroup>();
         Mockito.doNothing().when(this.advancedLdapGroupBuilder).handlePagedSearchResult(ArgumentCaptor.forClass(SearchResultEntry.class).capture());
 
@@ -269,5 +268,107 @@ public class AdvancedLdapNestedGroupBuilderTest extends TestCase {
         assertEquals("product", advancedLdapGroup333.get(2).getGID());
         assertEquals("developers", advancedLdapGroup333.get(3).getGID());
         assertEquals("testers", advancedLdapGroup333.get(4).getGID());
+    }
+
+    @Test
+    public void testHandlePagedSearchResultNestedGroupsEnabledTransitiveDependentGroups() {
+        this.advancedLdapNestedGroupBuilderDummy = new AdvancedLdapNestedGroupBuilderDummy(this.advancedLdapPluginConfiguration2, false);
+        this.advancedLdapNestedGroupBuilderDummy.setAdvancedLdapConnector(this.advancedLdapConnector);
+        this.advancedLdapNestedGroupBuilderDummy.setAdvancedLdapGroupBuilder(this.advancedLdapGroupBuilder);
+        List<AdvancedLdapGroup> advancedLdapGroupList = new ArrayList<AdvancedLdapGroup>();
+        Mockito.doNothing().when(this.advancedLdapGroupBuilder).handlePagedSearchResult(ArgumentCaptor.forClass(SearchResultEntry.class).capture());
+
+        AdvancedLdapGroup advancedLdapGroup = new AdvancedLdapGroup();
+        advancedLdapGroup.setGID("Ldap Users");
+        advancedLdapGroupList.add(advancedLdapGroup);
+        List<AdvancedLdapGroup> advancedLdapGroupList2 = new ArrayList<AdvancedLdapGroup>();
+        AdvancedLdapGroup advancedLdapGroup2 = new AdvancedLdapGroup();
+        advancedLdapGroup2.setGID("group");
+        advancedLdapGroupList2.add(advancedLdapGroup2);
+        List<AdvancedLdapGroup> advancedLdapGroupList3 = new ArrayList<AdvancedLdapGroup>();
+        AdvancedLdapGroup advancedLdapGroup3 = new AdvancedLdapGroup();
+        advancedLdapGroup3.setGID("developers");
+        advancedLdapGroupList3.add(advancedLdapGroup3);
+        List<AdvancedLdapGroup> advancedLdapGroupList4 = new ArrayList<AdvancedLdapGroup>();
+        AdvancedLdapGroup advancedLdapGroup4 = new AdvancedLdapGroup();
+        advancedLdapGroup4.setGID("team-a");
+        advancedLdapGroupList4.add(advancedLdapGroup4);
+
+        Set<String> groupNames = new HashSet<String>();
+        groupNames.add("Ldap Users");
+        Set<String> groupNames2 = new HashSet<String>();
+        groupNames2.add("group");
+        Set<String> groupNames3 = new HashSet<String>();
+        groupNames3.add("developers");
+        Set<String> groupNames4 = new HashSet<String>();
+        groupNames4.add("team-a");
+
+        Set<String> nestedGroups = new HashSet<String>();
+        nestedGroups.add("ou=group, ou=example, dc=com");
+        Set<String> nestedGroups2 = new HashSet<String>();
+        nestedGroups2.add("ou=developers, ou=group, ou=example, dc=com");
+        Set<String> nestedGroups3 = new HashSet<String>();
+        nestedGroups3.add("ou=team-a, ou=developers, ou=group, ou=example, dc=com");
+
+        Mockito.when(this.advancedLdapGroupBuilder.getGroups())
+                .thenReturn(advancedLdapGroupList)
+                .thenReturn(advancedLdapGroupList2)
+                .thenReturn(advancedLdapGroupList3)
+                .thenReturn(advancedLdapGroupList4);
+        Mockito.when(this.advancedLdapGroupBuilder.getGroupNames())
+                .thenReturn(groupNames)
+                .thenReturn(groupNames2)
+                .thenReturn(groupNames3)
+                .thenReturn(groupNames4);
+        Mockito.when(this.advancedLdapGroupBuilder.getNonpersonDns())
+                .thenReturn(nestedGroups)
+                .thenReturn(nestedGroups2)
+                .thenReturn(nestedGroups3)
+                .thenReturn(nestedGroups);
+        Mockito.doNothing().when(this.advancedLdapConnector).ldapPagedSearch(ArgumentCaptor.forClass(SearchRequest.class).capture(),
+                ArgumentCaptor.forClass(AdvancedLdapGroupBuilder.class).capture());
+
+        this.advancedLdapNestedGroupBuilderDummy.handlePagedSearchResult(this.searchResultEntry);
+
+        List<AdvancedLdapGroup> advancedLdapGroup333 = this.advancedLdapNestedGroupBuilderDummy.getGroups();
+        assertEquals(4, advancedLdapGroup333.size());
+        assertEquals("Ldap Users", advancedLdapGroup333.get(0).getGID());
+        assertEquals("group", advancedLdapGroup333.get(1).getGID());
+        assertEquals("developers", advancedLdapGroup333.get(2).getGID());
+        assertEquals("team-a", advancedLdapGroup333.get(3).getGID());
+    }
+
+    @Test
+    public void testHandlePagedSearchResultNestedGroupsEnabledFoundTwoEntries() {
+        this.advancedLdapNestedGroupBuilderDummy = new AdvancedLdapNestedGroupBuilderDummy(this.advancedLdapPluginConfiguration2, false);
+        this.advancedLdapNestedGroupBuilderDummy.setAdvancedLdapConnector(this.advancedLdapConnector);
+        this.advancedLdapNestedGroupBuilderDummy.setAdvancedLdapGroupBuilder(this.advancedLdapGroupBuilder);
+
+        List<AdvancedLdapGroup> advancedLdapGroupList = new ArrayList<AdvancedLdapGroup>();
+        AdvancedLdapGroup advancedLdapGroup = new AdvancedLdapGroup();
+        advancedLdapGroup.setGID("Ldap Users");
+        advancedLdapGroupList.add(advancedLdapGroup);
+        List<AdvancedLdapGroup> advancedLdapGroupList2 = new ArrayList<AdvancedLdapGroup>();
+        advancedLdapGroupList2.add(advancedLdapGroup);
+        advancedLdapGroupList2.add(advancedLdapGroup);
+
+        Set<String> groupNames = new HashSet<String>();
+        groupNames.add("Ldap Users");
+
+        Set<String> nestedGroups = new HashSet<String>();
+        nestedGroups.add("ou=group, ou=example, dc=com");
+
+        Mockito.doNothing().when(this.advancedLdapGroupBuilder).handlePagedSearchResult(ArgumentCaptor.forClass(SearchResultEntry.class).capture());
+        Mockito.when(this.advancedLdapGroupBuilder.getGroups())
+                .thenReturn(advancedLdapGroupList)
+                .thenReturn(advancedLdapGroupList2);
+        Mockito.when(this.advancedLdapGroupBuilder.getGroupNames()).thenReturn(groupNames);
+        Mockito.when(this.advancedLdapGroupBuilder.getNonpersonDns()).thenReturn(nestedGroups);
+
+        this.advancedLdapNestedGroupBuilderDummy.handlePagedSearchResult(this.searchResultEntry);
+
+        List<AdvancedLdapGroup> advancedLdapGroup2 = this.advancedLdapNestedGroupBuilderDummy.getGroups();
+        assertEquals(1, advancedLdapGroup2.size());
+        assertEquals("Ldap Users", advancedLdapGroup2.get(0).getGID());
     }
 }
