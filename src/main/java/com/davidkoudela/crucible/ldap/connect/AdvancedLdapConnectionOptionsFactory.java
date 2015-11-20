@@ -14,6 +14,7 @@ import com.unboundid.ldap.sdk.LDAPURL;
  * @since 2015-03-25
  */
 public class AdvancedLdapConnectionOptionsFactory {
+    public static final String DEFAULT_LDAPS_SCHEME = "ldaps";
     private final AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration;
     private final LDAPURL ldapurl;
 
@@ -39,6 +40,6 @@ public class AdvancedLdapConnectionOptionsFactory {
     }
 
     public boolean isSslBased() {
-        return this.ldapurl.getScheme().contains("ldaps");
+        return this.ldapurl.getScheme().contains(DEFAULT_LDAPS_SCHEME);
     }
 }
