@@ -5,6 +5,7 @@ import com.cenqua.crucible.hibernate.DatabaseConfig;
 import com.davidkoudela.crucible.persistence.AdvancedLdapDatabaseConfigFactory;
 import com.davidkoudela.crucible.persistence.HibernateSessionFactoryFactory;
 import junit.framework.TestCase;
+import org.hibernate.SessionFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,7 +29,8 @@ public class HibernateSessionFactoryFactoryTest extends TestCase {
 
     @Test
     public void testCreateHibernateSessionFactory() throws Exception {
-        HibernateSessionFactoryFactory.createHibernateSessionFactory(this.databaseConfig);
+        SessionFactory sessionFactory = HibernateSessionFactoryFactory.createHibernateSessionFactory(this.databaseConfig);
+        assertNotNull(sessionFactory);
     }
 
 }

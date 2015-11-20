@@ -26,10 +26,6 @@ public class AdvancedLdapGroupUserSyncCount {
         return userCountNew;
     }
 
-    public void setUserCountNew(int userCountNew) {
-        this.userCountNew = userCountNew;
-    }
-
     public void incrementUserCountNew() {
         this.userCountNew++;
     }
@@ -44,10 +40,6 @@ public class AdvancedLdapGroupUserSyncCount {
 
     public int getGroupCountNew() {
         return groupCountNew;
-    }
-
-    public void setGroupCountNew(int groupCountNew) {
-        this.groupCountNew = groupCountNew;
     }
 
     public void incrementGroupCountNew() {

@@ -39,8 +39,6 @@ public class AdvancedLdapTimerTrigger {
             System.out.println("Timer index canceled: " + index);
         } catch (Exception e) {
             System.out.println("Timer index not found: " + index);
-        } catch (Throwable throwable) {
-            System.out.println("Timer index canceling failed: " + index + " Exception: " + throwable);
         }
     }
 

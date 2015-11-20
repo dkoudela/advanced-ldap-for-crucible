@@ -29,7 +29,7 @@ import java.util.List;
  * @since 2015-06-26
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({LDAPConnection.class, SearchResult.class})
+@PrepareForTest({LDAPConnection.class, SearchResult.class, BindResult.class})
 public class AdvancedLdapConnectorTest extends TestCase {
     private static AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration;
     private static AdvancedLdapConnectorDummy advancedLdapConnector;
@@ -63,6 +63,7 @@ public class AdvancedLdapConnectorTest extends TestCase {
         this.searchResult = PowerMock.createMock(SearchResult.class);
         this.advancedLdapSearchResultBuilder = Mockito.mock(AdvancedLdapGroupBuilder.class);
     }
+
     @Test
     public void testLdapPagedSearchNoEntries() throws LDAPException {
         this.advancedLdapConnector = new AdvancedLdapConnectorDummy(this.advancedLdapPluginConfiguration);
@@ -83,5 +84,23 @@ public class AdvancedLdapConnectorTest extends TestCase {
         PowerMock.replayAll();
         this.advancedLdapConnector.ldapPagedSearch(searchRequest, this.advancedLdapSearchResultBuilder);
         PowerMock.verifyAll();
+    }
+
+    @Test
+    public void testBindDnSuccess() throws LDAPException {
+        this.advancedLdapConnector = new AdvancedLdapConnectorDummy(this.advancedLdapPluginConfiguration);
+        this.advancedLdapConnector.setLdapConnection(this.ldapConnection);
+        BindResult bindResult = PowerMock.createMock(BindResult.class);
+        com.unboundid.ldap.sdk.ResultCode resultCode = ResultCode.SUCCESS;
+        EasyMock.expect(this.ldapConnection.bind("username", "password")).andReturn(bindResult);
+        EasyMock.expect(bindResult.getResultCode()).andReturn(resultCode);
+        this.ldapConnection.close();
+        EasyMock.expectLastCall();
+
+        PowerMock.replayAll();
+        boolean result = this.advancedLdapConnector.bindDn("username", "password");
+        PowerMock.verifyAll();
+
+        assertTrue("Testing success bindDn. The result should be True", result);
     }
 }
