@@ -7,6 +7,8 @@ This is the Advanced Ldap plugin for Atlassian FishEye/Crucible.
 * Can assign LDAP users to the synchronized groups.
 * Can synchronize LDAP users of the filtered groups.
 * All LDAP requests are paged LDAP requests based on Simple Paged Results (RFC 2696 - IETF).
+* Can synchronize Nested LDAP groups
+* Supports LDAP over SSL
 
 For more information see [User Documentation](https://github.com/dkoudela/advanced-ldap-for-crucible/wiki/User-Documentation)
 
