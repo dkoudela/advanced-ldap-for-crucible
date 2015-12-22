@@ -10,7 +10,7 @@ This is the Advanced Ldap plugin for Atlassian FishEye/Crucible.
 * Can synchronize Nested LDAP groups
 * Supports LDAP over SSL
 
-For more information see [User Documentation](https://github.com/dkoudela/advanced-ldap-for-crucible/wiki/User-Documentation)
+For more information see [Documentation](https://github.com/dkoudela/advanced-ldap-for-crucible/wiki)
 
 
 ## Atlassian Marketplace
