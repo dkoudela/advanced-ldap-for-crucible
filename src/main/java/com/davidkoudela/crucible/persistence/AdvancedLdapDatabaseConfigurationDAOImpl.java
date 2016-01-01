@@ -3,6 +3,8 @@ package com.davidkoudela.crucible.persistence;
 import com.atlassian.sal.api.pluginsettings.PluginSettings;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.davidkoudela.crucible.config.AdvancedLdapDatabaseConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.function.Predicate;
@@ -17,6 +19,7 @@ import java.util.function.Predicate;
  */
 @Component("advancedLdapDatabaseConfigurationDAO")
 public class AdvancedLdapDatabaseConfigurationDAOImpl implements AdvancedLdapDatabaseConfigurationDAO {
+    private Logger log = LoggerFactory.getLogger(this.getClass());
     protected static final String enabled = "AdvancedLdap.dbConfig.enabled";
     protected static final String databaseName = "AdvancedLdap.dbConfig.databaseName";
     protected static final String username = "AdvancedLdap.dbConfig.username";
@@ -36,7 +39,7 @@ public class AdvancedLdapDatabaseConfigurationDAOImpl implements AdvancedLdapDat
             settings.put(this.username, advancedLdapDatabaseConfiguration.getUserName());
             settings.put(this.password, advancedLdapDatabaseConfiguration.getPassword());
         } catch (Exception e) {
-            System.out.println("Cannot store AdvancedLdapDatabaseConfiguration: " + e);
+            log.info("Cannot store AdvancedLdapDatabaseConfiguration: " + e);
         }
     }
 
@@ -74,7 +77,7 @@ public class AdvancedLdapDatabaseConfigurationDAOImpl implements AdvancedLdapDat
             advancedLdapDatabaseConfiguration.setUserName(AdvancedLdapDatabaseConfigFactory.getCrucibleDefaultDatabaseConfig().getUsername());
             advancedLdapDatabaseConfiguration.setPassword(AdvancedLdapDatabaseConfigFactory.getCrucibleDefaultDatabaseConfig().getPassword());
         } catch (Exception e) {
-            System.out.println("Cannot get AdvancedLdapDatabaseConfiguration: " + e);
+            log.info("Cannot get AdvancedLdapDatabaseConfiguration: " + e);
         }
 
         return advancedLdapDatabaseConfiguration;
@@ -86,7 +89,7 @@ public class AdvancedLdapDatabaseConfigurationDAOImpl implements AdvancedLdapDat
             PluginSettings settings = this.settingsFactory.createGlobalSettings();
             settings.put(this.enabled, Boolean.FALSE.toString());
         } catch (Exception e) {
-            System.out.println("Cannot remove AdvancedLdapDatabaseConfiguration: " + e);
+            log.info("Cannot remove AdvancedLdapDatabaseConfiguration: " + e);
         }
     }
 

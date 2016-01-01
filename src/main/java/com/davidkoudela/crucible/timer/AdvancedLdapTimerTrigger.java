@@ -1,5 +1,8 @@
 package com.davidkoudela.crucible.timer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.Timer;
@@ -15,6 +18,7 @@ import java.util.TimerTask;
  */
 @org.springframework.stereotype.Service("advancedLdapTrigger")
 public class AdvancedLdapTimerTrigger {
+    private Logger log = LoggerFactory.getLogger(this.getClass());
     private LinkedList<Timer> timerLinkedList;
 
     public AdvancedLdapTimerTrigger() {
@@ -28,7 +32,7 @@ public class AdvancedLdapTimerTrigger {
         timer.scheduleAtFixedRate(timerTask, 0, periodInSeconds * 1000);
         int index = this.timerLinkedList.size();
         this.timerLinkedList.add(timer);
-        System.out.println("Timer index created: " + index);
+        log.info("Timer index created: " + index);
         return index;
     }
 
@@ -36,9 +40,9 @@ public class AdvancedLdapTimerTrigger {
         try {
             Timer timer = this.timerLinkedList.remove(index);
             timer.cancel();
-            System.out.println("Timer index canceled: " + index);
+            log.info("Timer index canceled: " + index);
         } catch (Exception e) {
-            System.out.println("Timer index not found: " + index);
+            log.info("Timer index not found: " + index);
         }
     }
 

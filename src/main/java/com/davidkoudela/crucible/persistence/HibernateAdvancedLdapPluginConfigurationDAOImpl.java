@@ -4,6 +4,8 @@ import com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration;
 import org.hibernate.HibernateException;
 import org.hibernate.Transaction;
 import org.hibernate.classic.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +21,7 @@ import java.util.List;
  */
 @Component("advancedLdapOptionsDAO")
 public class HibernateAdvancedLdapPluginConfigurationDAOImpl implements HibernateAdvancedLdapPluginConfigurationDAO {
+    private Logger log = LoggerFactory.getLogger(this.getClass());
     private HibernateAdvancedLdapService hibernateAdvancedLdapService;
 
     public HibernateAdvancedLdapPluginConfigurationDAOImpl(HibernateAdvancedLdapService hibernateAdvancedLdapService) throws Exception {
@@ -88,7 +91,7 @@ public class HibernateAdvancedLdapPluginConfigurationDAOImpl implements Hibernat
             tx.rollback();
         } catch (HibernateException e) {
             if (tx!=null) tx.rollback();
-            System.out.println("Hibernate get failed for Configuration data: " + e);
+            log.info("Hibernate get failed for Configuration data: " + e);
             return new AdvancedLdapPluginConfiguration();
         } finally {
             try {
@@ -142,7 +145,7 @@ public class HibernateAdvancedLdapPluginConfigurationDAOImpl implements Hibernat
         try {
             session.isConnected();
         } catch (HibernateException e) {
-            System.out.println("Hibernate test connection failed: " + e);
+            log.info("Hibernate test connection failed: " + e);
         }
     }
 }

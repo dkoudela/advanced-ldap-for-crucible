@@ -3,6 +3,8 @@ package com.davidkoudela.crucible.tasks;
 import com.davidkoudela.crucible.admin.AdvancedLdapUserManager;
 import com.davidkoudela.crucible.statistics.AdvancedLdapGroupUserSyncCount;
 import com.google.common.base.Stopwatch;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 import java.util.TimerTask;
@@ -16,6 +18,7 @@ import java.util.TimerTask;
  * @since 2015-04-27
  */
 public class AdvancedLdapSynchronizationTask extends TimerTask {
+    private Logger log = LoggerFactory.getLogger(this.getClass());
     private AdvancedLdapUserManager advancedLdapUserManager;
 
     public AdvancedLdapSynchronizationTask(AdvancedLdapUserManager advancedLdapUserManager) {
@@ -26,16 +29,16 @@ public class AdvancedLdapSynchronizationTask extends TimerTask {
     public void run() {
         Stopwatch timer = new Stopwatch();
         timer.start();
-        System.out.println("Timer task started at:" + new Date());
+        log.info("Timer task started at:" + new Date());
         AdvancedLdapGroupUserSyncCount advancedLdapGroupUserSyncCount = new AdvancedLdapGroupUserSyncCount();
         this.advancedLdapUserManager.loadGroups(advancedLdapGroupUserSyncCount);
-        System.out.println("Timer task ended at: " + new Date());
+        log.info("Timer task ended at: " + new Date());
         timer.stop();
-        System.out.println("Timer task duration: " + timer);
-        System.out.println("Groups total:  " + advancedLdapGroupUserSyncCount.getGroupCountTotal());
-        System.out.println("Groups new:    " + advancedLdapGroupUserSyncCount.getGroupCountNew());
-        System.out.println("Nested Groups: " + advancedLdapGroupUserSyncCount.getNestedGroupCount());
-        System.out.println("Users total:   " + advancedLdapGroupUserSyncCount.getUserCountTotal());
-        System.out.println("Users new:     " + advancedLdapGroupUserSyncCount.getUserCountNew());
+        log.info("Timer task duration: " + timer);
+        log.info("Groups total:  " + advancedLdapGroupUserSyncCount.getGroupCountTotal());
+        log.info("Groups new:    " + advancedLdapGroupUserSyncCount.getGroupCountNew());
+        log.info("Nested Groups: " + advancedLdapGroupUserSyncCount.getNestedGroupCount());
+        log.info("Users total:   " + advancedLdapGroupUserSyncCount.getUserCountTotal());
+        log.info("Users new:     " + advancedLdapGroupUserSyncCount.getUserCountNew());
     }
 }

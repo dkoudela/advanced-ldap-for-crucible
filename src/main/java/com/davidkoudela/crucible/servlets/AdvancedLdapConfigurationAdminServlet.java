@@ -8,6 +8,8 @@ import com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration;
 import com.davidkoudela.crucible.persistence.HibernateAdvancedLdapPluginConfigurationDAO;
 import com.davidkoudela.crucible.tasks.AdvancedLdapSynchronizationManager;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -26,6 +28,7 @@ import java.util.Map;
  * @since 2015-03-24
  */
 public class AdvancedLdapConfigurationAdminServlet extends HttpServlet {
+    private Logger log = LoggerFactory.getLogger(this.getClass());
     private final VelocityHelper velocityHelper;
     private HibernateAdvancedLdapPluginConfigurationDAO hibernateAdvancedLdapPluginConfigurationDAO;
     private AdvancedLdapSynchronizationManager advancedLdapSynchronizationManager;
@@ -81,7 +84,7 @@ public class AdvancedLdapConfigurationAdminServlet extends HttpServlet {
                     this.hibernateAdvancedLdapPluginConfigurationDAO.remove(advancedLdapPluginConfiguration.getId());
                     this.advancedLdapSynchronizationManager.updateTimer();
                 } catch (Exception e) {
-                    System.out.println("AdvancedLdapConfigurationAdminServlet.doPost: hibernateAdvancedLdapPluginConfigurationDAO.remove failed: " + e);
+                    log.info("AdvancedLdapConfigurationAdminServlet.doPost: hibernateAdvancedLdapPluginConfigurationDAO.remove failed: " + e);
                 }
                 advancedLdapPluginConfiguration = this.hibernateAdvancedLdapPluginConfigurationDAO.get();
                 params.put("advancedLdapPluginConfiguration", advancedLdapPluginConfiguration);
@@ -90,7 +93,7 @@ public class AdvancedLdapConfigurationAdminServlet extends HttpServlet {
                 try {
                     this.advancedLdapSynchronizationManager.runNow();
                 } catch (Exception e) {
-                    System.out.println("AdvancedLdapConfigurationAdminServlet.doPost: LDAP manual sync failed: " + e);
+                    log.info("AdvancedLdapConfigurationAdminServlet.doPost: LDAP manual sync failed: " + e);
                 }
                 params.put("advancedLdapPluginConfiguration", advancedLdapPluginConfiguration);
                 velocityHelper.renderVelocityTemplate("templates/configureView.vm", params, resp.getWriter());
@@ -100,7 +103,7 @@ public class AdvancedLdapConfigurationAdminServlet extends HttpServlet {
                     this.hibernateAdvancedLdapPluginConfigurationDAO.store(advancedLdapPluginConfiguration, true);
                     this.advancedLdapSynchronizationManager.updateTimer();
                 } catch (Exception e) {
-                    System.out.println("AdvancedLdapConfigurationAdminServlet.doPost: hibernateAdvancedLdapPluginConfigurationDAO.store failed: " + e);
+                    log.info("AdvancedLdapConfigurationAdminServlet.doPost: hibernateAdvancedLdapPluginConfigurationDAO.store failed: " + e);
                 }
                 params.put("advancedLdapPluginConfiguration", advancedLdapPluginConfiguration);
                 velocityHelper.renderVelocityTemplate("templates/configureView.vm", params, resp.getWriter());

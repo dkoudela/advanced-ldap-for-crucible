@@ -7,6 +7,8 @@ import com.unboundid.ldap.sdk.Attribute;
 import com.unboundid.ldap.sdk.SearchRequest;
 import com.unboundid.ldap.sdk.SearchResultEntry;
 import com.unboundid.ldap.sdk.SearchScope;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -22,6 +24,7 @@ import java.util.Set;
  * @since 2015-03-21
  */
 public class AdvancedLdapGroupBuilder implements AdvancedLdapGroupSearchResultBuilder {
+    private Logger log = LoggerFactory.getLogger(this.getClass());
     private AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration;
     private List<AdvancedLdapGroup> advancedLdapGroupList = new ArrayList<AdvancedLdapGroup>();
     private Boolean followMembers = false;
@@ -62,7 +65,7 @@ public class AdvancedLdapGroupBuilder implements AdvancedLdapGroupSearchResultBu
                 if (searchResultEntry.hasAttribute(this.advancedLdapPluginConfiguration.getUserNamesKey())) {
                     Attribute personDns = searchResultEntry.getAttribute(this.advancedLdapPluginConfiguration.getUserNamesKey());
                     for (String personDn : personDns.getValues()) {
-                        System.out.println("AdvancedLdapGroupBuilder: Person: " + personDn);
+                        log.info("AdvancedLdapGroupBuilder: Person: " + personDn);
                         try {
                             SearchRequest searchRequest = new SearchRequest(personDn, SearchScope.BASE,
                                     AdvancedLdapSearchFilterFactory.getSearchFilterForAllUsers(this.advancedLdapPluginConfiguration.getUserFilterKey()));
@@ -72,17 +75,17 @@ public class AdvancedLdapGroupBuilder implements AdvancedLdapGroupSearchResultBu
 
                             List foundPersonsInLdap = advancedLdapPersonBuilder.getPersons();
                             if (0 == foundPersonsInLdap.size()) {
-                                System.out.println("AdvancedLdapGroupBuilder: potential nested group: " + personDn);
+                                log.info("AdvancedLdapGroupBuilder: potential nested group: " + personDn);
                                 this.nonpersonDns.add(personDn);
                                 continue;
                             } else if (1 != foundPersonsInLdap.size()) {
-                                System.out.println("AdvancedLdapGroupBuilder: person search returned " + foundPersonsInLdap.size() + " entries");
+                                log.info("AdvancedLdapGroupBuilder: person search returned " + foundPersonsInLdap.size() + " entries");
                                 continue;
                             }
                             personList.addAll(foundPersonsInLdap);
 
                         } catch (Exception e) {
-                            System.out.println("AdvancedLdapGroupBuilder: person search failed: " + personDn + " Exception: " + e);
+                            log.info("AdvancedLdapGroupBuilder: person search failed: " + personDn + " Exception: " + e);
                         }
                     }
                 }

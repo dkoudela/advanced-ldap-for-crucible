@@ -7,6 +7,8 @@ import com.unboundid.ldap.sdk.SearchRequest;
 import com.unboundid.ldap.sdk.SearchResultEntry;
 import com.unboundid.ldap.sdk.Attribute;
 import com.unboundid.ldap.sdk.SearchScope;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -22,6 +24,7 @@ import java.util.Set;
  * @since 2015-03-15
  */
 public class AdvancedLdapPersonBuilder implements AdvancedLdapPersonSearchResultBuilder {
+    private Logger log = LoggerFactory.getLogger(this.getClass());
     private AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration;
     private List<AdvancedLdapPerson> advancedLdapPersonList = new ArrayList<AdvancedLdapPerson>();
     private Boolean followMembers = false;
@@ -57,7 +60,7 @@ public class AdvancedLdapPersonBuilder implements AdvancedLdapPersonSearchResult
                 if (searchResultEntry.hasAttribute(this.advancedLdapPluginConfiguration.getUserGroupNamesKey())) {
                     Attribute groupDns = searchResultEntry.getAttribute(this.advancedLdapPluginConfiguration.getUserGroupNamesKey());
                     for (String groupDn : groupDns.getValues()) {
-                        System.out.println("AdvancedLdapPersonBuilder: Group: " + groupDn);
+                        log.info("AdvancedLdapPersonBuilder: Group: " + groupDn);
                         try {
                             SearchRequest searchRequest = new SearchRequest(groupDn, SearchScope.BASE,
                                     AdvancedLdapSearchFilterFactory.getSearchFilterForAllGroups(this.advancedLdapPluginConfiguration.getGroupFilterKey()));
@@ -67,13 +70,13 @@ public class AdvancedLdapPersonBuilder implements AdvancedLdapPersonSearchResult
 
                             List foundGroupsInLdap = advancedLdapGroupBuilder.getGroups();
                             if (1 != foundGroupsInLdap.size()) {
-                                System.out.println("AdvancedLdapPersonBuilder: group search returned " + foundGroupsInLdap.size() + " entries");
+                                log.info("AdvancedLdapPersonBuilder: group search returned " + foundGroupsInLdap.size() + " entries");
                                 continue;
                             }
                             groupList.addAll(foundGroupsInLdap);
 
                         } catch (Exception e) {
-                            System.out.println("AdvancedLdapPersonBuilder: group search failed: " + groupDn + " Exception: " + e);
+                            log.info("AdvancedLdapPersonBuilder: group search failed: " + groupDn + " Exception: " + e);
                         }
                     }
                 }

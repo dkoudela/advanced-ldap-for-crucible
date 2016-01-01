@@ -21,6 +21,8 @@ import com.davidkoudela.crucible.ldap.connect.AdvancedLdapSearchFilterFactory;
 import com.davidkoudela.crucible.ldap.model.*;
 import com.davidkoudela.crucible.statistics.AdvancedLdapGroupUserSyncCount;
 import com.unboundid.ldap.sdk.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -39,6 +41,7 @@ import java.util.Set;
  */
 @org.springframework.stereotype.Service("advancedLdapUserManager")
 public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
+    private Logger log = LoggerFactory.getLogger(this.getClass());
     private UserManager userManager;
     private HibernateAdvancedLdapPluginConfigurationDAO hibernateAdvancedLdapPluginConfigurationDAO;
     private AdvancedLdapConnector advancedLdapConnector = null;
@@ -55,7 +58,7 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
         this.hibernateAdvancedLdapPluginConfigurationDAO = hibernateAdvancedLdapPluginConfigurationDAO;
         this.hibernateAdvancedLdapUserDAO = hibernateAdvancedLdapUserDAO;
 //        AppConfig.getsConfig().setUserManager(this);
-        System.out.println("**************************** AdvancedLdapUserManagerImpl START ****************************");
+        log.info("**************************** AdvancedLdapUserManagerImpl START ****************************");
     }
 
     @Override
@@ -66,13 +69,13 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
             return;
         }
 
-        System.out.println("AdvancedLdapUserManagerImpl.loadUser START");
+        log.info("AdvancedLdapUserManagerImpl.loadUser START");
         SearchRequest searchRequest = null;
         try {
             Filter filter = AdvancedLdapSearchFilterFactory.getSearchFilterForUser(advancedLdapPluginConfiguration.getUserFilterKey(), userData.getUserName());
             searchRequest = new SearchRequest(advancedLdapPluginConfiguration.getLDAPBaseDN(), SearchScope.SUB, filter);
         } catch (Exception e) {
-            System.out.println("Search Request creation failed for filter: " + advancedLdapPluginConfiguration.getUserFilterKey() + " Exception: " + e);
+            log.info("Search Request creation failed for filter: " + advancedLdapPluginConfiguration.getUserFilterKey() + " Exception: " + e);
             return;
         }
 
@@ -82,43 +85,43 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
         List<AdvancedLdapPerson> persons = advancedLdapPersonBuilder.getPersons();
 
         if (1 != persons.size()) {
-            System.out.println("AdvancedLdapUserManagerImpl: person search returned "+ persons.size() + " entries");
+            log.info("AdvancedLdapUserManagerImpl: person search returned "+ persons.size() + " entries");
             return;
         }
         AdvancedLdapPerson advancedLdapPerson = persons.get(0);
 
         for (AdvancedLdapGroup advancedLdapGroup : advancedLdapPerson.getGroupList()) {
             String GID = advancedLdapGroup.getNormalizedGID();
-            System.out.println("AdvancedLdapUserManagerImpl: GID: " + GID);
+            log.info("AdvancedLdapUserManagerImpl: GID: " + GID);
             try {
                 if (!this.userManager.builtInGroupExists(GID)) {
-                    System.out.println("AdvancedLdapUserManagerImpl: GID added: " + GID);
+                    log.info("AdvancedLdapUserManagerImpl: GID added: " + GID);
                     this.userManager.addBuiltInGroup(GID);
                 }
                 if (!this.userManager.isUserInGroup(GID, advancedLdapPerson.getUid())) {
                     this.userManager.addUserToBuiltInGroup(GID, advancedLdapPerson.getUid());
                 }
             } catch (Exception e) {
-                System.out.println("AdvancedLdapUserManagerImpl: group: " + GID + " failed: " + e);
+                log.info("AdvancedLdapUserManagerImpl: group: " + GID + " failed: " + e);
             } catch(Throwable e) {
-                System.out.println("AdvancedLdapUserManagerImpl: group: " + GID + " failed unexpected: " + e);
+                log.info("AdvancedLdapUserManagerImpl: group: " + GID + " failed unexpected: " + e);
             }
         }
 
-        System.out.println("AdvancedLdapUserManagerImpl.loadUser END");
+        log.info("AdvancedLdapUserManagerImpl.loadUser END");
     }
 
     @Override
     public void loadGroups(AdvancedLdapGroupUserSyncCount advancedLdapGroupUserSyncCount) {
         this.advancedLdapPluginConfiguration = hibernateAdvancedLdapPluginConfigurationDAO.get();
 
-        System.out.println("AdvancedLdapUserManagerImpl.loadGroups START");
+        log.info("AdvancedLdapUserManagerImpl.loadGroups START");
         SearchRequest searchRequest = null;
         try {
             Filter filter = AdvancedLdapSearchFilterFactory.getSearchFilterForAllGroups(advancedLdapPluginConfiguration.getGroupFilterKey());
             searchRequest = new SearchRequest(advancedLdapPluginConfiguration.getLDAPBaseDN(), SearchScope.SUB, filter);
         } catch (Exception e) {
-            System.out.println("Search Request creation failed for filter: " + advancedLdapPluginConfiguration.getGroupFilterKey() + " Exception: " + e);
+            log.info("Search Request creation failed for filter: " + advancedLdapPluginConfiguration.getGroupFilterKey() + " Exception: " + e);
             return;
         }
 
@@ -132,20 +135,20 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
         Set<String> noDuplicatedUID = new HashSet<String>();
         for (AdvancedLdapGroup advancedLdapGroup : groups) {
             String GID = advancedLdapGroup.getNormalizedGID();
-            System.out.println("AdvancedLdapUserManagerImpl: GID: " + GID);
+            log.info("AdvancedLdapUserManagerImpl: GID: " + GID);
             if (!this.userManager.builtInGroupExists(GID)) {
-                System.out.println("AdvancedLdapUserManagerImpl: GID added: " + GID);
+                log.info("AdvancedLdapUserManagerImpl: GID added: " + GID);
                 advancedLdapGroupUserSyncCount.incrementGroupCountNew();
                 this.userManager.addBuiltInGroup(GID);
             }
 
             for (AdvancedLdapPerson advancedLdapPerson : advancedLdapGroup.getPersonList()) {
                 String UID = advancedLdapPerson.getUid();
-                System.out.println("AdvancedLdapUserManagerImpl: UID: " + UID);
+                log.info("AdvancedLdapUserManagerImpl: UID: " + UID);
                 noDuplicatedUID.add(UID);
                 try {
                     if (!this.userManager.userExists(UID)) {
-                        System.out.println("AdvancedLdapUserManagerImpl: UID does not exist in Crucible: " + UID);
+                        log.info("AdvancedLdapUserManagerImpl: UID does not exist in Crucible: " + UID);
                         advancedLdapGroupUserSyncCount.incrementUserCountNew();
                         this.hibernateAdvancedLdapUserDAO.create(UID, advancedLdapPerson.getDisplayName(), advancedLdapPerson.getEmail());
                     }
@@ -153,17 +156,17 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
                         this.userManager.addUserToBuiltInGroup(GID, advancedLdapPerson.getUid());
                     }
                 } catch (Exception e) {
-                    System.out.println("AdvancedLdapUserManagerImpl: person: " + UID + " failed: " + e);
+                    log.info("AdvancedLdapUserManagerImpl: person: " + UID + " failed: " + e);
                 } catch(Throwable e) {
-                    System.out.println("AdvancedLdapUserManagerImpl: person: " + UID + " failed unexpected: " + e);
+                    log.info("AdvancedLdapUserManagerImpl: person: " + UID + " failed unexpected: " + e);
                 }
             }
         }
         advancedLdapGroupUserSyncCount.setUserCountTotal(noDuplicatedUID.size());
 
-        System.out.println("AdvancedLdapUserManagerImpl: nonperson DNs: " + advancedLdapNestedGroupSearchResultBuilder.getNonpersonDns().toString());
-        System.out.println("AdvancedLdapUserManagerImpl: nested groups: " + advancedLdapNestedGroupSearchResultBuilder.getNestedGroups().toString());
-        System.out.println("AdvancedLdapUserManagerImpl.loadGroups END");
+        log.info("AdvancedLdapUserManagerImpl: nonperson DNs: " + advancedLdapNestedGroupSearchResultBuilder.getNonpersonDns().toString());
+        log.info("AdvancedLdapUserManagerImpl: nested groups: " + advancedLdapNestedGroupSearchResultBuilder.getNestedGroups().toString());
+        log.info("AdvancedLdapUserManagerImpl.loadGroups END");
     }
 
     @Override
@@ -174,13 +177,13 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
             return false;
         }
 
-        System.out.println("AdvancedLdapUserManagerImpl.verifyUserCredentials START");
+        log.info("AdvancedLdapUserManagerImpl.verifyUserCredentials START");
         SearchRequest searchRequest = null;
         try {
             Filter filter = AdvancedLdapSearchFilterFactory.getSearchFilterForUser(advancedLdapPluginConfiguration.getUserFilterKey(), username);
             searchRequest = new SearchRequest(advancedLdapPluginConfiguration.getLDAPBaseDN(), SearchScope.SUB, filter);
         } catch (Exception e) {
-            System.out.println("Search Request creation failed for filter: " + advancedLdapPluginConfiguration.getUserFilterKey() + " Exception: " + e);
+            log.info("Search Request creation failed for filter: " + advancedLdapPluginConfiguration.getUserFilterKey() + " Exception: " + e);
             return false;
         }
 
@@ -190,7 +193,7 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
         List<AdvancedLdapBind> binds = advancedLdapBindBuilder.getBinds();
 
         if (1 != binds.size()) {
-            System.out.println("AdvancedLdapUserManagerImpl: bind search returned "+ binds.size() + " entries");
+            log.info("AdvancedLdapUserManagerImpl: bind search returned "+ binds.size() + " entries");
             return false;
         }
         AdvancedLdapBind advancedLdapBind = binds.get(0);

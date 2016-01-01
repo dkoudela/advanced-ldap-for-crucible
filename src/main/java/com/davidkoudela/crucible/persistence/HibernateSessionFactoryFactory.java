@@ -7,6 +7,8 @@ import com.davidkoudela.crucible.persistence.strategy.HibernateAdvancedLdapPlugi
 import com.davidkoudela.crucible.persistence.strategy.HibernateAdvancedLdapPluginConfigurationPersistenceStrategy;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Description: Factory for building {@link SessionFactory} helping with complicated HB setup.
@@ -16,6 +18,7 @@ import org.hibernate.cfg.Configuration;
  * @since 2015-05-15
  */
 public class HibernateSessionFactoryFactory {
+    private static Logger log = LoggerFactory.getLogger(HibernateSessionFactoryFactory.class);
     public static SessionFactory createHibernateSessionFactory(DatabaseConfig databaseConfig) throws Exception {
         try {
             Configuration configuration = new Configuration();
@@ -41,22 +44,22 @@ public class HibernateSessionFactoryFactory {
             configuration.addClass(com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration.class);
             return configuration.buildSessionFactory();
         } catch (Exception e) {
-            System.out.println("HibernateSessionFactoryFactory: Exception: " + e);
+            log.info("HibernateSessionFactoryFactory: Exception: " + e);
             StringBuilder sb = new StringBuilder();
             for (StackTraceElement element : e.getCause().getStackTrace()) {
                 sb.append(element.toString());
                 sb.append("\n");
             }
-            System.out.println("HibernateSessionFactoryFactory: Exception: " + sb);
+            log.info("HibernateSessionFactoryFactory: Exception: " + sb);
             throw new Exception(e);
         } catch (Throwable e) {
-            System.out.println("HibernateSessionFactoryFactory: Unexpected Exception: " + e);
+            log.info("HibernateSessionFactoryFactory: Unexpected Exception: " + e);
             StringBuilder sb = new StringBuilder();
             for (StackTraceElement element : e.getCause().getStackTrace()) {
                 sb.append(element.toString());
                 sb.append("\n");
             }
-            System.out.println("HibernateSessionFactoryFactory: Unexpected Exception: " + sb);
+            log.info("HibernateSessionFactoryFactory: Unexpected Exception: " + sb);
             throw new Exception(e);
         }
     }
@@ -78,7 +81,7 @@ public class HibernateSessionFactoryFactory {
         if (DBType.ORACLE.equals(databaseConfig.getType())) {
             dialect = HibernateAdvancedLdapOracle11gDialect.class.getCanonicalName();
         }
-        System.out.println("Database dialect: " + dialect);
+        log.info("Database dialect: " + dialect);
         return dialect;
     }
 }

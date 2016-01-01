@@ -2,6 +2,8 @@ package com.davidkoudela.crucible.persistence;
 
 import com.cenqua.crucible.hibernate.DatabaseConfig;
 import com.davidkoudela.crucible.config.AdvancedLdapDatabaseConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Component;
  */
 @Component("hibernateAdvancedLdapService")
 public class HibernateAdvancedLdapServiceImpl implements HibernateAdvancedLdapService {
+    private Logger log = LoggerFactory.getLogger(this.getClass());
     private HibernateAdvancedLdapInstance hibernateAdvancedLdapInstance;
     private AdvancedLdapDatabaseConfigurationDAO advancedLdapDatabaseConfigurationDAO;
 

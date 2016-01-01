@@ -6,6 +6,8 @@ import com.davidkoudela.crucible.ldap.connect.AdvancedLdapSearchFilterFactory;
 import com.unboundid.ldap.sdk.SearchRequest;
 import com.unboundid.ldap.sdk.SearchResultEntry;
 import com.unboundid.ldap.sdk.SearchScope;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -22,6 +24,7 @@ import java.util.Set;
  * @since 2015-11-15
  */
 public class AdvancedLdapNestedGroupBuilder implements AdvancedLdapNestedGroupSearchResultBuilder {
+    private Logger log = LoggerFactory.getLogger(this.getClass());
     private AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration;
     private List<AdvancedLdapGroup> advancedLdapGroupList = new ArrayList<AdvancedLdapGroup>();
     private Boolean followMembers = false;
@@ -78,10 +81,10 @@ public class AdvancedLdapNestedGroupBuilder implements AdvancedLdapNestedGroupSe
 
                             List foundNestedGroupsInLdap = currentAdvancedLdapGroupBuilder.getGroups();
                             if (0 == foundNestedGroupsInLdap.size()) {
-                                System.out.println("AdvancedLdapNestedGroupBuilder: potential nested group not found: " + currentNonpersonDn);
+                                log.info("AdvancedLdapNestedGroupBuilder: potential nested group not found: " + currentNonpersonDn);
                                 continue;
                             } else if (1 != foundNestedGroupsInLdap.size()) {
-                                System.out.println("AdvancedLdapNestedGroupBuilder: potential nested group search returned " + foundNestedGroupsInLdap.size() + " entries");
+                                log.info("AdvancedLdapNestedGroupBuilder: potential nested group search returned " + foundNestedGroupsInLdap.size() + " entries");
                                 continue;
                             }
 
@@ -96,7 +99,7 @@ public class AdvancedLdapNestedGroupBuilder implements AdvancedLdapNestedGroupSe
                                 }
                             }
                         } catch (Exception e) {
-                            System.out.println("AdvancedLdapNestedGroupBuilder: nested group search failed: " + currentNonpersonDn + " Exception: " + e);
+                            log.info("AdvancedLdapNestedGroupBuilder: nested group search failed: " + currentNonpersonDn + " Exception: " + e);
                         }
                     }
                 }

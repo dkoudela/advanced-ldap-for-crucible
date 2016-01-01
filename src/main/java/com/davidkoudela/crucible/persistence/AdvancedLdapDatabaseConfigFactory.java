@@ -8,6 +8,8 @@ import com.cenqua.fisheye.config1.DatabaseType;
 import com.cenqua.fisheye.config1.DriverSource;
 import com.davidkoudela.crucible.config.AdvancedLdapDatabaseConfiguration;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -22,6 +24,7 @@ import java.sql.Statement;
  * @since 2015-10-20
  */
 public class AdvancedLdapDatabaseConfigFactory {
+    private static Logger log = LoggerFactory.getLogger(AdvancedLdapDatabaseConfigFactory.class);
     public static final String pluginDbName = "crucibleadldb";
 
     public static DatabaseConfig createDatabaseConfig(AdvancedLdapDatabaseConfiguration advancedLdapDatabaseConfiguration) {
@@ -30,7 +33,7 @@ public class AdvancedLdapDatabaseConfigFactory {
 
     public static boolean verifyDatabaseConfig(AdvancedLdapDatabaseConfiguration advancedLdapDatabaseConfiguration) {
         if (0 == advancedLdapDatabaseConfiguration.getDatabaseName().length()) {
-            System.out.println("Database name must not be empty");
+            log.info("Database name must not be empty");
             return false;
         }
         DatabaseConfig databaseConfig = getDatabaseConfig(advancedLdapDatabaseConfiguration);
@@ -101,17 +104,17 @@ public class AdvancedLdapDatabaseConfigFactory {
         try {
             Class.forName(databaseConfig.getJdbcDriverClass());
 
-            System.out.println("Connecting to database " + databaseName + " url: " + jdbcUrl);
+            log.info("Connecting to database " + databaseName + " url: " + jdbcUrl);
             conn = DriverManager.getConnection(jdbcUrl, databaseConfig.getUsername(), databaseConfig.getPassword());
 
-            System.out.println("Database " + databaseName + " exists");
+            log.info("Database " + databaseName + " exists");
             return true;
         } catch(SQLException se){
-            System.out.println("Database " + databaseName + " doesn't exist");
+            log.info("Database " + databaseName + " doesn't exist");
 
         } catch(Exception e){
             //Handle errors for Class.forName
-            System.out.println("Database existence verification failed with general error");
+            log.info("Database existence verification failed with general error");
             e.printStackTrace();
         } finally {
             //finally block used to close resources
