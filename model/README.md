@@ -9,5 +9,15 @@ For view only mode, [Enterprise Architect Lite](http://www.sparxsystems.com/bin/
 ## Purpose
 The model contains full comprehensive documentation tightly coupled with the source code.
 
+It contains a set of model views of the project, like:
+* Requirements
+* Use Case
+* Domain
+* Class
+* Deployment
+* Project
+* Testing
+* Traceability
+
 ## Export
 The model export links are availalble on the [Model](https://github.com/dkoudela/advanced-ldap-for-crucible/wiki/Model)  page.
