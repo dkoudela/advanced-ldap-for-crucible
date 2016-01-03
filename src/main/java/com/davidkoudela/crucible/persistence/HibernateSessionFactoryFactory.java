@@ -5,10 +5,9 @@ import com.cenqua.crucible.hibernate.DatabaseConfig;
 import com.davidkoudela.crucible.persistence.strategy.HibernateAdvancedLdapPluginConfigurationNoChangeStrategy;
 import com.davidkoudela.crucible.persistence.strategy.HibernateAdvancedLdapPluginConfigurationOracleStrategy;
 import com.davidkoudela.crucible.persistence.strategy.HibernateAdvancedLdapPluginConfigurationPersistenceStrategy;
+import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Description: Factory for building {@link SessionFactory} helping with complicated HB setup.
@@ -18,7 +17,7 @@ import org.slf4j.LoggerFactory;
  * @since 2015-05-15
  */
 public class HibernateSessionFactoryFactory {
-    private static Logger log = LoggerFactory.getLogger(HibernateSessionFactoryFactory.class);
+    private static Logger log = Logger.getLogger(HibernateSessionFactoryFactory.class);
     public static SessionFactory createHibernateSessionFactory(DatabaseConfig databaseConfig) throws Exception {
         try {
             Configuration configuration = new Configuration();

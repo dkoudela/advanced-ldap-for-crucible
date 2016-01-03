@@ -8,8 +8,7 @@ import com.cenqua.fisheye.config1.DatabaseType;
 import com.cenqua.fisheye.config1.DriverSource;
 import com.davidkoudela.crucible.config.AdvancedLdapDatabaseConfiguration;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -24,7 +23,7 @@ import java.sql.Statement;
  * @since 2015-10-20
  */
 public class AdvancedLdapDatabaseConfigFactory {
-    private static Logger log = LoggerFactory.getLogger(AdvancedLdapDatabaseConfigFactory.class);
+    private static Logger log = Logger.getLogger(AdvancedLdapDatabaseConfigFactory.class);
     public static final String pluginDbName = "crucibleadldb";
 
     public static DatabaseConfig createDatabaseConfig(AdvancedLdapDatabaseConfiguration advancedLdapDatabaseConfiguration) {

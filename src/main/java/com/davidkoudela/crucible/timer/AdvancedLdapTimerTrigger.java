@@ -1,7 +1,6 @@
 package com.davidkoudela.crucible.timer;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import java.util.Date;
 import java.util.LinkedList;
@@ -18,7 +17,7 @@ import java.util.TimerTask;
  */
 @org.springframework.stereotype.Service("advancedLdapTrigger")
 public class AdvancedLdapTimerTrigger {
-    private Logger log = LoggerFactory.getLogger(this.getClass());
+    private Logger log = Logger.getLogger(this.getClass());
     private LinkedList<Timer> timerLinkedList;
 
     public AdvancedLdapTimerTrigger() {

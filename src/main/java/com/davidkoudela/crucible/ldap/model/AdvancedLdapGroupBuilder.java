@@ -7,8 +7,7 @@ import com.unboundid.ldap.sdk.Attribute;
 import com.unboundid.ldap.sdk.SearchRequest;
 import com.unboundid.ldap.sdk.SearchResultEntry;
 import com.unboundid.ldap.sdk.SearchScope;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -24,7 +23,7 @@ import java.util.Set;
  * @since 2015-03-21
  */
 public class AdvancedLdapGroupBuilder implements AdvancedLdapGroupSearchResultBuilder {
-    private Logger log = LoggerFactory.getLogger(this.getClass());
+    private Logger log = Logger.getLogger(this.getClass());
     private AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration;
     private List<AdvancedLdapGroup> advancedLdapGroupList = new ArrayList<AdvancedLdapGroup>();
     private Boolean followMembers = false;

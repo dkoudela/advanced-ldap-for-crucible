@@ -3,8 +3,7 @@ package com.davidkoudela.crucible.tasks;
 import com.davidkoudela.crucible.admin.AdvancedLdapUserManager;
 import com.davidkoudela.crucible.statistics.AdvancedLdapGroupUserSyncCount;
 import com.google.common.base.Stopwatch;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import java.util.Date;
 import java.util.TimerTask;
@@ -18,7 +17,7 @@ import java.util.TimerTask;
  * @since 2015-04-27
  */
 public class AdvancedLdapSynchronizationTask extends TimerTask {
-    private Logger log = LoggerFactory.getLogger(this.getClass());
+    private Logger log = Logger.getLogger(this.getClass());
     private AdvancedLdapUserManager advancedLdapUserManager;
 
     public AdvancedLdapSynchronizationTask(AdvancedLdapUserManager advancedLdapUserManager) {

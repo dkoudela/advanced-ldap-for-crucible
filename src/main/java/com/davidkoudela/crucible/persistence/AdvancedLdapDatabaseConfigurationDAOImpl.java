@@ -3,8 +3,7 @@ package com.davidkoudela.crucible.persistence;
 import com.atlassian.sal.api.pluginsettings.PluginSettings;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.davidkoudela.crucible.config.AdvancedLdapDatabaseConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.util.function.Predicate;
@@ -19,7 +18,7 @@ import java.util.function.Predicate;
  */
 @Component("advancedLdapDatabaseConfigurationDAO")
 public class AdvancedLdapDatabaseConfigurationDAOImpl implements AdvancedLdapDatabaseConfigurationDAO {
-    private Logger log = LoggerFactory.getLogger(this.getClass());
+    private Logger log = Logger.getLogger(this.getClass());
     protected static final String enabled = "AdvancedLdap.dbConfig.enabled";
     protected static final String databaseName = "AdvancedLdap.dbConfig.databaseName";
     protected static final String username = "AdvancedLdap.dbConfig.username";

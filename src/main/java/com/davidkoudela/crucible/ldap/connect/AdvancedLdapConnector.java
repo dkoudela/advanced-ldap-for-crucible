@@ -5,8 +5,7 @@ import com.unboundid.asn1.ASN1OctetString;
 import com.unboundid.ldap.sdk.*;
 import com.unboundid.ldap.sdk.controls.SimplePagedResultsControl;
 import com.unboundid.util.LDAPTestUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
@@ -26,7 +25,7 @@ import java.security.cert.X509Certificate;
  * @since 2015-03-20
  */
 public class AdvancedLdapConnector {
-    private Logger log = LoggerFactory.getLogger(this.getClass());
+    private Logger log = Logger.getLogger(this.getClass());
     private AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration;
     private LDAPConnection ldapConnection = null;
 

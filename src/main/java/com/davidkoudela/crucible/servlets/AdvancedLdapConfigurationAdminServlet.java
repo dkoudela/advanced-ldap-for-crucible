@@ -8,8 +8,7 @@ import com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration;
 import com.davidkoudela.crucible.persistence.HibernateAdvancedLdapPluginConfigurationDAO;
 import com.davidkoudela.crucible.tasks.AdvancedLdapSynchronizationManager;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -28,7 +27,7 @@ import java.util.Map;
  * @since 2015-03-24
  */
 public class AdvancedLdapConfigurationAdminServlet extends HttpServlet {
-    private Logger log = LoggerFactory.getLogger(this.getClass());
+    private Logger log = Logger.getLogger(this.getClass());
     private final VelocityHelper velocityHelper;
     private HibernateAdvancedLdapPluginConfigurationDAO hibernateAdvancedLdapPluginConfigurationDAO;
     private AdvancedLdapSynchronizationManager advancedLdapSynchronizationManager;

@@ -1,11 +1,10 @@
 package com.davidkoudela.crucible.persistence;
 
 import com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration;
+import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Transaction;
 import org.hibernate.classic.Session;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +20,7 @@ import java.util.List;
  */
 @Component("advancedLdapOptionsDAO")
 public class HibernateAdvancedLdapPluginConfigurationDAOImpl implements HibernateAdvancedLdapPluginConfigurationDAO {
-    private Logger log = LoggerFactory.getLogger(this.getClass());
+    private Logger log = Logger.getLogger(this.getClass());
     private HibernateAdvancedLdapService hibernateAdvancedLdapService;
 
     public HibernateAdvancedLdapPluginConfigurationDAOImpl(HibernateAdvancedLdapService hibernateAdvancedLdapService) throws Exception {
