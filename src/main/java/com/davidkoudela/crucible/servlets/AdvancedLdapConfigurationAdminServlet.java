@@ -5,9 +5,11 @@ import com.atlassian.fisheye.plugin.web.helpers.VelocityHelper;
 import com.cenqua.fisheye.web.tags.WebResourceManagerUtil;
 import com.davidkoudela.crucible.admin.AdvancedLdapUserManager;
 import com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration;
+import com.davidkoudela.crucible.logs.AdvancedLdapLogService;
 import com.davidkoudela.crucible.persistence.HibernateAdvancedLdapPluginConfigurationDAO;
 import com.davidkoudela.crucible.tasks.AdvancedLdapSynchronizationManager;
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -33,18 +35,21 @@ public class AdvancedLdapConfigurationAdminServlet extends HttpServlet {
     private AdvancedLdapSynchronizationManager advancedLdapSynchronizationManager;
     private AdvancedLdapUserManager advancedLdapUserManager;
     private FisheyePluginUtilities fisheyePluginUtilities;
+    private AdvancedLdapLogService advancedLdapLogService;
 
     @org.springframework.beans.factory.annotation.Autowired
     public AdvancedLdapConfigurationAdminServlet(VelocityHelper velocityHelper,
                                                  HibernateAdvancedLdapPluginConfigurationDAO hibernateAdvancedLdapPluginConfigurationDAO,
                                                  AdvancedLdapSynchronizationManager advancedLdapSynchronizationManager,
                                                  AdvancedLdapUserManager advancedLdapUserManager,
-                                                 FisheyePluginUtilities fisheyePluginUtilities) {
+                                                 FisheyePluginUtilities fisheyePluginUtilities,
+                                                 AdvancedLdapLogService advancedLdapLogService) {
         this.velocityHelper = velocityHelper;
         this.hibernateAdvancedLdapPluginConfigurationDAO = hibernateAdvancedLdapPluginConfigurationDAO;
         this.advancedLdapSynchronizationManager = advancedLdapSynchronizationManager;
         this.advancedLdapUserManager = advancedLdapUserManager;
         this.fisheyePluginUtilities = fisheyePluginUtilities;
+        this.advancedLdapLogService = advancedLdapLogService;
     }
 
     @Override
@@ -132,6 +137,7 @@ public class AdvancedLdapConfigurationAdminServlet extends HttpServlet {
         advancedLdapPluginConfiguration.setGroupDisplayNameKey(StringUtils.defaultIfEmpty(request.getParameter("ldap.groupDisplaynameAttr"), ""));
         advancedLdapPluginConfiguration.setUserNamesKey(StringUtils.defaultIfEmpty(request.getParameter("ldap.groupUsernameAttr"), ""));
         advancedLdapPluginConfiguration.setNestedGroupsEnabled(Boolean.parseBoolean(StringUtils.defaultIfEmpty(request.getParameter("ldap.nestedGroupsEnabled"), "False")));
+        this.advancedLdapLogService.setLogLevel(Level.ALL);
     }
 
 }

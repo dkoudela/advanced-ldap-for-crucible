@@ -9,6 +9,7 @@ import com.cenqua.fisheye.user.UserManager;
 import com.davidkoudela.crucible.admin.AdvancedLdapUserManager;
 import com.davidkoudela.crucible.admin.AdvancedLdapUserManagerImpl;
 import com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration;
+import com.davidkoudela.crucible.logs.AdvancedLdapLogService;
 import com.davidkoudela.crucible.persistence.HibernateAdvancedLdapPluginConfigurationDAO;
 import com.davidkoudela.crucible.servlets.AdvancedLdapConfigurationAdminServlet;
 import com.davidkoudela.crucible.statistics.AdvancedLdapGroupUserSyncCount;
@@ -16,6 +17,7 @@ import com.davidkoudela.crucible.tasks.AdvancedLdapSynchronizationManager;
 import com.davidkoudela.crucible.tasks.AdvancedLdapSynchronizationManagerImpl;
 import com.davidkoudela.crucible.timer.AdvancedLdapTimerTrigger;
 import junit.framework.TestCase;
+import org.apache.log4j.Level;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,10 +53,13 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
     private static ArgumentCaptor<PrintWriter> argumentCaptorPrintWriter;
     private static AdvancedLdapSynchronizationManager advancedLdapSynchronizationManager;
     private static FisheyePluginUtilities fisheyePluginUtilities;
+    private static AdvancedLdapLogService advancedLdapLogService;
 
     public class AdvancedLdapConfigurationAdminServletDummy extends AdvancedLdapConfigurationAdminServlet {
-        public AdvancedLdapConfigurationAdminServletDummy(VelocityHelper velocityHelper, HibernateAdvancedLdapPluginConfigurationDAO hibernateAdvancedLdapPluginConfigurationDAO, AdvancedLdapSynchronizationManager advancedLdapSynchronizationManager, AdvancedLdapUserManager advancedLdapUserManager, FisheyePluginUtilities fisheyePluginUtilities) {
-            super(velocityHelper, hibernateAdvancedLdapPluginConfigurationDAO, advancedLdapSynchronizationManager, advancedLdapUserManager, fisheyePluginUtilities);
+        public AdvancedLdapConfigurationAdminServletDummy(VelocityHelper velocityHelper, HibernateAdvancedLdapPluginConfigurationDAO hibernateAdvancedLdapPluginConfigurationDAO,
+                                                          AdvancedLdapSynchronizationManager advancedLdapSynchronizationManager, AdvancedLdapUserManager advancedLdapUserManager,
+                                                          FisheyePluginUtilities fisheyePluginUtilities, AdvancedLdapLogService advancedLdapLogService) {
+            super(velocityHelper, hibernateAdvancedLdapPluginConfigurationDAO, advancedLdapSynchronizationManager, advancedLdapUserManager, fisheyePluginUtilities, advancedLdapLogService);
         }
 
         public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -76,6 +81,7 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
         userManager = Mockito.mock(DefaultUserManager.class);
         advancedLdapUserManager = Mockito.mock(AdvancedLdapUserManagerImpl.class);
         fisheyePluginUtilities = Mockito.mock(FisheyePluginUtilities.class);
+        advancedLdapLogService = Mockito.mock(AdvancedLdapLogService.class);
 
         Mockito.when(hibernateAdvancedLdapPluginConfigurationDAO.get()).thenReturn(advancedLdapPluginConfiguration);
         argumentCaptorHttpServletRequest = ArgumentCaptor.forClass(HttpServletRequest.class);
@@ -84,6 +90,7 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
         argumentCaptorPrintWriter = ArgumentCaptor.forClass(PrintWriter.class);
         Mockito.doNothing().when(velocityHelper).renderVelocityTemplate(argumentCaptorString.capture(), argumentCaptorMap.capture(), argumentCaptorPrintWriter.capture());
         Mockito.doNothing().when(advancedLdapUserManager).loadGroups(ArgumentCaptor.forClass(AdvancedLdapGroupUserSyncCount.class).capture());
+        Mockito.doNothing().when(advancedLdapLogService).setLogLevel(ArgumentCaptor.forClass(Level.class).capture());
 
         advancedLdapSynchronizationManager =
                 new AdvancedLdapSynchronizationManagerImpl(hibernateAdvancedLdapPluginConfigurationDAO, advancedLdapTimerTrigger, advancedLdapUserManager);
@@ -94,7 +101,7 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
         Mockito.when(advancedLdapUserManager.hasSysAdminPrivileges(argumentCaptorHttpServletRequest.capture())).thenReturn(true);
 
         AdvancedLdapConfigurationAdminServletDummy advancedLdapConfigurationAdminServlet = new AdvancedLdapConfigurationAdminServletDummy(
-                velocityHelper, hibernateAdvancedLdapPluginConfigurationDAO, advancedLdapSynchronizationManager, advancedLdapUserManager, fisheyePluginUtilities);
+                velocityHelper, hibernateAdvancedLdapPluginConfigurationDAO, advancedLdapSynchronizationManager, advancedLdapUserManager, fisheyePluginUtilities, advancedLdapLogService);
 
         HttpServletRequest req = Mockito.mock(HttpServletRequest.class);
         HttpServletResponse resp = Mockito.mock(HttpServletResponse.class);
@@ -112,7 +119,7 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
         Mockito.when(advancedLdapUserManager.hasSysAdminPrivileges(argumentCaptorHttpServletRequest.capture())).thenReturn(false);
 
         AdvancedLdapConfigurationAdminServletDummy advancedLdapConfigurationAdminServlet = new AdvancedLdapConfigurationAdminServletDummy(
-                velocityHelper, hibernateAdvancedLdapPluginConfigurationDAO, advancedLdapSynchronizationManager, advancedLdapUserManager, fisheyePluginUtilities);
+                velocityHelper, hibernateAdvancedLdapPluginConfigurationDAO, advancedLdapSynchronizationManager, advancedLdapUserManager, fisheyePluginUtilities, advancedLdapLogService);
 
         HttpServletRequest req = Mockito.mock(HttpServletRequest.class);
         HttpServletResponse resp = Mockito.mock(HttpServletResponse.class);
@@ -127,7 +134,7 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
         Mockito.when(advancedLdapUserManager.hasSysAdminPrivileges(argumentCaptorHttpServletRequest.capture())).thenReturn(true);
 
         AdvancedLdapConfigurationAdminServletDummy advancedLdapConfigurationAdminServlet = new AdvancedLdapConfigurationAdminServletDummy(
-                velocityHelper, hibernateAdvancedLdapPluginConfigurationDAO, advancedLdapSynchronizationManager, advancedLdapUserManager, fisheyePluginUtilities);
+                velocityHelper, hibernateAdvancedLdapPluginConfigurationDAO, advancedLdapSynchronizationManager, advancedLdapUserManager, fisheyePluginUtilities, advancedLdapLogService);
 
         HttpServletRequest req = Mockito.mock(HttpServletRequest.class);
         Mockito.when(req.getPathInfo()).thenReturn("/advancedLdapConfigurationAdminServletEdit.do");
@@ -147,7 +154,7 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
         Mockito.doNothing().when(hibernateAdvancedLdapPluginConfigurationDAO).remove(0);
 
         AdvancedLdapConfigurationAdminServletDummy advancedLdapConfigurationAdminServlet = new AdvancedLdapConfigurationAdminServletDummy(
-                velocityHelper, hibernateAdvancedLdapPluginConfigurationDAO, advancedLdapSynchronizationManager, advancedLdapUserManager, fisheyePluginUtilities);
+                velocityHelper, hibernateAdvancedLdapPluginConfigurationDAO, advancedLdapSynchronizationManager, advancedLdapUserManager, fisheyePluginUtilities, advancedLdapLogService);
 
         HttpServletRequest req = Mockito.mock(HttpServletRequest.class);
         Mockito.when(req.getPathInfo()).thenReturn("/advancedLdapConfigurationAdminServletRemove.do");
@@ -166,7 +173,7 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
         Mockito.when(advancedLdapUserManager.hasSysAdminPrivileges(argumentCaptorHttpServletRequest.capture())).thenReturn(true);
 
         AdvancedLdapConfigurationAdminServletDummy advancedLdapConfigurationAdminServlet = new AdvancedLdapConfigurationAdminServletDummy(
-                velocityHelper, hibernateAdvancedLdapPluginConfigurationDAO, advancedLdapSynchronizationManager, advancedLdapUserManager, fisheyePluginUtilities);
+                velocityHelper, hibernateAdvancedLdapPluginConfigurationDAO, advancedLdapSynchronizationManager, advancedLdapUserManager, fisheyePluginUtilities, advancedLdapLogService);
 
         HttpServletRequest req = Mockito.mock(HttpServletRequest.class);
         Mockito.when(req.getPathInfo()).thenReturn("/advancedLdapConfigurationAdminServletSync.do");
@@ -186,7 +193,7 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
         Mockito.doNothing().when(hibernateAdvancedLdapPluginConfigurationDAO).store(advancedLdapPluginConfiguration, true);
 
         AdvancedLdapConfigurationAdminServletDummy advancedLdapConfigurationAdminServlet = new AdvancedLdapConfigurationAdminServletDummy(
-                velocityHelper, hibernateAdvancedLdapPluginConfigurationDAO, advancedLdapSynchronizationManager, advancedLdapUserManager, fisheyePluginUtilities);
+                velocityHelper, hibernateAdvancedLdapPluginConfigurationDAO, advancedLdapSynchronizationManager, advancedLdapUserManager, fisheyePluginUtilities, advancedLdapLogService);
 
         HttpServletRequest req = Mockito.mock(HttpServletRequest.class);
         Mockito.when(req.getPathInfo()).thenReturn("/advancedLdapConfigurationAdminServletOther.do");
@@ -206,7 +213,7 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
         Mockito.when(advancedLdapUserManager.hasSysAdminPrivileges(argumentCaptorHttpServletRequest.capture())).thenReturn(false);
 
         AdvancedLdapConfigurationAdminServletDummy advancedLdapConfigurationAdminServlet = new AdvancedLdapConfigurationAdminServletDummy(
-                velocityHelper, hibernateAdvancedLdapPluginConfigurationDAO, advancedLdapSynchronizationManager, advancedLdapUserManager, fisheyePluginUtilities);
+                velocityHelper, hibernateAdvancedLdapPluginConfigurationDAO, advancedLdapSynchronizationManager, advancedLdapUserManager, fisheyePluginUtilities, advancedLdapLogService);
 
         HttpServletRequest req = Mockito.mock(HttpServletRequest.class);
         HttpServletResponse resp = Mockito.mock(HttpServletResponse.class);

@@ -7,8 +7,15 @@
         http://www.springframework.org/schema/osgi
         http://www.springframework.org/schema/osgi/spring-osgi.xsd http://atlassian.com/schema/spring/plugin http://atlassian.com/schema/spring/plugin.xsd">
 
+    <bean id="advancedLdapLogService" name="AdvancedLdapLogService" class="com.davidkoudela.crucible.logs.AdvancedLdapLogServiceImpl">
+        <plugin:interface>com.davidkoudela.crucible.logs.AdvancedLdapLogService</plugin:interface>
+    </bean>
+
     <bean id="hibernateAdvancedLdapService" name="HibernateAdvancedLdapService" class="com.davidkoudela.crucible.persistence.HibernateAdvancedLdapServiceImpl">
         <plugin:interface>com.davidkoudela.crucible.persistence.HibernateAdvancedLdapService</plugin:interface>
+        <constructor-arg>
+            <ref bean="advancedLdapDatabaseConfigurationDAO"/>
+        </constructor-arg>
     </bean>
 
     <bean id="advancedLdapDatabaseConfigurationDAO" name="AdvancedLdapDatabaseConfigurationDAO" class="com.davidkoudela.crucible.persistence.AdvancedLdapDatabaseConfigurationDAOImpl">
