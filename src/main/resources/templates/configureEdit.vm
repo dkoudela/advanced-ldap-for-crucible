@@ -226,6 +226,22 @@ $webResourceManager.requireResource('com.davidkoudela.crucible.advanced-ldap-for
                             </td>
                         </tr>
                     </div>
+                    <div class="field-group">
+                        <label>Log Level</label>
+                        <tr>
+                            <td class="tdLabel"></td>
+                            <td>
+                                <select name="ldap.logLevel">
+                                    <option>FATAL
+                                    <option>ERROR
+                                    <option>WARN
+                                    <option selected>INFO
+                                    <option>DEBUG
+                                    <option>TRACE
+                                </select>
+                            </td>
+                        </tr>
+                    </div>
                 </div>
             </div>
 
