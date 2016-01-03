@@ -21,8 +21,7 @@ import com.davidkoudela.crucible.ldap.connect.AdvancedLdapSearchFilterFactory;
 import com.davidkoudela.crucible.ldap.model.*;
 import com.davidkoudela.crucible.statistics.AdvancedLdapGroupUserSyncCount;
 import com.unboundid.ldap.sdk.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,7 +40,7 @@ import java.util.Set;
  */
 @org.springframework.stereotype.Service("advancedLdapUserManager")
 public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
-    private Logger log = LoggerFactory.getLogger(this.getClass());
+    private Logger log = Logger.getLogger(this.getClass());
     private UserManager userManager;
     private HibernateAdvancedLdapPluginConfigurationDAO hibernateAdvancedLdapPluginConfigurationDAO;
     private AdvancedLdapConnector advancedLdapConnector = null;
@@ -58,6 +57,16 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
         this.hibernateAdvancedLdapPluginConfigurationDAO = hibernateAdvancedLdapPluginConfigurationDAO;
         this.hibernateAdvancedLdapUserDAO = hibernateAdvancedLdapUserDAO;
 //        AppConfig.getsConfig().setUserManager(this);
+/* TODO: move it the code to the separate service where the log level can be changed.
+        org.apache.log4j.Logger logrrr = org.apache.log4j.Logger.getLogger(this.getClass());
+        logrrr.info("INFO-log4j:**************************** AdvancedLdapUserManagerImpl START ****************************");
+        logrrr.debug("DEBUG-NOPRINT-log4j:**************************** AdvancedLdapUserManagerImpl START ****************************");
+        org.apache.log4j.Logger logmaster = org.apache.log4j.Logger.getLogger("com.davidkoudela.crucible");
+        logmaster.setLevel(Level.DEBUG);
+        logrrr.debug("DEBUG-PRINT-log4j:**************************** AdvancedLdapUserManagerImpl START ****************************");
+        logmaster.setLevel(Level.INFO);
+        logrrr.debug("DEBUG-NOPRINT-log4j:**************************** AdvancedLdapUserManagerImpl START ****************************");
+*/
         log.info("**************************** AdvancedLdapUserManagerImpl START ****************************");
     }
 
