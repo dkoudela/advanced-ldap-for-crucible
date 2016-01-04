@@ -53,3 +53,9 @@ form.aui .buttons-container > .buttons > * {
 form.aui .checkbox {
     margin-top: 10px;
 }
+
+form.aui .select {
+    height: 2.1428571428571em;
+    margin-right: 10px;
+    padding: 6px 5px 5px 5px;
+}

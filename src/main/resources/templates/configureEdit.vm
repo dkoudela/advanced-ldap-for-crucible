@@ -231,7 +231,7 @@ $webResourceManager.requireResource('com.davidkoudela.crucible.advanced-ldap-for
                         <tr>
                             <td class="tdLabel"></td>
                             <td>
-                                <select name="ldap.logLevel">
+                                <select name="ldap.logLevel" class="select">
                                     <option>FATAL
                                     <option>ERROR
                                     <option>WARN
