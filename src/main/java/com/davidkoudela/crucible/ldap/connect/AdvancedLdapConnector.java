@@ -47,7 +47,7 @@ public class AdvancedLdapConnector {
                 numSearches++;
                 totalEntriesReturned += searchResult.getEntryCount();
                 for (SearchResultEntry entry : searchResult.getSearchEntries()) {
-                    log.info("AdvancedLdapConnector Entry Dn: " + entry.getDN().toString());
+                    log.debug("AdvancedLdapConnector Entry Dn: " + entry.getDN().toString());
                     advancedLdapSearchResultBuilder.handlePagedSearchResult(entry);
                 }
 
@@ -62,17 +62,17 @@ public class AdvancedLdapConnector {
                 }
             }
         } catch (AssertionError e) {
-            log.info("**************************** AdvancedLdapConnector AssertionError ****************************" + e);
+            log.warn("**************************** AdvancedLdapConnector AssertionError ****************************" + e);
         } catch (Exception e) {
-            log.info("**************************** AdvancedLdapConnector EXCEPTION ****************************" + e);
+            log.warn("**************************** AdvancedLdapConnector EXCEPTION ****************************" + e);
         }
         finally {
             try {
-                log.info("**************************** AdvancedLdapConnector On Finalize ****************************");
+                log.debug("**************************** AdvancedLdapConnector On Finalize ****************************");
                 connection.close();
             } catch (Exception e)
             {
-                log.info("**************************** AdvancedLdapConnector EXCEPTION on conn closed ****************************" + e);
+                log.warn("**************************** AdvancedLdapConnector EXCEPTION on conn closed ****************************" + e);
             }
         }
     }
@@ -87,17 +87,17 @@ public class AdvancedLdapConnector {
             if (com.unboundid.ldap.sdk.ResultCode.SUCCESS_INT_VALUE == bindResult.getResultCode().intValue())
                 result = true;
         } catch (AssertionError e) {
-            log.info("**************************** AdvancedLdapConnector AssertionError ****************************" + e);
+            log.warn("**************************** AdvancedLdapConnector AssertionError ****************************" + e);
         } catch (Exception e) {
-            log.info("**************************** AdvancedLdapConnector EXCEPTION ****************************" + e);
+            log.warn("**************************** AdvancedLdapConnector EXCEPTION ****************************" + e);
         }
         finally {
             try {
-                log.info("**************************** AdvancedLdapConnector On Finalize ****************************");
+                log.debug("**************************** AdvancedLdapConnector On Finalize ****************************");
                 connection.close();
             } catch (Exception e)
             {
-                log.info("**************************** AdvancedLdapConnector EXCEPTION on conn closed ****************************" + e);
+                log.warn("**************************** AdvancedLdapConnector EXCEPTION on conn closed ****************************" + e);
             }
         }
 
@@ -115,7 +115,7 @@ public class AdvancedLdapConnector {
         int ldapPort = advancedLdapConnectionOptionsFactory.getLDAPPort();
         String ldapBindDN = this.advancedLdapPluginConfiguration.getLDAPBindDN();
         String ldapBindPassword = this.advancedLdapPluginConfiguration.getLDAPBindPassword();
-        log.info("LDAP Connection parameters: ldapHost: " + ldapHost + " ldapPort: " + ldapPort + " ldapBindDN: " + ldapBindDN);
+        log.debug("LDAP Connection parameters: ldapHost: " + ldapHost + " ldapPort: " + ldapPort + " ldapBindDN: " + ldapBindDN);
 
         if (advancedLdapConnectionOptionsFactory.isSslBased()) {
             return new LDAPConnection(

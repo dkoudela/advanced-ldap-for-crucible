@@ -64,7 +64,7 @@ public class AdvancedLdapGroupBuilder implements AdvancedLdapGroupSearchResultBu
                 if (searchResultEntry.hasAttribute(this.advancedLdapPluginConfiguration.getUserNamesKey())) {
                     Attribute personDns = searchResultEntry.getAttribute(this.advancedLdapPluginConfiguration.getUserNamesKey());
                     for (String personDn : personDns.getValues()) {
-                        log.info("AdvancedLdapGroupBuilder: Person: " + personDn);
+                        log.debug("AdvancedLdapGroupBuilder: Person: " + personDn);
                         try {
                             SearchRequest searchRequest = new SearchRequest(personDn, SearchScope.BASE,
                                     AdvancedLdapSearchFilterFactory.getSearchFilterForAllUsers(this.advancedLdapPluginConfiguration.getUserFilterKey()));
@@ -74,17 +74,17 @@ public class AdvancedLdapGroupBuilder implements AdvancedLdapGroupSearchResultBu
 
                             List foundPersonsInLdap = advancedLdapPersonBuilder.getPersons();
                             if (0 == foundPersonsInLdap.size()) {
-                                log.info("AdvancedLdapGroupBuilder: potential nested group: " + personDn);
+                                log.debug("AdvancedLdapGroupBuilder: potential nested group: " + personDn);
                                 this.nonpersonDns.add(personDn);
                                 continue;
                             } else if (1 != foundPersonsInLdap.size()) {
-                                log.info("AdvancedLdapGroupBuilder: person search returned " + foundPersonsInLdap.size() + " entries");
+                                log.debug("AdvancedLdapGroupBuilder: person search returned " + foundPersonsInLdap.size() + " entries");
                                 continue;
                             }
                             personList.addAll(foundPersonsInLdap);
 
                         } catch (Exception e) {
-                            log.info("AdvancedLdapGroupBuilder: person search failed: " + personDn + " Exception: " + e);
+                            log.warn("AdvancedLdapGroupBuilder: person search failed: " + personDn + " Exception: " + e);
                         }
                     }
                 }

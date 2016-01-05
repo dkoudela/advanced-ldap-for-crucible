@@ -38,7 +38,7 @@ public class AdvancedLdapDatabaseConfigurationDAOImpl implements AdvancedLdapDat
             settings.put(this.username, advancedLdapDatabaseConfiguration.getUserName());
             settings.put(this.password, advancedLdapDatabaseConfiguration.getPassword());
         } catch (Exception e) {
-            log.info("Cannot store AdvancedLdapDatabaseConfiguration: " + e);
+            log.warn("Cannot store AdvancedLdapDatabaseConfiguration: " + e);
         }
     }
 
@@ -76,7 +76,7 @@ public class AdvancedLdapDatabaseConfigurationDAOImpl implements AdvancedLdapDat
             advancedLdapDatabaseConfiguration.setUserName(AdvancedLdapDatabaseConfigFactory.getCrucibleDefaultDatabaseConfig().getUsername());
             advancedLdapDatabaseConfiguration.setPassword(AdvancedLdapDatabaseConfigFactory.getCrucibleDefaultDatabaseConfig().getPassword());
         } catch (Exception e) {
-            log.info("Cannot get AdvancedLdapDatabaseConfiguration: " + e);
+            log.warn("Cannot get AdvancedLdapDatabaseConfiguration: " + e);
         }
 
         return advancedLdapDatabaseConfiguration;
@@ -88,7 +88,7 @@ public class AdvancedLdapDatabaseConfigurationDAOImpl implements AdvancedLdapDat
             PluginSettings settings = this.settingsFactory.createGlobalSettings();
             settings.put(this.enabled, Boolean.FALSE.toString());
         } catch (Exception e) {
-            log.info("Cannot remove AdvancedLdapDatabaseConfiguration: " + e);
+            log.warn("Cannot remove AdvancedLdapDatabaseConfiguration: " + e);
         }
     }
 

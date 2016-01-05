@@ -88,7 +88,7 @@ public class AdvancedLdapConfigurationAdminServlet extends HttpServlet {
                     this.hibernateAdvancedLdapPluginConfigurationDAO.remove(advancedLdapPluginConfiguration.getId());
                     this.advancedLdapSynchronizationManager.updateTimer();
                 } catch (Exception e) {
-                    log.info("AdvancedLdapConfigurationAdminServlet.doPost: hibernateAdvancedLdapPluginConfigurationDAO.remove failed: " + e);
+                    log.warn("AdvancedLdapConfigurationAdminServlet.doPost: hibernateAdvancedLdapPluginConfigurationDAO.remove failed: " + e);
                 }
                 advancedLdapPluginConfiguration = this.hibernateAdvancedLdapPluginConfigurationDAO.get();
                 params.put("advancedLdapPluginConfiguration", advancedLdapPluginConfiguration);
@@ -97,18 +97,18 @@ public class AdvancedLdapConfigurationAdminServlet extends HttpServlet {
                 try {
                     this.advancedLdapSynchronizationManager.runNow();
                 } catch (Exception e) {
-                    log.info("AdvancedLdapConfigurationAdminServlet.doPost: LDAP manual sync failed: " + e);
+                    log.warn("AdvancedLdapConfigurationAdminServlet.doPost: LDAP manual sync failed: " + e);
                 }
                 params.put("advancedLdapPluginConfiguration", advancedLdapPluginConfiguration);
                 velocityHelper.renderVelocityTemplate("templates/configureView.vm", params, resp.getWriter());
             } else {
                 setParameters(advancedLdapPluginConfiguration, req);
                 try {
+                    this.advancedLdapLogService.setLogLevel(advancedLdapPluginConfiguration.getLogLevelAsLevel());
                     this.hibernateAdvancedLdapPluginConfigurationDAO.store(advancedLdapPluginConfiguration, true);
                     this.advancedLdapSynchronizationManager.updateTimer();
-                    this.advancedLdapLogService.setLogLevel(Level.toLevel(advancedLdapPluginConfiguration.getLogLevel()));
                 } catch (Exception e) {
-                    log.info("AdvancedLdapConfigurationAdminServlet.doPost: hibernateAdvancedLdapPluginConfigurationDAO.store failed: " + e);
+                    log.warn("AdvancedLdapConfigurationAdminServlet.doPost: hibernateAdvancedLdapPluginConfigurationDAO.store failed: " + e);
                 }
                 params.put("advancedLdapPluginConfiguration", advancedLdapPluginConfiguration);
                 velocityHelper.renderVelocityTemplate("templates/configureView.vm", params, resp.getWriter());

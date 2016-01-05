@@ -80,10 +80,10 @@ public class AdvancedLdapNestedGroupBuilder implements AdvancedLdapNestedGroupSe
 
                             List foundNestedGroupsInLdap = currentAdvancedLdapGroupBuilder.getGroups();
                             if (0 == foundNestedGroupsInLdap.size()) {
-                                log.info("AdvancedLdapNestedGroupBuilder: potential nested group not found: " + currentNonpersonDn);
+                                log.debug("AdvancedLdapNestedGroupBuilder: potential nested group not found: " + currentNonpersonDn);
                                 continue;
                             } else if (1 != foundNestedGroupsInLdap.size()) {
-                                log.info("AdvancedLdapNestedGroupBuilder: potential nested group search returned " + foundNestedGroupsInLdap.size() + " entries");
+                                log.debug("AdvancedLdapNestedGroupBuilder: potential nested group search returned " + foundNestedGroupsInLdap.size() + " entries");
                                 continue;
                             }
 
@@ -98,7 +98,7 @@ public class AdvancedLdapNestedGroupBuilder implements AdvancedLdapNestedGroupSe
                                 }
                             }
                         } catch (Exception e) {
-                            log.info("AdvancedLdapNestedGroupBuilder: nested group search failed: " + currentNonpersonDn + " Exception: " + e);
+                            log.warn("AdvancedLdapNestedGroupBuilder: nested group search failed: " + currentNonpersonDn + " Exception: " + e);
                         }
                     }
                 }

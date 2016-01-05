@@ -49,6 +49,12 @@
         <constructor-arg>
             <ref bean="advancedLdapOptionsDAO" />
         </constructor-arg>
+        <constructor-arg>
+            <ref bean="advancedLdapUserDAO" />
+        </constructor-arg>
+        <constructor-arg>
+            <ref bean="advancedLdapLogService" />
+        </constructor-arg>
     </bean>
 
     <bean id="advancedLdapSynchronizationManager" name="AdvancedLdapSynchronizationManager" class="com.davidkoudela.crucible.tasks.AdvancedLdapSynchronizationManagerImpl">

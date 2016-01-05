@@ -32,7 +32,7 @@ public class AdvancedLdapDatabaseConfigFactory {
 
     public static boolean verifyDatabaseConfig(AdvancedLdapDatabaseConfiguration advancedLdapDatabaseConfiguration) {
         if (0 == advancedLdapDatabaseConfiguration.getDatabaseName().length()) {
-            log.info("Database name must not be empty");
+            log.warn("Database name must not be empty");
             return false;
         }
         DatabaseConfig databaseConfig = getDatabaseConfig(advancedLdapDatabaseConfiguration);
@@ -109,11 +109,11 @@ public class AdvancedLdapDatabaseConfigFactory {
             log.info("Database " + databaseName + " exists");
             return true;
         } catch(SQLException se){
-            log.info("Database " + databaseName + " doesn't exist");
+            log.warn("Database " + databaseName + " doesn't exist");
 
         } catch(Exception e){
             //Handle errors for Class.forName
-            log.info("Database existence verification failed with general error");
+            log.warn("Database existence verification failed with general error");
             e.printStackTrace();
         } finally {
             //finally block used to close resources

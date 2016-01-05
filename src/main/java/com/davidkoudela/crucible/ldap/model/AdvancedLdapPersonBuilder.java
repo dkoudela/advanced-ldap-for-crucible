@@ -59,7 +59,7 @@ public class AdvancedLdapPersonBuilder implements AdvancedLdapPersonSearchResult
                 if (searchResultEntry.hasAttribute(this.advancedLdapPluginConfiguration.getUserGroupNamesKey())) {
                     Attribute groupDns = searchResultEntry.getAttribute(this.advancedLdapPluginConfiguration.getUserGroupNamesKey());
                     for (String groupDn : groupDns.getValues()) {
-                        log.info("AdvancedLdapPersonBuilder: Group: " + groupDn);
+                        log.debug("AdvancedLdapPersonBuilder: Group: " + groupDn);
                         try {
                             SearchRequest searchRequest = new SearchRequest(groupDn, SearchScope.BASE,
                                     AdvancedLdapSearchFilterFactory.getSearchFilterForAllGroups(this.advancedLdapPluginConfiguration.getGroupFilterKey()));
@@ -69,13 +69,13 @@ public class AdvancedLdapPersonBuilder implements AdvancedLdapPersonSearchResult
 
                             List foundGroupsInLdap = advancedLdapGroupBuilder.getGroups();
                             if (1 != foundGroupsInLdap.size()) {
-                                log.info("AdvancedLdapPersonBuilder: group search returned " + foundGroupsInLdap.size() + " entries");
+                                log.debug("AdvancedLdapPersonBuilder: group search returned " + foundGroupsInLdap.size() + " entries");
                                 continue;
                             }
                             groupList.addAll(foundGroupsInLdap);
 
                         } catch (Exception e) {
-                            log.info("AdvancedLdapPersonBuilder: group search failed: " + groupDn + " Exception: " + e);
+                            log.warn("AdvancedLdapPersonBuilder: group search failed: " + groupDn + " Exception: " + e);
                         }
                     }
                 }

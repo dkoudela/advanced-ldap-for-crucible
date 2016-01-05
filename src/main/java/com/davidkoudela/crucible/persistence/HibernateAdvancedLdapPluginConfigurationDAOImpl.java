@@ -90,7 +90,7 @@ public class HibernateAdvancedLdapPluginConfigurationDAOImpl implements Hibernat
             tx.rollback();
         } catch (HibernateException e) {
             if (tx!=null) tx.rollback();
-            log.info("Hibernate get failed for Configuration data: " + e);
+            log.warn("Hibernate get failed for Configuration data: " + e);
             return new AdvancedLdapPluginConfiguration();
         } finally {
             try {
@@ -144,7 +144,7 @@ public class HibernateAdvancedLdapPluginConfigurationDAOImpl implements Hibernat
         try {
             session.isConnected();
         } catch (HibernateException e) {
-            log.info("Hibernate test connection failed: " + e);
+            log.warn("Hibernate test connection failed: " + e);
         }
     }
 }

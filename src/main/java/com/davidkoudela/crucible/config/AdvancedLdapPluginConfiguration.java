@@ -120,6 +120,10 @@ public class AdvancedLdapPluginConfiguration {
         return logLevel;
     }
 
+    public Level getLogLevelAsLevel() {
+        return Level.toLevel(logLevel);
+    }
+
     public boolean isLogLevelEqual(String logLevel) {
         return 0 == this.logLevel.compareTo(logLevel);
     }

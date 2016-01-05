@@ -43,22 +43,22 @@ public class HibernateSessionFactoryFactory {
             configuration.addClass(com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration.class);
             return configuration.buildSessionFactory();
         } catch (Exception e) {
-            log.info("HibernateSessionFactoryFactory: Exception: " + e);
+            log.warn("HibernateSessionFactoryFactory: Exception: " + e);
             StringBuilder sb = new StringBuilder();
             for (StackTraceElement element : e.getCause().getStackTrace()) {
                 sb.append(element.toString());
                 sb.append("\n");
             }
-            log.info("HibernateSessionFactoryFactory: Exception: " + sb);
+            log.warn("HibernateSessionFactoryFactory: Exception: " + sb);
             throw new Exception(e);
         } catch (Throwable e) {
-            log.info("HibernateSessionFactoryFactory: Unexpected Exception: " + e);
+            log.warn("HibernateSessionFactoryFactory: Unexpected Exception: " + e);
             StringBuilder sb = new StringBuilder();
             for (StackTraceElement element : e.getCause().getStackTrace()) {
                 sb.append(element.toString());
                 sb.append("\n");
             }
-            log.info("HibernateSessionFactoryFactory: Unexpected Exception: " + sb);
+            log.warn("HibernateSessionFactoryFactory: Unexpected Exception: " + sb);
             throw new Exception(e);
         }
     }
@@ -80,7 +80,7 @@ public class HibernateSessionFactoryFactory {
         if (DBType.ORACLE.equals(databaseConfig.getType())) {
             dialect = HibernateAdvancedLdapOracle11gDialect.class.getCanonicalName();
         }
-        log.info("Database dialect: " + dialect);
+        log.debug("Database dialect: " + dialect);
         return dialect;
     }
 }

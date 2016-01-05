@@ -16,6 +16,7 @@ import com.cenqua.fisheye.user.*;
 import com.davidkoudela.crucible.admin.AdvancedLdapUserManager;
 import com.davidkoudela.crucible.admin.AdvancedLdapUserManagerImpl;
 import com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration;
+import com.davidkoudela.crucible.logs.AdvancedLdapLogService;
 import com.davidkoudela.crucible.persistence.HibernateAdvancedLdapPluginConfigurationDAO;
 import com.davidkoudela.crucible.persistence.HibernateAdvancedLdapUserDAO;
 import com.davidkoudela.crucible.persistence.HibernateAdvancedLdapUserDAOImpl;
@@ -25,6 +26,7 @@ import com.davidkoudela.crucible.ldap.model.*;
 import com.davidkoudela.crucible.statistics.AdvancedLdapGroupUserSyncCount;
 import com.unboundid.ldap.sdk.SearchRequest;
 import junit.framework.TestCase;
+import org.apache.log4j.Level;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -67,12 +69,14 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
     private static UserData userData;
     private static HibernateAdvancedLdapUserDAO hibernateAdvancedLdapUserDAO;
     private static AdvancedLdapBindBuilder advancedLdapBindBuilder;
+    private static AdvancedLdapLogService advancedLdapLogService;
 
     public class AdvancedLdapUserManagerImplDummy extends AdvancedLdapUserManagerImpl {
         public AdvancedLdapUserManagerImplDummy(UserManager userManager,
                                                 HibernateAdvancedLdapPluginConfigurationDAO hibernateAdvancedLdapPluginConfigurationDAO,
-                                                HibernateAdvancedLdapUserDAO hibernateAdvancedLdapUserDAO) {
-            super(userManager, hibernateAdvancedLdapPluginConfigurationDAO, hibernateAdvancedLdapUserDAO);
+                                                HibernateAdvancedLdapUserDAO hibernateAdvancedLdapUserDAO,
+                                                AdvancedLdapLogService advancedLdapLogService) {
+            super(userManager, hibernateAdvancedLdapPluginConfigurationDAO, hibernateAdvancedLdapUserDAO, advancedLdapLogService);
         }
 
         public void setAdvancedLdapConnector(AdvancedLdapConnector advancedLdapConnector) {
@@ -145,11 +149,14 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
         this.userData.setUserName("dkoudela");
         this.hibernateAdvancedLdapUserDAO = Mockito.mock(HibernateAdvancedLdapUserDAOImpl.class);
         this.advancedLdapBindBuilder = Mockito.mock(AdvancedLdapBindBuilder.class);
+        this.advancedLdapLogService = Mockito.mock(AdvancedLdapLogService.class);
+        Mockito.doNothing().when(this.advancedLdapLogService).setLogLevel(ArgumentCaptor.forClass(Level.class).capture());
     }
 
     @Test
     public void testLoadUserNoUrl(){
-        AdvancedLdapUserManager advancedLdapUserManager = new AdvancedLdapUserManagerImpl(this.userManager, this.hibernateAdvancedLdapPluginConfigurationDAO, this.hibernateAdvancedLdapUserDAO);
+        Mockito.when(hibernateAdvancedLdapPluginConfigurationDAO.get()).thenReturn(new AdvancedLdapPluginConfiguration());
+        AdvancedLdapUserManager advancedLdapUserManager = new AdvancedLdapUserManagerImpl(this.userManager, this.hibernateAdvancedLdapPluginConfigurationDAO, this.hibernateAdvancedLdapUserDAO, this.advancedLdapLogService);
         Mockito.when(hibernateAdvancedLdapPluginConfigurationDAO.get()).thenReturn(new AdvancedLdapPluginConfiguration());
 
         advancedLdapUserManager.loadUser(new UserData());
@@ -159,7 +166,8 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
 
     @Test
     public void testLoadUserWrongFilter(){
-        AdvancedLdapUserManager advancedLdapUserManager = new AdvancedLdapUserManagerImpl(this.userManager, this.hibernateAdvancedLdapPluginConfigurationDAO, this.hibernateAdvancedLdapUserDAO);
+        Mockito.when(hibernateAdvancedLdapPluginConfigurationDAO.get()).thenReturn(new AdvancedLdapPluginConfiguration());
+        AdvancedLdapUserManager advancedLdapUserManager = new AdvancedLdapUserManagerImpl(this.userManager, this.hibernateAdvancedLdapPluginConfigurationDAO, this.hibernateAdvancedLdapUserDAO, this.advancedLdapLogService);
         AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = new AdvancedLdapPluginConfiguration();
         advancedLdapPluginConfiguration.setLDAPUrl("url");
         Mockito.when(hibernateAdvancedLdapPluginConfigurationDAO.get()).thenReturn(advancedLdapPluginConfiguration);
@@ -171,7 +179,8 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
 
     @Test
     public void testLoadUserNoPersons() {
-        AdvancedLdapUserManagerImplDummy advancedLdapUserManager = new AdvancedLdapUserManagerImplDummy(this.userManager, this.hibernateAdvancedLdapPluginConfigurationDAO, this.hibernateAdvancedLdapUserDAO);
+        Mockito.when(hibernateAdvancedLdapPluginConfigurationDAO.get()).thenReturn(new AdvancedLdapPluginConfiguration());
+        AdvancedLdapUserManagerImplDummy advancedLdapUserManager = new AdvancedLdapUserManagerImplDummy(this.userManager, this.hibernateAdvancedLdapPluginConfigurationDAO, this.hibernateAdvancedLdapUserDAO, this.advancedLdapLogService);
         advancedLdapUserManager.setAdvancedLdapConnector(this.advancedLdapConnector);
         AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = new AdvancedLdapPluginConfiguration();
         advancedLdapPluginConfiguration.setLDAPUrl("url");
@@ -187,7 +196,8 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
 
     @Test
     public void testLoadUserOnePersonsWithoutGroups() {
-        AdvancedLdapUserManagerImplDummy advancedLdapUserManager = new AdvancedLdapUserManagerImplDummy(this.userManager, this.hibernateAdvancedLdapPluginConfigurationDAO, this.hibernateAdvancedLdapUserDAO);
+        Mockito.when(hibernateAdvancedLdapPluginConfigurationDAO.get()).thenReturn(new AdvancedLdapPluginConfiguration());
+        AdvancedLdapUserManagerImplDummy advancedLdapUserManager = new AdvancedLdapUserManagerImplDummy(this.userManager, this.hibernateAdvancedLdapPluginConfigurationDAO, this.hibernateAdvancedLdapUserDAO, this.advancedLdapLogService);
         advancedLdapUserManager.setAdvancedLdapConnector(this.advancedLdapConnector);
         AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = new AdvancedLdapPluginConfiguration();
         advancedLdapPluginConfiguration.setLDAPUrl("url");
@@ -205,7 +215,8 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
 
     @Test
     public void testLoadUserOnePersonsWithOneGroup() {
-        AdvancedLdapUserManagerImplDummy advancedLdapUserManager = new AdvancedLdapUserManagerImplDummy(this.userManager, this.hibernateAdvancedLdapPluginConfigurationDAO, this.hibernateAdvancedLdapUserDAO);
+        Mockito.when(hibernateAdvancedLdapPluginConfigurationDAO.get()).thenReturn(new AdvancedLdapPluginConfiguration());
+        AdvancedLdapUserManagerImplDummy advancedLdapUserManager = new AdvancedLdapUserManagerImplDummy(this.userManager, this.hibernateAdvancedLdapPluginConfigurationDAO, this.hibernateAdvancedLdapUserDAO, this.advancedLdapLogService);
         advancedLdapUserManager.setAdvancedLdapConnector(this.advancedLdapConnector);
         AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = new AdvancedLdapPluginConfiguration();
         advancedLdapPluginConfiguration.setLDAPUrl("url");
@@ -228,7 +239,8 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
 
     @Test
     public void testLoadGroupsWrongFilter(){
-        AdvancedLdapUserManager advancedLdapUserManager = new AdvancedLdapUserManagerImpl(this.userManager, this.hibernateAdvancedLdapPluginConfigurationDAO, this.hibernateAdvancedLdapUserDAO);
+        Mockito.when(hibernateAdvancedLdapPluginConfigurationDAO.get()).thenReturn(new AdvancedLdapPluginConfiguration());
+        AdvancedLdapUserManager advancedLdapUserManager = new AdvancedLdapUserManagerImpl(this.userManager, this.hibernateAdvancedLdapPluginConfigurationDAO, this.hibernateAdvancedLdapUserDAO, this.advancedLdapLogService);
         AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = new AdvancedLdapPluginConfiguration();
         Mockito.when(hibernateAdvancedLdapPluginConfigurationDAO.get()).thenReturn(advancedLdapPluginConfiguration);
         AdvancedLdapGroupUserSyncCount advancedLdapGroupUserSyncCount = new AdvancedLdapGroupUserSyncCount();
@@ -240,7 +252,8 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
 
     @Test
     public void testLoadGroupsNoGroups() {
-        AdvancedLdapUserManagerImplDummy advancedLdapUserManager = new AdvancedLdapUserManagerImplDummy(this.userManager, this.hibernateAdvancedLdapPluginConfigurationDAO, this.hibernateAdvancedLdapUserDAO);
+        Mockito.when(hibernateAdvancedLdapPluginConfigurationDAO.get()).thenReturn(new AdvancedLdapPluginConfiguration());
+        AdvancedLdapUserManagerImplDummy advancedLdapUserManager = new AdvancedLdapUserManagerImplDummy(this.userManager, this.hibernateAdvancedLdapPluginConfigurationDAO, this.hibernateAdvancedLdapUserDAO, this.advancedLdapLogService);
         advancedLdapUserManager.setAdvancedLdapConnector(this.advancedLdapConnector);
         AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = new AdvancedLdapPluginConfiguration();
         advancedLdapPluginConfiguration.setLDAPUrl("url");
@@ -257,7 +270,8 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
 
     @Test
     public void testLoadGroupsOneGroupWithoutPersons() {
-        AdvancedLdapUserManagerImplDummy advancedLdapUserManager = new AdvancedLdapUserManagerImplDummy(this.userManager, this.hibernateAdvancedLdapPluginConfigurationDAO, this.hibernateAdvancedLdapUserDAO);
+        Mockito.when(hibernateAdvancedLdapPluginConfigurationDAO.get()).thenReturn(new AdvancedLdapPluginConfiguration());
+        AdvancedLdapUserManagerImplDummy advancedLdapUserManager = new AdvancedLdapUserManagerImplDummy(this.userManager, this.hibernateAdvancedLdapPluginConfigurationDAO, this.hibernateAdvancedLdapUserDAO, this.advancedLdapLogService);
         advancedLdapUserManager.setAdvancedLdapConnector(this.advancedLdapConnector);
         AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = new AdvancedLdapPluginConfiguration();
         advancedLdapPluginConfiguration.setLDAPUrl("url");
@@ -279,7 +293,8 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
 
     @Test
     public void testLoadGroupsOneGroupWithOnePerson() {
-        AdvancedLdapUserManagerImplDummy advancedLdapUserManager = new AdvancedLdapUserManagerImplDummy(this.userManager, this.hibernateAdvancedLdapPluginConfigurationDAO, this.hibernateAdvancedLdapUserDAO);
+        Mockito.when(hibernateAdvancedLdapPluginConfigurationDAO.get()).thenReturn(new AdvancedLdapPluginConfiguration());
+        AdvancedLdapUserManagerImplDummy advancedLdapUserManager = new AdvancedLdapUserManagerImplDummy(this.userManager, this.hibernateAdvancedLdapPluginConfigurationDAO, this.hibernateAdvancedLdapUserDAO, this.advancedLdapLogService);
         advancedLdapUserManager.setAdvancedLdapConnector(this.advancedLdapConnector);
         AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = new AdvancedLdapPluginConfiguration();
         advancedLdapPluginConfiguration.setLDAPUrl("url");
@@ -305,7 +320,8 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
 
     @Test
     public void testVerifyUserCredentialsNoUrl() {
-        AdvancedLdapUserManagerImplDummy advancedLdapUserManager = new AdvancedLdapUserManagerImplDummy(this.userManager, this.hibernateAdvancedLdapPluginConfigurationDAO, this.hibernateAdvancedLdapUserDAO);
+        Mockito.when(hibernateAdvancedLdapPluginConfigurationDAO.get()).thenReturn(new AdvancedLdapPluginConfiguration());
+        AdvancedLdapUserManagerImplDummy advancedLdapUserManager = new AdvancedLdapUserManagerImplDummy(this.userManager, this.hibernateAdvancedLdapPluginConfigurationDAO, this.hibernateAdvancedLdapUserDAO, this.advancedLdapLogService);
         Mockito.when(hibernateAdvancedLdapPluginConfigurationDAO.get()).thenReturn(new AdvancedLdapPluginConfiguration());
 
         advancedLdapUserManager.verifyUserCredentials("dkoudela", "pwd");
@@ -316,7 +332,8 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
 
     @Test
     public void testVerifyUserCredentialsWrongFilter() {
-        AdvancedLdapUserManagerImplDummy advancedLdapUserManager = new AdvancedLdapUserManagerImplDummy(this.userManager, this.hibernateAdvancedLdapPluginConfigurationDAO, this.hibernateAdvancedLdapUserDAO);
+        Mockito.when(hibernateAdvancedLdapPluginConfigurationDAO.get()).thenReturn(new AdvancedLdapPluginConfiguration());
+        AdvancedLdapUserManagerImplDummy advancedLdapUserManager = new AdvancedLdapUserManagerImplDummy(this.userManager, this.hibernateAdvancedLdapPluginConfigurationDAO, this.hibernateAdvancedLdapUserDAO, this.advancedLdapLogService);
         advancedLdapUserManager.setAdvancedLdapConnector(this.advancedLdapConnector);
         AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = new AdvancedLdapPluginConfiguration();
         advancedLdapPluginConfiguration.setLDAPUrl("url");
@@ -330,7 +347,8 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
 
     @Test
     public void testVerifyUserCredentialsNoBinds() {
-        AdvancedLdapUserManagerImplDummy advancedLdapUserManager = new AdvancedLdapUserManagerImplDummy(this.userManager, this.hibernateAdvancedLdapPluginConfigurationDAO, this.hibernateAdvancedLdapUserDAO);
+        Mockito.when(hibernateAdvancedLdapPluginConfigurationDAO.get()).thenReturn(new AdvancedLdapPluginConfiguration());
+        AdvancedLdapUserManagerImplDummy advancedLdapUserManager = new AdvancedLdapUserManagerImplDummy(this.userManager, this.hibernateAdvancedLdapPluginConfigurationDAO, this.hibernateAdvancedLdapUserDAO, this.advancedLdapLogService);
         advancedLdapUserManager.setAdvancedLdapConnector(this.advancedLdapConnector);
         AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = new AdvancedLdapPluginConfiguration();
         advancedLdapPluginConfiguration.setLDAPUrl("url");
@@ -344,7 +362,8 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
 
     @Test
     public void testVerifyUserCredentialsOneBindResultFalse() {
-        AdvancedLdapUserManagerImplDummy advancedLdapUserManager = new AdvancedLdapUserManagerImplDummy(this.userManager, this.hibernateAdvancedLdapPluginConfigurationDAO, this.hibernateAdvancedLdapUserDAO);
+        Mockito.when(hibernateAdvancedLdapPluginConfigurationDAO.get()).thenReturn(new AdvancedLdapPluginConfiguration());
+        AdvancedLdapUserManagerImplDummy advancedLdapUserManager = new AdvancedLdapUserManagerImplDummy(this.userManager, this.hibernateAdvancedLdapPluginConfigurationDAO, this.hibernateAdvancedLdapUserDAO, this.advancedLdapLogService);
         advancedLdapUserManager.setAdvancedLdapConnector(this.advancedLdapConnector);
         AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = new AdvancedLdapPluginConfiguration();
         advancedLdapPluginConfiguration.setLDAPUrl("url");
@@ -360,7 +379,8 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
 
     @Test
     public void testVerifyUserCredentialsOneBindResultTrue() {
-        AdvancedLdapUserManagerImplDummy advancedLdapUserManager = new AdvancedLdapUserManagerImplDummy(this.userManager, this.hibernateAdvancedLdapPluginConfigurationDAO, this.hibernateAdvancedLdapUserDAO);
+        Mockito.when(hibernateAdvancedLdapPluginConfigurationDAO.get()).thenReturn(new AdvancedLdapPluginConfiguration());
+        AdvancedLdapUserManagerImplDummy advancedLdapUserManager = new AdvancedLdapUserManagerImplDummy(this.userManager, this.hibernateAdvancedLdapPluginConfigurationDAO, this.hibernateAdvancedLdapUserDAO, this.advancedLdapLogService);
         advancedLdapUserManager.setAdvancedLdapConnector(this.advancedLdapConnector);
         AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = new AdvancedLdapPluginConfiguration();
         advancedLdapPluginConfiguration.setLDAPUrl("url");
@@ -377,8 +397,9 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
 
     @Test
     public void testSetGetForCoverage() throws Exception {
+        Mockito.when(hibernateAdvancedLdapPluginConfigurationDAO.get()).thenReturn(new AdvancedLdapPluginConfiguration());
         AdvancedLdapUserManager advancedLdapUserManager =
-                new AdvancedLdapUserManagerImpl(new UserManagerDummy(), this.hibernateAdvancedLdapPluginConfigurationDAO, this.hibernateAdvancedLdapUserDAO);
+                new AdvancedLdapUserManagerImpl(new UserManagerDummy(), this.hibernateAdvancedLdapPluginConfigurationDAO, this.hibernateAdvancedLdapUserDAO, this.advancedLdapLogService);
 
         try {
             advancedLdapUserManager.countActiveUsers(null);
