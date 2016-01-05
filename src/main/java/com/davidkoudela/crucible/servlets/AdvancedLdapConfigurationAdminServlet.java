@@ -106,6 +106,7 @@ public class AdvancedLdapConfigurationAdminServlet extends HttpServlet {
                 try {
                     this.hibernateAdvancedLdapPluginConfigurationDAO.store(advancedLdapPluginConfiguration, true);
                     this.advancedLdapSynchronizationManager.updateTimer();
+                    this.advancedLdapLogService.setLogLevel(Level.toLevel(advancedLdapPluginConfiguration.getLogLevel()));
                 } catch (Exception e) {
                     log.info("AdvancedLdapConfigurationAdminServlet.doPost: hibernateAdvancedLdapPluginConfigurationDAO.store failed: " + e);
                 }
@@ -137,7 +138,10 @@ public class AdvancedLdapConfigurationAdminServlet extends HttpServlet {
         advancedLdapPluginConfiguration.setGroupDisplayNameKey(StringUtils.defaultIfEmpty(request.getParameter("ldap.groupDisplaynameAttr"), ""));
         advancedLdapPluginConfiguration.setUserNamesKey(StringUtils.defaultIfEmpty(request.getParameter("ldap.groupUsernameAttr"), ""));
         advancedLdapPluginConfiguration.setNestedGroupsEnabled(Boolean.parseBoolean(StringUtils.defaultIfEmpty(request.getParameter("ldap.nestedGroupsEnabled"), "False")));
-        this.advancedLdapLogService.setLogLevel(Level.ALL);
+        advancedLdapPluginConfiguration.setLogLevel(
+                Level.toLevel(StringUtils.defaultIfEmpty(request.getParameter("ldap.logLevel"), Level.INFO.toString()),
+                Level.INFO
+        ).toString());
     }
 
 }

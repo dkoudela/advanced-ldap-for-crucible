@@ -232,12 +232,9 @@ $webResourceManager.requireResource('com.davidkoudela.crucible.advanced-ldap-for
                             <td class="tdLabel"></td>
                             <td>
                                 <select name="ldap.logLevel" class="select">
-                                    <option>FATAL
-                                    <option>ERROR
-                                    <option>WARN
-                                    <option selected>INFO
-                                    <option>DEBUG
-                                    <option>TRACE
+                                    #foreach( $logLevel in $advancedLdapPluginConfiguration.getLogLevels())
+                                    <option #if ($advancedLdapPluginConfiguration.isLogLevelEqual($logLevel)) selected#end>$logLevel
+                                    #end
                                 </select>
                             </td>
                         </tr>

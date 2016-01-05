@@ -1,5 +1,7 @@
 package com.davidkoudela.crucible.config;
 
+import org.apache.log4j.Level;
+
 import javax.persistence.Entity;
 
 /**
@@ -32,6 +34,7 @@ public class AdvancedLdapPluginConfiguration {
     private String userNamesKey = "";
     private String recordRevision = RECORD_REVISION;
     private Boolean nestedGroupsEnabled = false;
+    private String logLevel = Level.INFO.toString();
 
     public int getId() {
         return id;
@@ -111,6 +114,26 @@ public class AdvancedLdapPluginConfiguration {
 
     public Boolean isNestedGroupsEnabled() {
         return nestedGroupsEnabled;
+    }
+
+    public String getLogLevel() {
+        return logLevel;
+    }
+
+    public boolean isLogLevelEqual(String logLevel) {
+        return 0 == this.logLevel.compareTo(logLevel);
+    }
+
+    public String[] getLogLevels() {
+        String[] logLevels = {
+                Level.FATAL.toString(),
+                Level.ERROR.toString(),
+                Level.WARN.toString(),
+                Level.INFO.toString(),
+                Level.DEBUG.toString(),
+                Level.TRACE.toString()
+        };
+        return logLevels;
     }
 
     public void setId(int id) {
@@ -196,6 +219,12 @@ public class AdvancedLdapPluginConfiguration {
             this.nestedGroupsEnabled = nestedGroupsEnabled;
     }
 
+    public void setLogLevel(String logLevel) {
+        if (null == logLevel)
+            this.logLevel = Level.INFO.toString();
+        else
+            this.logLevel = logLevel;
+    }
 
     public String toString() {
         return "{ id=\"" + id + "\", connectTimeoutMillis=\"" + connectTimeoutMillis + "\", responseTimeoutMillis=\"" + responseTimeoutMillis +
@@ -205,6 +234,7 @@ public class AdvancedLdapPluginConfiguration {
                 "\", emailAttributeKey=\"" + emailAttributeKey + "\", UIDAttributeKey=\"" + UIDAttributeKey +
                 "\", userGroupNamesKey=\"" + userGroupNamesKey + "\", groupFilterKey=\"" + groupFilterKey +
                 "\", GIDAttributeKey=\"" + GIDAttributeKey + "\", groupDisplayNameKey=\"" + groupDisplayNameKey +
-                "\", userNamesKey=\"" + userNamesKey + "\", nestedGroupsEnabled=\"" + nestedGroupsEnabled + "\" }";
+                "\", userNamesKey=\"" + userNamesKey + "\", nestedGroupsEnabled=\"" + nestedGroupsEnabled +
+                "\", logLevel=\"" + logLevel + "\" }";
     }
 }
