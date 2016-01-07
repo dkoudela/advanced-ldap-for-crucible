@@ -10,5 +10,5 @@ package com.davidkoudela.crucible.tasks;
  */
 public interface AdvancedLdapSynchronizationManager {
     public void updateTimer();
-    public void runNow();
+    public void runNow() throws Exception;
 }

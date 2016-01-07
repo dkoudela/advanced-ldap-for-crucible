@@ -149,7 +149,7 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
     }
 
     @Test
-    public void testDoPostWithAdminPermissionsAdminRemove() throws ServletException, IOException {
+    public void testDoPostWithAdminPermissionsAdminRemove() throws Exception {
         Mockito.when(advancedLdapUserManager.hasSysAdminPrivileges(argumentCaptorHttpServletRequest.capture())).thenReturn(true);
         Mockito.doNothing().when(hibernateAdvancedLdapPluginConfigurationDAO).remove(0);
 
@@ -221,5 +221,26 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
         advancedLdapConfigurationAdminServlet.doPost(req, resp);
 
         Mockito.verify(resp).sendRedirect("fecru/admin/login-default.do");
+    }
+
+    @Test
+    public void testDoPostWithAdminPermissionsRemoveThrowsException() throws Exception {
+        Mockito.when(advancedLdapUserManager.hasSysAdminPrivileges(argumentCaptorHttpServletRequest.capture())).thenReturn(true);
+        Mockito.doThrow(new Exception()).when(hibernateAdvancedLdapPluginConfigurationDAO).remove(0);
+
+        AdvancedLdapConfigurationAdminServletDummy advancedLdapConfigurationAdminServlet = new AdvancedLdapConfigurationAdminServletDummy(
+                velocityHelper, hibernateAdvancedLdapPluginConfigurationDAO, advancedLdapSynchronizationManager, advancedLdapUserManager, fisheyePluginUtilities, advancedLdapLogService);
+
+        HttpServletRequest req = Mockito.mock(HttpServletRequest.class);
+        Mockito.when(req.getPathInfo()).thenReturn("/advancedLdapConfigurationAdminServletRemove.do");
+        Mockito.when(req.getParameter("ldap.url")).thenReturn("url");
+        HttpServletResponse resp = Mockito.mock(HttpServletResponse.class);
+        advancedLdapConfigurationAdminServlet.doPost(req, resp);
+
+        assertEquals("templates/configureView.vm", argumentCaptorString.getValue());
+        assertEquals(4, argumentCaptorMap.getValue().size());
+        assertEquals("[request, advancedLdapPluginConfiguration, webResourceManager, STATICDIR]", argumentCaptorMap.getValue().keySet().toString());
+        AdvancedLdapPluginConfiguration advancedLdapPluginConfigurationParam = (AdvancedLdapPluginConfiguration) argumentCaptorMap.getValue().get("advancedLdapPluginConfiguration");
+        assertEquals("{ id=\"0\", connectTimeoutMillis=\"10000\", responseTimeoutMillis=\"10000\", LDAPPageSize=\"99\", LDAPSyncPeriod=\"3600\", LDAPUrl=\"url\", LDAPBindDN=\"\", LDAPBindPassword=\"\", LDAPBaseDN=\"\", userFilterKey=\"\", displayNameAttributeKey=\"\", emailAttributeKey=\"\", UIDAttributeKey=\"\", userGroupNamesKey=\"\", groupFilterKey=\"\", GIDAttributeKey=\"\", groupDisplayNameKey=\"\", userNamesKey=\"\", nestedGroupsEnabled=\"false\", logLevel=\"INFO\" }", advancedLdapPluginConfigurationParam.toString());
     }
 }

@@ -39,7 +39,7 @@ public class AdvancedLdapSynchronizationManagerImplTest extends TestCase {
         Mockito.verify(advancedLdapTimerTrigger).createTimer(argumentCaptorTimerTask.capture(), argumentCaptorTimerPeriod.capture());
     }
 
-    public void testRunNow() {
+    public void testRunNow() throws Exception {
         AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = new AdvancedLdapPluginConfiguration();
         advancedLdapPluginConfiguration.setLDAPUrl("url");
         HibernateAdvancedLdapPluginConfigurationDAO hibernateAdvancedLdapPluginConfigurationDAO = Mockito.mock(HibernateAdvancedLdapPluginConfigurationDAO.class);

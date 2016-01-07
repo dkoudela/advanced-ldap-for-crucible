@@ -106,7 +106,7 @@ public class HibernateAdvancedLdapPluginConfigurationDAOImpl implements Hibernat
 
     @Override
     @Transactional
-    public void remove(int id) {
+    public void remove(int id) throws Exception {
         HibernateAdvancedLdapInstance hibernateAdvancedLdapInstance = hibernateAdvancedLdapService.getInstance();
         Session session = null;
         Transaction tx = null;

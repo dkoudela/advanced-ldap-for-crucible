@@ -238,7 +238,7 @@ public class HibernateAdvancedLdapPluginConfigurationDAOImplTest extends TestCas
     }
 
     @Test
-    public void testRemove() {
+    public void testRemove() throws Exception {
         AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = new AdvancedLdapPluginConfiguration();
         advancedLdapPluginConfiguration.setId(666);
         advancedLdapPluginConfiguration.setLDAPUrl(" ");

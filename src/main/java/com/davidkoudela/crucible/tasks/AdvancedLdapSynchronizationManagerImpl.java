@@ -41,7 +41,7 @@ public class AdvancedLdapSynchronizationManagerImpl implements AdvancedLdapSynch
     }
 
     @Override
-    public void runNow() {
+    public void runNow() throws Exception {
         AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = this.hibernateAdvancedLdapPluginConfigurationDAO.get();
         if (!advancedLdapPluginConfiguration.getLDAPUrl().isEmpty()) {
             AdvancedLdapSynchronizationTask advancedLdapSynchronizationTask = new AdvancedLdapSynchronizationTask(this.advancedLdapUserManager);

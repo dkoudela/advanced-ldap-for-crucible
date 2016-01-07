@@ -13,5 +13,5 @@ import com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration;
 public interface HibernateAdvancedLdapPluginConfigurationDAO {
     public abstract void store(AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration, boolean isUpdate) throws Exception;
     public abstract AdvancedLdapPluginConfiguration get();
-    public abstract void remove(int id);
+    public abstract void remove(int id) throws Exception;
 }
