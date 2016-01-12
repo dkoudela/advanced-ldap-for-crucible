@@ -39,8 +39,9 @@ public class AdvancedLdapDatabaseAdminServletTest extends TestCase {
     private static AdvancedLdapDatabaseConfigurationDAO advancedLdapDatabaseConfigurationDAO;
     private static AdvancedLdapSynchronizationManager advancedLdapSynchronizationManager;
     private static ArgumentCaptor<String> argumentCaptorString;
-    private static ArgumentCaptor<Map> argumentCaptorMap;
+    private static ArgumentCaptor<Map<String, Object>> argumentCaptorMap;
     private static ArgumentCaptor<PrintWriter> argumentCaptorPrintWriter;
+    private static Class<Map<String, Object>> mapStringObject;
 
     public class AdvancedLdapDatabaseAdminServletDummy extends AdvancedLdapDatabaseAdminServlet {
         public AdvancedLdapDatabaseAdminServletDummy(VelocityHelper velocityHelper,
@@ -69,7 +70,7 @@ public class AdvancedLdapDatabaseAdminServletTest extends TestCase {
         advancedLdapSynchronizationManager = Mockito.mock(AdvancedLdapSynchronizationManager.class);
 
         argumentCaptorString = ArgumentCaptor.forClass(String.class);
-        argumentCaptorMap = ArgumentCaptor.forClass(Map.class);
+        argumentCaptorMap = ArgumentCaptor.forClass(mapStringObject);
         argumentCaptorPrintWriter = ArgumentCaptor.forClass(PrintWriter.class);
     }
 

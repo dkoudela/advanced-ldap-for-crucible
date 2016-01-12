@@ -49,11 +49,12 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
     private static AdvancedLdapUserManager advancedLdapUserManager;
     private static ArgumentCaptor<HttpServletRequest> argumentCaptorHttpServletRequest;
     private static ArgumentCaptor<String> argumentCaptorString;
-    private static ArgumentCaptor<Map> argumentCaptorMap;
+    private static ArgumentCaptor<Map<String, Object>> argumentCaptorMap;
     private static ArgumentCaptor<PrintWriter> argumentCaptorPrintWriter;
     private static AdvancedLdapSynchronizationManager advancedLdapSynchronizationManager;
     private static FisheyePluginUtilities fisheyePluginUtilities;
     private static AdvancedLdapLogService advancedLdapLogService;
+    private static Class<Map<String, Object>> mapStringObject;
 
     public class AdvancedLdapConfigurationAdminServletDummy extends AdvancedLdapConfigurationAdminServlet {
         public AdvancedLdapConfigurationAdminServletDummy(VelocityHelper velocityHelper, HibernateAdvancedLdapPluginConfigurationDAO hibernateAdvancedLdapPluginConfigurationDAO,
@@ -86,7 +87,7 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
         Mockito.when(hibernateAdvancedLdapPluginConfigurationDAO.get()).thenReturn(advancedLdapPluginConfiguration);
         argumentCaptorHttpServletRequest = ArgumentCaptor.forClass(HttpServletRequest.class);
         argumentCaptorString = ArgumentCaptor.forClass(String.class);
-        argumentCaptorMap = ArgumentCaptor.forClass(Map.class);
+        argumentCaptorMap = ArgumentCaptor.forClass(mapStringObject);
         argumentCaptorPrintWriter = ArgumentCaptor.forClass(PrintWriter.class);
         Mockito.doNothing().when(velocityHelper).renderVelocityTemplate(argumentCaptorString.capture(), argumentCaptorMap.capture(), argumentCaptorPrintWriter.capture());
         Mockito.doNothing().when(advancedLdapUserManager).loadGroups(ArgumentCaptor.forClass(AdvancedLdapGroupUserSyncCount.class).capture());

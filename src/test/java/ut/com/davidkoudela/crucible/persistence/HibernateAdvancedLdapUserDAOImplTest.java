@@ -44,11 +44,11 @@ public class HibernateAdvancedLdapUserDAOImplTest extends TestCase {
         advancedLdapPerson.setUid("dkoudela");
         advancedLdapPerson.setEmail("dkoudela@example.com");
         advancedLdapPerson.setDisplayName("David Koudela");
-        Mockito.doNothing().when(userDAO).create(new ArgumentCaptor<com.atlassian.fecru.user.User>().capture());
+        Mockito.doNothing().when(userDAO).create(ArgumentCaptor.forClass(com.atlassian.fecru.user.User.class).capture());
 
         hibernateAdvancedLdapUserDAO.create(advancedLdapPerson.getUid(), advancedLdapPerson.getDisplayName(), advancedLdapPerson.getEmail());
 
         Mockito.verify(userManager, Mockito.times(1)).setCrucibleEnabled("dkoudela", true);
-        Mockito.verify(userDAO, Mockito.times(1)).create(new ArgumentCaptor<com.atlassian.fecru.user.User>().capture());
+        Mockito.verify(userDAO, Mockito.times(1)).create(ArgumentCaptor.forClass(com.atlassian.fecru.user.User.class).capture());
     }
 }
