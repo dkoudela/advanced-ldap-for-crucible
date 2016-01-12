@@ -2,6 +2,7 @@ package ut.com.davidkoudela.crucible.persistence;
 
 import com.cenqua.crucible.hibernate.DBType;
 import com.cenqua.crucible.hibernate.DatabaseConfig;
+import com.cenqua.fisheye.AppConfig;
 import com.davidkoudela.crucible.config.AdvancedLdapDatabaseConfiguration;
 import com.davidkoudela.crucible.persistence.AdvancedLdapDatabaseConfigFactory;
 import junit.framework.TestCase;
@@ -69,7 +70,7 @@ public class AdvancedLdapDatabaseConfigFactoryTest extends TestCase {
     public void testGetCrucibleDefaultDatabaseConfig() {
         DatabaseConfig databaseConfigLocal = AdvancedLdapDatabaseConfigFactoryDummy.getCrucibleDefaultDatabaseConfig();
         assertEquals("org.hibernate.dialect.HSQLDialect", databaseConfigLocal.getDialect());
-        assertEquals("jdbc:hsqldb:file:C:\\atlastutorial\\advanced-ldap-for-crucible\\./var/data/crudb/crucible", databaseConfigLocal.getJdbcURL());
+        assertEquals("jdbc:hsqldb:file:" + AppConfig.getInstanceDir().getAbsolutePath() + "/var/data/crudb/crucible", databaseConfigLocal.getJdbcURL());
     }
 
     @Test
@@ -94,7 +95,7 @@ public class AdvancedLdapDatabaseConfigFactoryTest extends TestCase {
         advancedLdapDatabaseConfiguration.setUserName("cru");
         advancedLdapDatabaseConfiguration.setPassword("pass");
         DatabaseConfig databaseConfigLocal = AdvancedLdapDatabaseConfigFactoryDummy.createDatabaseConfig(advancedLdapDatabaseConfiguration);
-        assertEquals("jdbc:hsqldb:file:C:\\atlastutorial\\advanced-ldap-for-crucible\\./var/data/myowndb/crucible", databaseConfigLocal.getJdbcURL());
+        assertEquals("jdbc:hsqldb:file:" + AppConfig.getInstanceDir().getAbsolutePath() + "/var/data/myowndb/crucible", databaseConfigLocal.getJdbcURL());
         assertEquals("cru", databaseConfigLocal.getUsername());
         assertEquals("pass", databaseConfigLocal.getPassword());
     }
