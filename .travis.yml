@@ -5,6 +5,7 @@ before_install:
     - sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B07804338C015B73
     - sudo apt-get update
     - sudo apt-get install atlassian-plugin-sdk
+install: true
 script: "atlas-unit-test"
 cache:
   directories:
