@@ -1,4 +1,6 @@
 language: java
+jdk:
+  - oraclejdk8
 sudo: required
 before_install:
     - sudo sh -c 'echo "deb http://sdkrepo.atlassian.com/debian/ stable contrib" >>/etc/apt/sources.list'
@@ -10,7 +12,9 @@ before_install:
 install:
     - atlas-mvn install:install-file -Dfile=/tmp/sqljdbc4.jar  -Dpackaging=jar -DgroupId=com.microsoft.sqlserver -DartifactId=sqljdbc4  -Dversion=4.0
     - atlas-mvn install:install-file -Dfile=/tmp/sqljdbc41.jar -Dpackaging=jar -DgroupId=com.microsoft.sqlserver -DartifactId=sqljdbc41 -Dversion=4.1
-script: "atlas-unit-test"
+script:
+    - jdk_switcher use oraclejdk8
+    - atlas-unit-test
 cache:
   directories:
     - $HOME/.m2
