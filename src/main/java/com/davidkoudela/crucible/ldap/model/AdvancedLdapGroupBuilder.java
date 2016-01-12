@@ -72,7 +72,7 @@ public class AdvancedLdapGroupBuilder implements AdvancedLdapGroupSearchResultBu
                             AdvancedLdapPersonBuilder advancedLdapPersonBuilder = getAdvancedLdapPersonBuilder();
                             advancedLdapConnector.ldapPagedSearch(searchRequest, advancedLdapPersonBuilder);
 
-                            List foundPersonsInLdap = advancedLdapPersonBuilder.getPersons();
+                            List<AdvancedLdapPerson> foundPersonsInLdap = advancedLdapPersonBuilder.getPersons();
                             if (0 == foundPersonsInLdap.size()) {
                                 log.debug("AdvancedLdapGroupBuilder: potential nested group: " + personDn);
                                 this.nonpersonDns.add(personDn);

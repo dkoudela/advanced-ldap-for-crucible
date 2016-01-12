@@ -78,7 +78,7 @@ public class AdvancedLdapNestedGroupBuilder implements AdvancedLdapNestedGroupSe
                             AdvancedLdapGroupBuilder currentAdvancedLdapGroupBuilder = getAdvancedLdapGroupBuilder();
                             advancedLdapConnector.ldapPagedSearch(searchRequest, currentAdvancedLdapGroupBuilder);
 
-                            List foundNestedGroupsInLdap = currentAdvancedLdapGroupBuilder.getGroups();
+                            List<AdvancedLdapGroup> foundNestedGroupsInLdap = currentAdvancedLdapGroupBuilder.getGroups();
                             if (0 == foundNestedGroupsInLdap.size()) {
                                 log.debug("AdvancedLdapNestedGroupBuilder: potential nested group not found: " + currentNonpersonDn);
                                 continue;

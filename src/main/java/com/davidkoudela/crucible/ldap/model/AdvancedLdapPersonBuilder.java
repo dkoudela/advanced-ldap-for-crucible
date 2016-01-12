@@ -67,7 +67,7 @@ public class AdvancedLdapPersonBuilder implements AdvancedLdapPersonSearchResult
                             AdvancedLdapGroupBuilder advancedLdapGroupBuilder = getAdvancedLdapGroupBuilder();
                             advancedLdapConnector.ldapPagedSearch(searchRequest, advancedLdapGroupBuilder);
 
-                            List foundGroupsInLdap = advancedLdapGroupBuilder.getGroups();
+                            List<AdvancedLdapGroup> foundGroupsInLdap = advancedLdapGroupBuilder.getGroups();
                             if (1 != foundGroupsInLdap.size()) {
                                 log.debug("AdvancedLdapPersonBuilder: group search returned " + foundGroupsInLdap.size() + " entries");
                                 continue;
