@@ -1,6 +1,11 @@
 language: java
 sudo: false
-script: "mvn install:install-file -DgroupId=jta -DartifactId=jta -Dversion=1.0.1 -Dpackaging=jar -Dfile=lib/jta-1_0_1B-classes.jar && mvn verify -B"
+before_install:
+    - sudo sh -c 'echo "deb http://sdkrepo.atlassian.com/debian/ stable contrib" >>/etc/apt/sources.list'
+    - sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B07804338C015B73
+    - sudo apt-get update
+    - sudo apt-get install atlassian-plugin-sdk
+script: "atlas-unit-test"
 cache:
   directories:
     - $HOME/.m2
