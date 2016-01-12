@@ -5,7 +5,11 @@ before_install:
     - sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B07804338C015B73
     - sudo apt-get update
     - sudo apt-get install atlassian-plugin-sdk
-install: true
+    - wget http://davidkoudela.cz/github/advanced-ldap-for-crucible/libs/sqljdbc4.jar  -O /tmp/sqljdbc4.jar
+    - wget http://davidkoudela.cz/github/advanced-ldap-for-crucible/libs/sqljdbc41.jar -O /tmp/sqljdbc41.jar
+install:
+    - mvn install:install-file -Dfile=/tmp/sqljdbc4.jar  -Dpackaging=jar -DgroupId=com.microsoft.sqlserver -DartifactId=sqljdbc4  -Dversion=4.0
+    - mvn install:install-file -Dfile=/tmp/sqljdbc41.jar -Dpackaging=jar -DgroupId=com.microsoft.sqlserver -DartifactId=sqljdbc41 -Dversion=4.1
 script: "atlas-unit-test"
 cache:
   directories:
