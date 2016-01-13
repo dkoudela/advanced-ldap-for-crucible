@@ -351,7 +351,7 @@
         <fecru.data.version>3.10.1-20151028191103</fecru.data.version-->
         <fecru.version>3.8.0-20150427140019</fecru.version>
         <fecru.data.version>3.8.0-20150427140019</fecru.data.version>
-        <amps.version>5.0.13</amps.version>
+        <amps.version>6.2.1</amps.version>
         <plugin.testrunner.version>1.2.0</plugin.testrunner.version>
         <powermock.version>1.6.2</powermock.version>
         <easymock.version>3.3.1</easymock.version>
