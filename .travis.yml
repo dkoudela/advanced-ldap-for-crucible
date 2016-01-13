@@ -14,8 +14,10 @@ install:
     - atlas-mvn install:install-file -Dfile=/tmp/sqljdbc41.jar -Dpackaging=jar -DgroupId=com.microsoft.sqlserver -DartifactId=sqljdbc41 -Dversion=4.1
 script:
     - jdk_switcher use oraclejdk8
-    - sudo atlas-unit-test
-#    - sudo atlas-integration-test
+# Unit tests are part of the Integration tests.
+# It is kept only for further test downgrade
+#    - sudo atlas-unit-test
+    - sudo atlas-integration-test
 cache:
   directories:
     - $HOME/.m2
