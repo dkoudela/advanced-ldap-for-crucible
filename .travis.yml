@@ -1,6 +1,6 @@
 language: java
 jdk:
-  - oraclejdk8
+    - oraclejdk8
 sudo: required
 before_install:
     - sudo sh -c 'echo "deb http://sdkrepo.atlassian.com/debian/ stable contrib" >>/etc/apt/sources.list'
@@ -20,14 +20,14 @@ script:
     - sudo atlas-integration-test
 after_success:
 # CREATE GIT TAG
-  - git config --global user.email "ci-build@davidkoudela.cz"
-  - git config --global user.name "Travis CI"
-  - export GIT_TAG=ci-build-$TRAVIS_BRANCH-$(date -u "+%Y-%m-%d")#$TRAVIS_BUILD_NUMBER
-  - git tag $GIT_TAG -a -m "Generated tag from TravisCI build $TRAVIS_BUILD_NUMBER"
-  - git push --quiet https://$GITHUBKEY@github.com/dkoudela/advanced-ldap-for-crucible $GIT_TAG > /dev/null 2>&1
+    - git config --global user.email "ci-build@davidkoudela.cz"
+    - git config --global user.name "Travis CI"
+    - export GIT_TAG=ci-build-$TRAVIS_BRANCH-$(date -u "+%Y-%m-%d")#$TRAVIS_BUILD_NUMBER
+    - git tag $GIT_TAG -a -m "Generated tag from TravisCI build $TRAVIS_BUILD_NUMBER"
+    - git push --quiet https://$GITHUBKEY@github.com/dkoudela/advanced-ldap-for-crucible $GIT_TAG > /dev/null 2>&1
 branches:
-  except:
-    - /^ci-build-[0-9]*[0-9a-z\-#]*.*/
+    except:
+        - /^ci-build-[0-9]*[0-9a-z\-#]*.*/
 cache:
-  directories:
-    - $HOME/.m2
+    directories:
+        - $HOME/.m2

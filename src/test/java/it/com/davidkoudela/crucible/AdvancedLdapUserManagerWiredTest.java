@@ -23,6 +23,6 @@ public class AdvancedLdapUserManagerWiredTest
     @Test
     public void testMyName()
     {
-//        assertEquals("names do not match!", "myComponent:" + applicationProperties.getDisplayName(), advancedLdapUserManager.getName());
+//        assertEquals("names do not match!", "myComponent:" + applicationProperties.getDisplayName(), advancedLdapUserManager.getClass().toString());
     }
 }
