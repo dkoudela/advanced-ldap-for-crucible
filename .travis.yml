@@ -1,33 +1,49 @@
 language: java
 jdk:
+# Explicitly declare the right JDK
     - oraclejdk8
+
 sudo: required
+
 before_install:
+# Install Atlassian SDK
     - sudo sh -c 'echo "deb http://sdkrepo.atlassian.com/debian/ stable contrib" >>/etc/apt/sources.list'
     - sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B07804338C015B73
     - sudo apt-get update
     - sudo apt-get install atlassian-plugin-sdk
+# Download dependent jar files which are not available in any Maven repositories
     - wget http://davidkoudela.cz/github/advanced-ldap-for-crucible/libs/sqljdbc4.jar  -O /tmp/sqljdbc4.jar
     - wget http://davidkoudela.cz/github/advanced-ldap-for-crucible/libs/sqljdbc41.jar -O /tmp/sqljdbc41.jar
+
 install:
+# Install dependent jar files which are not available in any Maven repositories
+# Must be done via atlas-mvn command line tool
     - atlas-mvn install:install-file -Dfile=/tmp/sqljdbc4.jar  -Dpackaging=jar -DgroupId=com.microsoft.sqlserver -DartifactId=sqljdbc4  -Dversion=4.0
     - atlas-mvn install:install-file -Dfile=/tmp/sqljdbc41.jar -Dpackaging=jar -DgroupId=com.microsoft.sqlserver -DartifactId=sqljdbc41 -Dversion=4.1
+
 script:
+# Explicitly switch to the right JDK
     - jdk_switcher use oraclejdk8
 # Unit tests are part of the Integration tests.
 # It is kept only for further test downgrade
 #    - sudo atlas-unit-test
     - sudo atlas-integration-test
+
 after_success:
-# CREATE GIT TAG
-    - git config --global user.email "ci-build@davidkoudela.cz"
+# Create GIT tag
+    - git config --global user.email "$CIEMAIL"
     - git config --global user.name "Travis CI"
     - export GIT_TAG=ci-build-$TRAVIS_BRANCH-$(date -u "+%Y-%m-%d")#$TRAVIS_BUILD_NUMBER
     - git tag $GIT_TAG -a -m "Generated tag from TravisCI build $TRAVIS_BUILD_NUMBER"
     - git push --quiet https://$GITHUBKEY@github.com/dkoudela/advanced-ldap-for-crucible $GIT_TAG > /dev/null 2>&1
+
 branches:
     except:
+# Never build a commit after it is labeled by CI to avoid cyclic build dependencies.
         - /^ci-build-[0-9]*[0-9a-z\-#]*.*/
+
 cache:
+# Caching is not allowed for 'sudo: required' builds.
+# It is kept for future usage.
     directories:
         - $HOME/.m2
