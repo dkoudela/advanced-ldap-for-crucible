@@ -14,8 +14,9 @@ before_install:
 # Download dependent jar files which are not available in any Maven repositories
     - wget http://davidkoudela.cz/github/advanced-ldap-for-crucible/libs/sqljdbc4.jar  -O /tmp/sqljdbc4.jar
     - wget http://davidkoudela.cz/github/advanced-ldap-for-crucible/libs/sqljdbc41.jar -O /tmp/sqljdbc41.jar
-# Install git-lfs repo for managing large files in GIT
+# Install git-lfs repo and packages for managing large files in GIT
     - curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
+    - sudo apt-get install git-lfs
 
 install:
 # Install dependent jar files which are not available in any Maven repositories
