@@ -12,8 +12,8 @@ before_install:
     - sudo apt-get update
     - sudo apt-get install atlassian-plugin-sdk
 # Download dependent jar files which are not available in any Maven repositories
-    - wget http://davidkoudela.cz/github/advanced-ldap-for-crucible/libs/sqljdbc4.jar  -O /tmp/sqljdbc4.jar
-    - wget http://davidkoudela.cz/github/advanced-ldap-for-crucible/libs/sqljdbc41.jar -O /tmp/sqljdbc41.jar
+    - wget http://davidkoudela.cz/github/AdvancedLdapForCrucible/libs/sqljdbc4.jar  -O /tmp/sqljdbc4.jar
+    - wget http://davidkoudela.cz/github/AdvancedLdapForCrucible/libs/sqljdbc41.jar -O /tmp/sqljdbc41.jar
 # Install git-lfs repo and packages for managing large files in GIT
     - curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
     - sudo apt-get install git-lfs
@@ -42,7 +42,7 @@ after_success:
     - git tag $GIT_TAG -a -m "Generated tag from TravisCI build $TRAVIS_BUILD_NUMBER"
     - git push --quiet https://$GITHUBKEY@github.com/dkoudela/advanced-ldap-for-crucible $GIT_TAG > /dev/null 2>&1
 # Upload of the jar files and their md5sums
-    - export REPO_SUBDIR=ci-build-$TRAVIS_BRANCH-$TRAVIS_BUILD_NUMBER
+    - export REPO_SUBDIR=CiBuild$TRAVIS_BUILD_NUMBER$TRAVIS_BRANCH
     - mkdir /tmp/target
     - for I in `ls target/*.jar`; do md5sum $I > /tmp/$I.md5sum; done
     - ls target/*.jar /tmp/target/*.md5sum | xargs -ielem curl --ftp-create-dirs --ftp-ssl-control --insecure -T "elem" "$REPOSITORYURL/$REPO_SUBDIR/"
