@@ -42,9 +42,10 @@ after_success:
     - git tag $GIT_TAG -a -m "Generated tag from TravisCI build $TRAVIS_BUILD_NUMBER"
     - git push --quiet https://$GITHUBKEY@github.com/dkoudela/advanced-ldap-for-crucible $GIT_TAG > /dev/null 2>&1
 # Upload of the jar files and their md5sums
+    - export REPO_SUBDIR=ci-build-$TRAVIS_BRANCH-$TRAVIS_BUILD_NUMBER
     - mkdir /tmp/target
     - for I in `ls target/*.jar`; do md5sum $I > /tmp/$I.md5sum; done
-    - ls target/*.jar /tmp/target/*.md5sum | xargs -ielem curl --ftp-ssl-control --insecure -T "elem" "$REPOSITORYURL/$GIT_TAG/"
+    - ls target/*.jar /tmp/target/*.md5sum | xargs -ielem curl --ftp-create-dirs --ftp-ssl-control --insecure -T "elem" "$REPOSITORYURL/$REPO_SUBDIR/"
 
 branches:
     except:
