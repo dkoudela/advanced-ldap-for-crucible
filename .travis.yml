@@ -15,8 +15,8 @@ before_install:
     - wget http://davidkoudela.cz/github/AdvancedLdapForCrucible/libs/sqljdbc4.jar  -O /tmp/sqljdbc4.jar
     - wget http://davidkoudela.cz/github/AdvancedLdapForCrucible/libs/sqljdbc41.jar -O /tmp/sqljdbc41.jar
 # Install git-lfs repo and packages for managing large files in GIT
-    - curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
-    - sudo apt-get install git-lfs
+#    - curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
+#    - sudo apt-get install git-lfs
 
 install:
 # Install dependent jar files which are not available in any Maven repositories
@@ -24,7 +24,7 @@ install:
     - atlas-mvn install:install-file -Dfile=/tmp/sqljdbc4.jar  -Dpackaging=jar -DgroupId=com.microsoft.sqlserver -DartifactId=sqljdbc4  -Dversion=4.0
     - atlas-mvn install:install-file -Dfile=/tmp/sqljdbc41.jar -Dpackaging=jar -DgroupId=com.microsoft.sqlserver -DartifactId=sqljdbc41 -Dversion=4.1
 # Setup the global Git hooks for Git LFS
-    - git lfs install
+#    - git lfs install
 
 script:
 # Explicitly switch to the right JDK
