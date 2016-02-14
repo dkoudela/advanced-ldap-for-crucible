@@ -38,11 +38,12 @@ after_success:
 # Create GIT tag
     - git config --global user.email "$CIEMAIL"
     - git config --global user.name "Travis CI"
+    - git config --global push.default simple
     - git config remote.origin.url https://$GITHUBKEY@github.com/dkoudela/advanced-ldap-for-crucible.git
     - export GIT_TAG=ci-build-$TRAVIS_BRANCH-$(date -u "+%Y-%m-%d")#$TRAVIS_BUILD_NUMBER
     - echo $GIT_TAG
     - git tag $GIT_TAG -a -m "Generated tag from TravisCI build $TRAVIS_BUILD_NUMBER"
-    - git push -v $GIT_TAG
+    - git push -v origin $GIT_TAG
 # Upload of the jar files and their md5sums
     - export REPO_SUBDIR=CiBuild$TRAVIS_BUILD_NUMBER$TRAVIS_BRANCH
     - mkdir /tmp/target
