@@ -54,6 +54,8 @@ branches:
     except:
 # Never build a commit after it is labeled by CI to avoid cyclic build dependencies.
         - /^ci-build-[0-9]*[0-9a-z\-#]*.*/
+# Never build a label for the model tracking purposes.
+        - /^model_v[0-9][0-9\.]*.*/
 
 cache:
 # Caching is not allowed for 'sudo: required' builds.
