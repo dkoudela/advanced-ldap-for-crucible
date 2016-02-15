@@ -326,6 +326,13 @@
             <version>1.6.1-atlassian-2</version>
             <scope>provided</scope>
         </dependency>
+        <!--dependency>
+            <groupId>org.jacoco</groupId>
+            <artifactId>org.jacoco.agent</artifactId>
+            <classifier>runtime</classifier>
+            <version>${jacoco.version}</version>
+            <scope>test</scope>
+        </dependency-->
     </dependencies>
 
     <build>
@@ -339,6 +346,9 @@
                     <productVersion>${fecru.version}</productVersion>
                     <productDataVersion>${fecru.data.version}</productDataVersion>
                     <log4jProperties>src/main/resources/log4j.xml</log4jProperties>
+                    <!--systemPropertyVariables>
+                        <jacoco-agent.destfile>target/jacoco.exec</jacoco-agent.destfile>
+                    </systemPropertyVariables-->
                 </configuration>
             </plugin>
             <plugin>
@@ -352,7 +362,39 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.7.5.201505241946</version>
+                <version>${jacoco.version}</version>
+                <!--executions>
+                    <execution>
+                        <id>default-instrument</id>
+                        <goals>
+                            <goal>instrument</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>default-restore-instrumented-classes</id>
+                        <goals>
+                            <goal>restore-instrumented-classes</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>default-report</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <includes>
+                                <include>**/*AdvancedLdap*</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>default-check</id>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions-->
                 <executions>
                     <execution>
                         <id>default-prepare-agent</id>
@@ -424,6 +466,7 @@
         <plugin.testrunner.version>1.2.0</plugin.testrunner.version>
         <powermock.version>1.6.2</powermock.version>
         <easymock.version>3.3.1</easymock.version>
+        <jacoco.version>0.7.5.201505241946</jacoco.version>
     </properties>
 
 </project>
