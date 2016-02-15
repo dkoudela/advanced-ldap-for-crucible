@@ -373,6 +373,17 @@
                         </configuration>
                     </execution>
                     <execution>
+                        <id>default-report-integration</id>
+                        <goals>
+                            <goal>report-integration</goal>
+                        </goals>
+                        <configuration>
+                            <includes>
+                                <include>**/*AdvancedLdap*</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>default-check</id>
                         <goals>
                             <goal>check</goal>
