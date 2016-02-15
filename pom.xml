@@ -464,8 +464,8 @@
         <fecru.data.version>3.8.0-20150427140019</fecru.data.version>
         <amps.version>6.2.1</amps.version>
         <plugin.testrunner.version>1.2.0</plugin.testrunner.version>
-        <powermock.version>1.6.2</powermock.version>
-        <easymock.version>3.3.1</easymock.version>
+        <powermock.version>1.6.4</powermock.version>
+        <easymock.version>3.4</easymock.version>
         <jacoco.version>0.7.5.201505241946</jacoco.version>
     </properties>
 
