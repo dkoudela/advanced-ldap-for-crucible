@@ -326,13 +326,13 @@
             <version>1.6.1-atlassian-2</version>
             <scope>provided</scope>
         </dependency>
-        <!--dependency>
+        <dependency>
             <groupId>org.jacoco</groupId>
             <artifactId>org.jacoco.agent</artifactId>
             <classifier>runtime</classifier>
             <version>${jacoco.version}</version>
             <scope>test</scope>
-        </dependency-->
+        </dependency>
     </dependencies>
 
     <build>
@@ -346,9 +346,9 @@
                     <productVersion>${fecru.version}</productVersion>
                     <productDataVersion>${fecru.data.version}</productDataVersion>
                     <log4jProperties>src/main/resources/log4j.xml</log4jProperties>
-                    <!--systemPropertyVariables>
+                    <systemPropertyVariables>
                         <jacoco-agent.destfile>target/jacoco.exec</jacoco-agent.destfile>
-                    </systemPropertyVariables-->
+                    </systemPropertyVariables>
                 </configuration>
             </plugin>
             <plugin>
@@ -363,7 +363,7 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>${jacoco.version}</version>
-                <!--executions>
+                <executions>
                     <execution>
                         <id>default-instrument</id>
                         <goals>
@@ -372,34 +372,9 @@
                     </execution>
                     <execution>
                         <id>default-restore-instrumented-classes</id>
-                        <goals>
-                            <goal>restore-instrumented-classes</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>default-report</id>
                         <phase>prepare-package</phase>
                         <goals>
-                            <goal>report</goal>
-                        </goals>
-                        <configuration>
-                            <includes>
-                                <include>**/*AdvancedLdap*</include>
-                            </includes>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>default-check</id>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions-->
-                <executions>
-                    <execution>
-                        <id>default-prepare-agent</id>
-                        <goals>
-                            <goal>prepare-agent</goal>
+                            <goal>restore-instrumented-classes</goal>
                         </goals>
                     </execution>
                     <execution>
@@ -410,7 +385,7 @@
                     </execution>
                     <execution>
                         <id>default-report</id>
-                        <phase>prepare-package</phase>
+                        <phase>package</phase>
                         <goals>
                             <goal>report</goal>
                         </goals>
