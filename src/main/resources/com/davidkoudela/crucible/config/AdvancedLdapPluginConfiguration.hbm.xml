@@ -32,5 +32,6 @@
         <property name="userNamesKey" column="USER_NAMES_KEY" type="text" not-null="true"/>
         <property name="nestedGroupsEnabled" column="NESTED_GROUPS_ENABLED" type="boolean" not-null="false"/>
         <property name="logLevel" column="LOG_LEVEL" type="string" not-null="false"/>
+        <property name="removingUsersFromGroupsEnabled" column="REMOVING_USERS_FROM_GROUPS_ENABLED" type="boolean" not-null="false"/>
     </class>
 </hibernate-mapping>

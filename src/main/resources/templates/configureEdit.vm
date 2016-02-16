@@ -239,6 +239,15 @@ $webResourceManager.requireResource('com.davidkoudela.crucible.advanced-ldap-for
                             </td>
                         </tr>
                     </div>
+                    <div class="field-group">
+                        <label>Removing Users from Groups</label>
+                        <tr>
+                            <td class="tdLabel"></td>
+                            <td>
+                                <input type="checkbox" name="ldap.removingUsersFromGroupsEnabled" value="true" id="ldap_removingUsersFromGroupsEnabled" class="checkbox" value="true" #if ($advancedLdapPluginConfiguration.isRemovingUsersFromGroupsEnabled()) checked="checked"#end />
+                            </td>
+                        </tr>
+                    </div>
                 </div>
             </div>
 

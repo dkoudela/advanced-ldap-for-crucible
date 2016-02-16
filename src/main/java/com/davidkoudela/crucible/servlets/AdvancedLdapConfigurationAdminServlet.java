@@ -142,6 +142,7 @@ public class AdvancedLdapConfigurationAdminServlet extends HttpServlet {
                 Level.toLevel(StringUtils.defaultIfEmpty(request.getParameter("ldap.logLevel"), Level.INFO.toString()),
                 Level.INFO
         ).toString());
+        advancedLdapPluginConfiguration.setRemovingUsersFromGroupsEnabled(Boolean.parseBoolean(StringUtils.defaultIfEmpty(request.getParameter("ldap.removingUsersFromGroupsEnabled"), "False")));
     }
 
 }

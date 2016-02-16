@@ -2,7 +2,10 @@ package ut.com.davidkoudela.crucible.config;
 
 import com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration;
 import junit.framework.TestCase;
+import org.apache.log4j.Level;
 import org.junit.Test;
+
+import java.util.Arrays;
 
 /**
  * Description: Testing {@link AdvancedLdapPluginConfiguration}
@@ -15,6 +18,14 @@ public class AdvancedLdapPluginConfigurationTest extends TestCase {
     @Test
     public void testSetGetForCoverage() {
         AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = new AdvancedLdapPluginConfiguration();
+        String[] expectedLogLevelsArray = new String[] {
+                Level.FATAL.toString(),
+                Level.ERROR.toString(),
+                Level.WARN.toString(),
+                Level.INFO.toString(),
+                Level.DEBUG.toString(),
+                Level.TRACE.toString()
+        };
 
         advancedLdapPluginConfiguration.setId(1);
         advancedLdapPluginConfiguration.setConnectTimeoutMillis(2);
@@ -36,6 +47,8 @@ public class AdvancedLdapPluginConfigurationTest extends TestCase {
         advancedLdapPluginConfiguration.setUserNamesKey("names");
         advancedLdapPluginConfiguration.setRecordRevision("666");
         advancedLdapPluginConfiguration.setNestedGroupsEnabled(true);
+        advancedLdapPluginConfiguration.setLogLevel("WARN");
+        advancedLdapPluginConfiguration.setRemovingUsersFromGroupsEnabled(true);
 
         assertEquals(1, advancedLdapPluginConfiguration.getId());
         assertEquals(2, advancedLdapPluginConfiguration.getConnectTimeoutMillis());
@@ -57,5 +70,17 @@ public class AdvancedLdapPluginConfigurationTest extends TestCase {
         assertEquals("names", advancedLdapPluginConfiguration.getUserNamesKey());
         assertEquals("666", advancedLdapPluginConfiguration.getRecordRevision());
         assertEquals(true, advancedLdapPluginConfiguration.isNestedGroupsEnabled().booleanValue());
+        assertEquals("WARN", advancedLdapPluginConfiguration.getLogLevel());
+        assertTrue(advancedLdapPluginConfiguration.isLogLevelEqual("WARN"));
+        assertEquals(6, advancedLdapPluginConfiguration.getLogLevels().length);
+        assertTrue(Arrays.equals(expectedLogLevelsArray, advancedLdapPluginConfiguration.getLogLevels()));
+        assertEquals(true, advancedLdapPluginConfiguration.isRemovingUsersFromGroupsEnabled().booleanValue());
+
+        advancedLdapPluginConfiguration.setNestedGroupsEnabled(null);
+        advancedLdapPluginConfiguration.setLogLevel(null);
+        advancedLdapPluginConfiguration.setRemovingUsersFromGroupsEnabled(null);
+        assertEquals(false, advancedLdapPluginConfiguration.isNestedGroupsEnabled().booleanValue());
+        assertTrue(advancedLdapPluginConfiguration.isLogLevelEqual("INFO"));
+        assertEquals(false, advancedLdapPluginConfiguration.isRemovingUsersFromGroupsEnabled().booleanValue());
     }
 }

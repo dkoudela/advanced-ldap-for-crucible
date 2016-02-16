@@ -146,6 +146,10 @@ $webResourceManager.requireResource('com.davidkoudela.crucible.advanced-ldap-for
                         <label>Log Level</label>
                         <span class="field-value">$advancedLdapPluginConfiguration.getLogLevel()</span>
                     </div>
+                    <div class="field-group">
+                        <label>Removing Users from Groups</label>
+                        <input class="checkbox" type="checkbox" disabled value="true" #if ($advancedLdapPluginConfiguration.isRemovingUsersFromGroupsEnabled()) checked="checked"#end ></input>
+                    </div>
                 </div>
             </div>
 

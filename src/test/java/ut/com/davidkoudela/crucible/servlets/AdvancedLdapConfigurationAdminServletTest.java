@@ -1,7 +1,6 @@
 package ut.com.davidkoudela.crucible.servlets;
 
 import com.atlassian.crucible.spi.FisheyePluginUtilities;
-import com.atlassian.crucible.spi.impl.DefaultFisheyePluginUtilities;
 import com.atlassian.fisheye.plugin.web.helpers.DefaultVelocityHelper;
 import com.atlassian.fisheye.plugin.web.helpers.VelocityHelper;
 import com.cenqua.fisheye.user.DefaultUserManager;
@@ -112,7 +111,7 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
         assertEquals(4, argumentCaptorMap.getValue().size());
         assertEquals("[request, advancedLdapPluginConfiguration, webResourceManager, STATICDIR]", argumentCaptorMap.getValue().keySet().toString());
         AdvancedLdapPluginConfiguration advancedLdapPluginConfigurationParam = (AdvancedLdapPluginConfiguration) argumentCaptorMap.getValue().get("advancedLdapPluginConfiguration");
-        assertEquals("{ id=\"0\", connectTimeoutMillis=\"10000\", responseTimeoutMillis=\"10000\", LDAPPageSize=\"99\", LDAPSyncPeriod=\"3600\", LDAPUrl=\"url\", LDAPBindDN=\"\", LDAPBindPassword=\"\", LDAPBaseDN=\"\", userFilterKey=\"\", displayNameAttributeKey=\"\", emailAttributeKey=\"\", UIDAttributeKey=\"\", userGroupNamesKey=\"\", groupFilterKey=\"\", GIDAttributeKey=\"\", groupDisplayNameKey=\"\", userNamesKey=\"\", nestedGroupsEnabled=\"false\", logLevel=\"INFO\" }", advancedLdapPluginConfigurationParam.toString());
+        assertEquals("{ id=\"0\", connectTimeoutMillis=\"10000\", responseTimeoutMillis=\"10000\", LDAPPageSize=\"99\", LDAPSyncPeriod=\"3600\", LDAPUrl=\"url\", LDAPBindDN=\"\", LDAPBindPassword=\"\", LDAPBaseDN=\"\", userFilterKey=\"\", displayNameAttributeKey=\"\", emailAttributeKey=\"\", UIDAttributeKey=\"\", userGroupNamesKey=\"\", groupFilterKey=\"\", GIDAttributeKey=\"\", groupDisplayNameKey=\"\", userNamesKey=\"\", nestedGroupsEnabled=\"false\", logLevel=\"INFO\", removingUsersFromGroupsEnabled=\"false\" }", advancedLdapPluginConfigurationParam.toString());
     }
 
     @Test
@@ -146,7 +145,7 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
         assertEquals(4, argumentCaptorMap.getValue().size());
         assertEquals("[request, advancedLdapPluginConfiguration, webResourceManager, STATICDIR]", argumentCaptorMap.getValue().keySet().toString());
         AdvancedLdapPluginConfiguration advancedLdapPluginConfigurationParam = (AdvancedLdapPluginConfiguration) argumentCaptorMap.getValue().get("advancedLdapPluginConfiguration");
-        assertEquals("{ id=\"0\", connectTimeoutMillis=\"10000\", responseTimeoutMillis=\"10000\", LDAPPageSize=\"99\", LDAPSyncPeriod=\"3600\", LDAPUrl=\"url\", LDAPBindDN=\"\", LDAPBindPassword=\"\", LDAPBaseDN=\"\", userFilterKey=\"\", displayNameAttributeKey=\"\", emailAttributeKey=\"\", UIDAttributeKey=\"\", userGroupNamesKey=\"\", groupFilterKey=\"\", GIDAttributeKey=\"\", groupDisplayNameKey=\"\", userNamesKey=\"\", nestedGroupsEnabled=\"false\", logLevel=\"INFO\" }", advancedLdapPluginConfigurationParam.toString());
+        assertEquals("{ id=\"0\", connectTimeoutMillis=\"10000\", responseTimeoutMillis=\"10000\", LDAPPageSize=\"99\", LDAPSyncPeriod=\"3600\", LDAPUrl=\"url\", LDAPBindDN=\"\", LDAPBindPassword=\"\", LDAPBaseDN=\"\", userFilterKey=\"\", displayNameAttributeKey=\"\", emailAttributeKey=\"\", UIDAttributeKey=\"\", userGroupNamesKey=\"\", groupFilterKey=\"\", GIDAttributeKey=\"\", groupDisplayNameKey=\"\", userNamesKey=\"\", nestedGroupsEnabled=\"false\", logLevel=\"INFO\", removingUsersFromGroupsEnabled=\"false\" }", advancedLdapPluginConfigurationParam.toString());
     }
 
     @Test
@@ -166,7 +165,7 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
         assertEquals(4, argumentCaptorMap.getValue().size());
         assertEquals("[request, advancedLdapPluginConfiguration, webResourceManager, STATICDIR]", argumentCaptorMap.getValue().keySet().toString());
         AdvancedLdapPluginConfiguration advancedLdapPluginConfigurationParam = (AdvancedLdapPluginConfiguration) argumentCaptorMap.getValue().get("advancedLdapPluginConfiguration");
-        assertEquals("{ id=\"0\", connectTimeoutMillis=\"10000\", responseTimeoutMillis=\"10000\", LDAPPageSize=\"99\", LDAPSyncPeriod=\"3600\", LDAPUrl=\"url\", LDAPBindDN=\"\", LDAPBindPassword=\"\", LDAPBaseDN=\"\", userFilterKey=\"\", displayNameAttributeKey=\"\", emailAttributeKey=\"\", UIDAttributeKey=\"\", userGroupNamesKey=\"\", groupFilterKey=\"\", GIDAttributeKey=\"\", groupDisplayNameKey=\"\", userNamesKey=\"\", nestedGroupsEnabled=\"false\", logLevel=\"INFO\" }", advancedLdapPluginConfigurationParam.toString());
+        assertEquals("{ id=\"0\", connectTimeoutMillis=\"10000\", responseTimeoutMillis=\"10000\", LDAPPageSize=\"99\", LDAPSyncPeriod=\"3600\", LDAPUrl=\"url\", LDAPBindDN=\"\", LDAPBindPassword=\"\", LDAPBaseDN=\"\", userFilterKey=\"\", displayNameAttributeKey=\"\", emailAttributeKey=\"\", UIDAttributeKey=\"\", userGroupNamesKey=\"\", groupFilterKey=\"\", GIDAttributeKey=\"\", groupDisplayNameKey=\"\", userNamesKey=\"\", nestedGroupsEnabled=\"false\", logLevel=\"INFO\", removingUsersFromGroupsEnabled=\"false\" }", advancedLdapPluginConfigurationParam.toString());
     }
 
     @Test
@@ -185,7 +184,7 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
         assertEquals(4, argumentCaptorMap.getValue().size());
         assertEquals("[request, advancedLdapPluginConfiguration, webResourceManager, STATICDIR]", argumentCaptorMap.getValue().keySet().toString());
         AdvancedLdapPluginConfiguration advancedLdapPluginConfigurationParam = (AdvancedLdapPluginConfiguration) argumentCaptorMap.getValue().get("advancedLdapPluginConfiguration");
-        assertEquals("{ id=\"0\", connectTimeoutMillis=\"10000\", responseTimeoutMillis=\"10000\", LDAPPageSize=\"99\", LDAPSyncPeriod=\"3600\", LDAPUrl=\"url\", LDAPBindDN=\"\", LDAPBindPassword=\"\", LDAPBaseDN=\"\", userFilterKey=\"\", displayNameAttributeKey=\"\", emailAttributeKey=\"\", UIDAttributeKey=\"\", userGroupNamesKey=\"\", groupFilterKey=\"\", GIDAttributeKey=\"\", groupDisplayNameKey=\"\", userNamesKey=\"\", nestedGroupsEnabled=\"false\", logLevel=\"INFO\" }", advancedLdapPluginConfigurationParam.toString());
+        assertEquals("{ id=\"0\", connectTimeoutMillis=\"10000\", responseTimeoutMillis=\"10000\", LDAPPageSize=\"99\", LDAPSyncPeriod=\"3600\", LDAPUrl=\"url\", LDAPBindDN=\"\", LDAPBindPassword=\"\", LDAPBaseDN=\"\", userFilterKey=\"\", displayNameAttributeKey=\"\", emailAttributeKey=\"\", UIDAttributeKey=\"\", userGroupNamesKey=\"\", groupFilterKey=\"\", GIDAttributeKey=\"\", groupDisplayNameKey=\"\", userNamesKey=\"\", nestedGroupsEnabled=\"false\", logLevel=\"INFO\", removingUsersFromGroupsEnabled=\"false\" }", advancedLdapPluginConfigurationParam.toString());
     }
 
     @Test
@@ -206,7 +205,7 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
         assertEquals(4, argumentCaptorMap.getValue().size());
         assertEquals("[request, advancedLdapPluginConfiguration, webResourceManager, STATICDIR]", argumentCaptorMap.getValue().keySet().toString());
         AdvancedLdapPluginConfiguration advancedLdapPluginConfigurationParam = (AdvancedLdapPluginConfiguration) argumentCaptorMap.getValue().get("advancedLdapPluginConfiguration");
-        assertEquals("{ id=\"0\", connectTimeoutMillis=\"10000\", responseTimeoutMillis=\"10000\", LDAPPageSize=\"99\", LDAPSyncPeriod=\"3600\", LDAPUrl=\"url\", LDAPBindDN=\"\", LDAPBindPassword=\"\", LDAPBaseDN=\"\", userFilterKey=\"\", displayNameAttributeKey=\"\", emailAttributeKey=\"\", UIDAttributeKey=\"\", userGroupNamesKey=\"\", groupFilterKey=\"\", GIDAttributeKey=\"\", groupDisplayNameKey=\"\", userNamesKey=\"\", nestedGroupsEnabled=\"false\", logLevel=\"INFO\" }", advancedLdapPluginConfigurationParam.toString());
+        assertEquals("{ id=\"0\", connectTimeoutMillis=\"10000\", responseTimeoutMillis=\"10000\", LDAPPageSize=\"99\", LDAPSyncPeriod=\"3600\", LDAPUrl=\"url\", LDAPBindDN=\"\", LDAPBindPassword=\"\", LDAPBaseDN=\"\", userFilterKey=\"\", displayNameAttributeKey=\"\", emailAttributeKey=\"\", UIDAttributeKey=\"\", userGroupNamesKey=\"\", groupFilterKey=\"\", GIDAttributeKey=\"\", groupDisplayNameKey=\"\", userNamesKey=\"\", nestedGroupsEnabled=\"false\", logLevel=\"INFO\", removingUsersFromGroupsEnabled=\"false\" }", advancedLdapPluginConfigurationParam.toString());
     }
 
     @Test
@@ -242,7 +241,7 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
         assertEquals(4, argumentCaptorMap.getValue().size());
         assertEquals("[request, advancedLdapPluginConfiguration, webResourceManager, STATICDIR]", argumentCaptorMap.getValue().keySet().toString());
         AdvancedLdapPluginConfiguration advancedLdapPluginConfigurationParam = (AdvancedLdapPluginConfiguration) argumentCaptorMap.getValue().get("advancedLdapPluginConfiguration");
-        assertEquals("{ id=\"0\", connectTimeoutMillis=\"10000\", responseTimeoutMillis=\"10000\", LDAPPageSize=\"99\", LDAPSyncPeriod=\"3600\", LDAPUrl=\"url\", LDAPBindDN=\"\", LDAPBindPassword=\"\", LDAPBaseDN=\"\", userFilterKey=\"\", displayNameAttributeKey=\"\", emailAttributeKey=\"\", UIDAttributeKey=\"\", userGroupNamesKey=\"\", groupFilterKey=\"\", GIDAttributeKey=\"\", groupDisplayNameKey=\"\", userNamesKey=\"\", nestedGroupsEnabled=\"false\", logLevel=\"INFO\" }", advancedLdapPluginConfigurationParam.toString());
+        assertEquals("{ id=\"0\", connectTimeoutMillis=\"10000\", responseTimeoutMillis=\"10000\", LDAPPageSize=\"99\", LDAPSyncPeriod=\"3600\", LDAPUrl=\"url\", LDAPBindDN=\"\", LDAPBindPassword=\"\", LDAPBaseDN=\"\", userFilterKey=\"\", displayNameAttributeKey=\"\", emailAttributeKey=\"\", UIDAttributeKey=\"\", userGroupNamesKey=\"\", groupFilterKey=\"\", GIDAttributeKey=\"\", groupDisplayNameKey=\"\", userNamesKey=\"\", nestedGroupsEnabled=\"false\", logLevel=\"INFO\", removingUsersFromGroupsEnabled=\"false\" }", advancedLdapPluginConfigurationParam.toString());
     }
 
     @Test
@@ -263,7 +262,7 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
         assertEquals(4, argumentCaptorMap.getValue().size());
         assertEquals("[request, advancedLdapPluginConfiguration, webResourceManager, STATICDIR]", argumentCaptorMap.getValue().keySet().toString());
         AdvancedLdapPluginConfiguration advancedLdapPluginConfigurationParam = (AdvancedLdapPluginConfiguration) argumentCaptorMap.getValue().get("advancedLdapPluginConfiguration");
-        assertEquals("{ id=\"0\", connectTimeoutMillis=\"10000\", responseTimeoutMillis=\"10000\", LDAPPageSize=\"99\", LDAPSyncPeriod=\"3600\", LDAPUrl=\"url\", LDAPBindDN=\"\", LDAPBindPassword=\"\", LDAPBaseDN=\"\", userFilterKey=\"\", displayNameAttributeKey=\"\", emailAttributeKey=\"\", UIDAttributeKey=\"\", userGroupNamesKey=\"\", groupFilterKey=\"\", GIDAttributeKey=\"\", groupDisplayNameKey=\"\", userNamesKey=\"\", nestedGroupsEnabled=\"false\", logLevel=\"INFO\" }", advancedLdapPluginConfigurationParam.toString());
+        assertEquals("{ id=\"0\", connectTimeoutMillis=\"10000\", responseTimeoutMillis=\"10000\", LDAPPageSize=\"99\", LDAPSyncPeriod=\"3600\", LDAPUrl=\"url\", LDAPBindDN=\"\", LDAPBindPassword=\"\", LDAPBaseDN=\"\", userFilterKey=\"\", displayNameAttributeKey=\"\", emailAttributeKey=\"\", UIDAttributeKey=\"\", userGroupNamesKey=\"\", groupFilterKey=\"\", GIDAttributeKey=\"\", groupDisplayNameKey=\"\", userNamesKey=\"\", nestedGroupsEnabled=\"false\", logLevel=\"INFO\", removingUsersFromGroupsEnabled=\"false\" }", advancedLdapPluginConfigurationParam.toString());
     }
 
     @Test
@@ -284,6 +283,6 @@ public class AdvancedLdapConfigurationAdminServletTest extends TestCase {
         assertEquals(4, argumentCaptorMap.getValue().size());
         assertEquals("[request, advancedLdapPluginConfiguration, webResourceManager, STATICDIR]", argumentCaptorMap.getValue().keySet().toString());
         AdvancedLdapPluginConfiguration advancedLdapPluginConfigurationParam = (AdvancedLdapPluginConfiguration) argumentCaptorMap.getValue().get("advancedLdapPluginConfiguration");
-        assertEquals("{ id=\"0\", connectTimeoutMillis=\"10000\", responseTimeoutMillis=\"10000\", LDAPPageSize=\"99\", LDAPSyncPeriod=\"3600\", LDAPUrl=\"url\", LDAPBindDN=\"\", LDAPBindPassword=\"\", LDAPBaseDN=\"\", userFilterKey=\"\", displayNameAttributeKey=\"\", emailAttributeKey=\"\", UIDAttributeKey=\"\", userGroupNamesKey=\"\", groupFilterKey=\"\", GIDAttributeKey=\"\", groupDisplayNameKey=\"\", userNamesKey=\"\", nestedGroupsEnabled=\"false\", logLevel=\"INFO\" }", advancedLdapPluginConfigurationParam.toString());
+        assertEquals("{ id=\"0\", connectTimeoutMillis=\"10000\", responseTimeoutMillis=\"10000\", LDAPPageSize=\"99\", LDAPSyncPeriod=\"3600\", LDAPUrl=\"url\", LDAPBindDN=\"\", LDAPBindPassword=\"\", LDAPBaseDN=\"\", userFilterKey=\"\", displayNameAttributeKey=\"\", emailAttributeKey=\"\", UIDAttributeKey=\"\", userGroupNamesKey=\"\", groupFilterKey=\"\", GIDAttributeKey=\"\", groupDisplayNameKey=\"\", userNamesKey=\"\", nestedGroupsEnabled=\"false\", logLevel=\"INFO\", removingUsersFromGroupsEnabled=\"false\" }", advancedLdapPluginConfigurationParam.toString());
     }
 }

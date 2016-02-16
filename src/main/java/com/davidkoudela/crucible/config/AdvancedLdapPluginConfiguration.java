@@ -35,6 +35,7 @@ public class AdvancedLdapPluginConfiguration {
     private String recordRevision = RECORD_REVISION;
     private Boolean nestedGroupsEnabled = false;
     private String logLevel = Level.INFO.toString();
+    private Boolean removingUsersFromGroupsEnabled = false;
 
     public int getId() {
         return id;
@@ -140,6 +141,11 @@ public class AdvancedLdapPluginConfiguration {
         return logLevels;
     }
 
+    public Boolean isRemovingUsersFromGroupsEnabled() {
+        return removingUsersFromGroupsEnabled;
+    }
+
+
     public void setId(int id) {
         this.id = id;
     }
@@ -230,6 +236,13 @@ public class AdvancedLdapPluginConfiguration {
             this.logLevel = logLevel;
     }
 
+    public void setRemovingUsersFromGroupsEnabled(Boolean removingUsersFromGroupsEnabled) {
+        if (null == removingUsersFromGroupsEnabled)
+            this.removingUsersFromGroupsEnabled = false;
+        else
+            this.removingUsersFromGroupsEnabled = removingUsersFromGroupsEnabled;
+    }
+
     public String toString() {
         return "{ id=\"" + id + "\", connectTimeoutMillis=\"" + connectTimeoutMillis + "\", responseTimeoutMillis=\"" + responseTimeoutMillis +
                 "\", LDAPPageSize=\"" + LDAPPageSize + "\", LDAPSyncPeriod=\"" + LDAPSyncPeriod + "\", LDAPUrl=\"" + LDAPUrl +
@@ -239,6 +252,6 @@ public class AdvancedLdapPluginConfiguration {
                 "\", userGroupNamesKey=\"" + userGroupNamesKey + "\", groupFilterKey=\"" + groupFilterKey +
                 "\", GIDAttributeKey=\"" + GIDAttributeKey + "\", groupDisplayNameKey=\"" + groupDisplayNameKey +
                 "\", userNamesKey=\"" + userNamesKey + "\", nestedGroupsEnabled=\"" + nestedGroupsEnabled +
-                "\", logLevel=\"" + logLevel + "\" }";
+                "\", logLevel=\"" + logLevel + "\", removingUsersFromGroupsEnabled=\"" + removingUsersFromGroupsEnabled + "\" }";
     }
 }
