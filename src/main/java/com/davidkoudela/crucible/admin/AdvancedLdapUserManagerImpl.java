@@ -14,15 +14,16 @@ import com.cenqua.fisheye.config1.ConfigDocument;
 import com.cenqua.fisheye.rep.RepositoryHandle;
 import com.cenqua.fisheye.user.*;
 import com.davidkoudela.crucible.config.AdvancedLdapPluginConfiguration;
-import com.davidkoudela.crucible.logs.AdvancedLdapLogService;
-import com.davidkoudela.crucible.persistence.HibernateAdvancedLdapPluginConfigurationDAO;
-import com.davidkoudela.crucible.persistence.HibernateAdvancedLdapUserDAO;
 import com.davidkoudela.crucible.ldap.connect.AdvancedLdapConnector;
 import com.davidkoudela.crucible.ldap.connect.AdvancedLdapSearchFilterFactory;
 import com.davidkoudela.crucible.ldap.model.*;
+import com.davidkoudela.crucible.logs.AdvancedLdapLogService;
+import com.davidkoudela.crucible.persistence.HibernateAdvancedLdapPluginConfigurationDAO;
+import com.davidkoudela.crucible.persistence.HibernateAdvancedLdapUserDAO;
 import com.davidkoudela.crucible.statistics.AdvancedLdapGroupUserSyncCount;
-import com.unboundid.ldap.sdk.*;
-import org.apache.log4j.Level;
+import com.unboundid.ldap.sdk.Filter;
+import com.unboundid.ldap.sdk.SearchRequest;
+import com.unboundid.ldap.sdk.SearchScope;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -162,6 +163,18 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
                     log.debug("AdvancedLdapUserManagerImpl: person: " + UID + " failed: " + e);
                 } catch(Throwable e) {
                     log.debug("AdvancedLdapUserManagerImpl: person: " + UID + " failed unexpected: " + e);
+                }
+            }
+
+            if (true == advancedLdapPluginConfiguration.isRemovingUsersFromGroupsEnabled()) {
+                for (String userInGroup : this.userManager.getUsersInGroup(GID)) {
+                    try {
+                        if (false == advancedLdapGroup.isUIDInPersonList(userInGroup)) {
+                            this.userManager.removeUserFromBuiltInGroup(GID, userInGroup);
+                        }
+                    } catch (Exception e) {
+                        log.debug("AdvancedLdapUserManagerImpl: removing person: " + userInGroup + " failed: " + e);
+                    }
                 }
             }
         }

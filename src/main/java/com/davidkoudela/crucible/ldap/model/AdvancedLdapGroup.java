@@ -62,4 +62,13 @@ public class AdvancedLdapGroup {
     public void setPersonList(List<AdvancedLdapPerson> personList) {
         this.personList = personList;
     }
+
+    public Boolean isUIDInPersonList(String UID) {
+        for (AdvancedLdapPerson advancedLdapPerson : this.personList) {
+            if (0 == advancedLdapPerson.getUid().compareToIgnoreCase(UID)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
