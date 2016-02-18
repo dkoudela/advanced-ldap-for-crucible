@@ -38,6 +38,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspContext;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -314,6 +315,35 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
                 ArgumentCaptor.forClass(String.class).capture(), ArgumentCaptor.forClass(String.class).capture());
         Mockito.verify(this.userManager, Mockito.times(1)).isUserInGroup("group", "dkoudela");
         Mockito.verify(this.userManager, Mockito.times(1)).addUserToBuiltInGroup("group", "dkoudela");
+    }
+
+    @Test
+    public void testLoadGroupsOneGroupWithOnePersonOneDelete() {
+        Mockito.when(hibernateAdvancedLdapPluginConfigurationDAO.get()).thenReturn(new AdvancedLdapPluginConfiguration());
+        AdvancedLdapUserManagerImplDummy advancedLdapUserManager = new AdvancedLdapUserManagerImplDummy(this.userManager, this.hibernateAdvancedLdapPluginConfigurationDAO, this.hibernateAdvancedLdapUserDAO, this.advancedLdapLogService);
+        advancedLdapUserManager.setAdvancedLdapConnector(this.advancedLdapConnector);
+        AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = new AdvancedLdapPluginConfiguration();
+        advancedLdapPluginConfiguration.setLDAPUrl("url");
+        advancedLdapPluginConfiguration.setLDAPBaseDN("ou=example, dc=com");
+        advancedLdapPluginConfiguration.setGroupFilterKey("(&(objectCategory=cn=Group*)(sAMAccountName=${USERNAME}))");
+        advancedLdapPluginConfiguration.setRemovingUsersFromGroupsEnabled(true);
+        advancedLdapUserManager.setAdvancedLdapGroupBuilder(this.advancedLdapNestedGroupBuilder);
+        String [] usersInGroup = new String[] {"dkoudela", "okoudela"};
+        Mockito.when(hibernateAdvancedLdapPluginConfigurationDAO.get()).thenReturn(advancedLdapPluginConfiguration);
+        Mockito.when(this.advancedLdapNestedGroupBuilder.getGroups()).thenReturn(this.advancedLdapGroups2);
+        Mockito.doNothing().when(this.advancedLdapConnector).ldapPagedSearch(this.argumentCaptorSearchRequest.capture(), this.argumentCaptorAdvancedLdapGroupBuilder.capture());
+        Mockito.when(this.userManager.getUsersInGroup(ArgumentCaptor.forClass(String.class).capture())).thenReturn(Arrays.asList(usersInGroup));
+        AdvancedLdapGroupUserSyncCount advancedLdapGroupUserSyncCount = new AdvancedLdapGroupUserSyncCount();
+
+        advancedLdapUserManager.loadGroups(advancedLdapGroupUserSyncCount);
+
+        Mockito.verify(this.userManager, Mockito.times(1)).builtInGroupExists("group");
+        Mockito.verify(this.userManager, Mockito.times(1)).addBuiltInGroup("group");
+        Mockito.verify(this.hibernateAdvancedLdapUserDAO, Mockito.times(1)).create(ArgumentCaptor.forClass(String.class).capture(),
+                ArgumentCaptor.forClass(String.class).capture(), ArgumentCaptor.forClass(String.class).capture());
+        Mockito.verify(this.userManager, Mockito.times(1)).isUserInGroup("group", "dkoudela");
+        Mockito.verify(this.userManager, Mockito.times(1)).addUserToBuiltInGroup("group", "dkoudela");
+        Mockito.verify(this.userManager, Mockito.times(1)).removeUserFromBuiltInGroup("group", "okoudela");
     }
 
 
