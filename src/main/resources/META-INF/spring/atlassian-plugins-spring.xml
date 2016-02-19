@@ -42,7 +42,8 @@
 
     <bean id="advancedLdapTrigger" name="AdvancedLdapTrigger" class="com.davidkoudela.crucible.timer.AdvancedLdapTimerTrigger" />
 
-    <bean id="advancedLdapUserManager" name="AdvancedLdapUserManagerImpl" class="com.davidkoudela.crucible.admin.AdvancedLdapUserManagerImpl">
+    <bean id="advancedLdapUserManager" name="AdvancedLdapUserManager" class="com.davidkoudela.crucible.admin.AdvancedLdapUserManagerImpl">
+        <plugin:interface>com.davidkoudela.crucible.admin.AdvancedLdapUserManager</plugin:interface>
         <constructor-arg>
             <ref bean="userManager"/>
         </constructor-arg>
@@ -68,6 +69,13 @@
         <constructor-arg>
             <ref bean="advancedLdapUserManager" />
         </constructor-arg>
+    </bean>
+
+    <bean name="advancedLdapLifecycleService" class="com.davidkoudela.crucible.lifecycle.AdvancedLdapLifecycleService">
+        <property name="userManager" ref="userManager"/>
+        <property name="advancedLdapUserManager" ref="AdvancedLdapUserManager"/>
+        <property name="advancedLdapSynchronizationManager" ref="AdvancedLdapSynchronizationManager"/>
+        <property name="hibernateAdvancedLdapService" ref="HibernateAdvancedLdapService"/>
     </bean>
 
 </beans>
