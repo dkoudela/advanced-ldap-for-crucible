@@ -12,6 +12,11 @@
         <id name="id" column="AD_LDAP_ID">
             <generator class="native" />
         </id>
+        <!--
+         TODO: !!! Please do not specify column names longer that 30 characters !!!
+         TODO: Otherwise Oracle database will fail with an error:
+         TODO: ORA-00972: identifier is too long
+        -->
         <property name="recordRevision" column="RECORD_REVISION" type="string" not-null="true"/>
         <property name="connectTimeoutMillis" column="CONNECT_TIMEOUT_MILLIS" type="integer" not-null="true"/>
         <property name="responseTimeoutMillis" column="RESPONSE_TIMEOUT_MILLIS" type="integer" not-null="true"/>
@@ -32,6 +37,6 @@
         <property name="userNamesKey" column="USER_NAMES_KEY" type="text" not-null="true"/>
         <property name="nestedGroupsEnabled" column="NESTED_GROUPS_ENABLED" type="boolean" not-null="false"/>
         <property name="logLevel" column="LOG_LEVEL" type="string" not-null="false"/>
-        <property name="removingUsersFromGroupsEnabled" column="REMOVING_USERS_FROM_GROUPS_ENABLED" type="boolean" not-null="false"/>
+        <property name="removingUsersFromGroupsEnabled" column="REMOVING_USERS_FROM_GROUPS" type="boolean" not-null="false"/>
     </class>
 </hibernate-mapping>
