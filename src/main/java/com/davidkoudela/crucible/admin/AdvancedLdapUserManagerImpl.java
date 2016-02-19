@@ -152,11 +152,12 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
                 try {
                     if (!this.userManager.userExists(UID)) {
                         log.debug("AdvancedLdapUserManagerImpl: UID does not exist in Crucible: " + UID);
-                        advancedLdapGroupUserSyncCount.incrementUserCountNew();
                         this.hibernateAdvancedLdapUserDAO.create(UID, advancedLdapPerson.getDisplayName(), advancedLdapPerson.getEmail());
+                        advancedLdapGroupUserSyncCount.incrementUserCountNew();
                     }
                     if (!this.userManager.isUserInGroup(GID, advancedLdapPerson.getUid())) {
                         this.userManager.addUserToBuiltInGroup(GID, advancedLdapPerson.getUid());
+                        advancedLdapGroupUserSyncCount.incrementAddedUsersToGroupsCount();
                     }
                 } catch (Exception e) {
                     log.debug("AdvancedLdapUserManagerImpl: person: " + UID + " failed: " + e);
@@ -170,6 +171,7 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
                     try {
                         if (false == advancedLdapGroup.isUIDInPersonList(userInGroup)) {
                             this.userManager.removeUserFromBuiltInGroup(GID, userInGroup);
+                            advancedLdapGroupUserSyncCount.incrementRemovedUsersFromGroupsCount();
                         }
                     } catch (Exception e) {
                         log.debug("AdvancedLdapUserManagerImpl: removing person: " + userInGroup + " failed: " + e);
