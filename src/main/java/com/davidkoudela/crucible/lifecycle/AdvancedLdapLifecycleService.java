@@ -29,6 +29,7 @@ public class AdvancedLdapLifecycleService implements InitializingBean, Disposabl
                 null != this.advancedLdapUserManager &&
                 null != this.hibernateAdvancedLdapService &&
                 null != this.userManager) {
+            this.userManager = AppConfig.getsConfig().getUserManager();
             AppConfig.getsConfig().setUserManager(this.advancedLdapUserManager);
         }
 */
@@ -37,13 +38,8 @@ public class AdvancedLdapLifecycleService implements InitializingBean, Disposabl
     @Override
     public void destroy() throws Exception {
 /*
-        if (null != this.advancedLdapSynchronizationManager &&
-                null != this.advancedLdapUserManager &&
-                null != this.hibernateAdvancedLdapService &&
-                null != this.userManager) {
-            this.userManager = AppConfig.getsConfig().getUserManager();
-            AppConfig.getsConfig().setUserManager(this.userManager);
-        }
+        AppConfig.getsConfig().setUserManager(this.userManager);
+        AppConfig.getsConfig().setUserManager(null);
 */
         log.info("**************************** AdvancedLdap: plugin unloaded ****************************");
     }
