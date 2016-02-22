@@ -49,6 +49,10 @@ after_success:
     - mkdir /tmp/target
     - for I in `ls target/*.jar`; do md5sum $I > /tmp/$I.md5sum; done
     - ls target/*.jar /tmp/target/*.md5sum | xargs -ielem curl --ftp-create-dirs --ftp-ssl-control --insecure -T "elem" "$REPOSITORYURL/$REPO_SUBDIR/"
+# Upload of the code coverage files from the JaCoCo tool
+    - cd target/site
+    - find * -type f -exec curl --ftp-create-dirs --ftp-ssl-control --insecure -T {} "$REPOSITORYURL/$REPO_SUBDIR/{}" \;
+    - cd ../..
 
 branches:
     except:
