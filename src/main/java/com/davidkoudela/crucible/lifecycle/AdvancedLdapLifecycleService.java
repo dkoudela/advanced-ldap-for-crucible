@@ -28,6 +28,19 @@ public class AdvancedLdapLifecycleService implements InitializingBean, Disposabl
     @Override
     public void afterPropertiesSet() throws Exception {
         log.info("**************************** AdvancedLdap: plugin loaded ****************************");
+        /**
+         * Spring Beans in FECRU are managed by Spring AOP proxies.
+         * Spring AOP proxies are created dynamically when needed and have limited lifetime.
+         * E.g. userManagerAopProxyInPlugin is valid only during the time when the plugin is enabled.
+         * If accessed afterwards, it causes a failure:
+         *   org.springframework.osgi.service.importer.ServiceProxyDestroyedException: service proxy has been destroyed
+         * On the other hand, userManagerAopProxyRootConfig is valid for the whole application lifetime.
+         * Both proxies refer to the same instance of the UserManager class.
+         *
+         * The UserManager proxy in the RootConfig is used across the FECRU instance. Replacing the instance by
+         * the AdvancedLdapUserManager instance ensures tracking all requests for user operations via the plugin.
+         * The userManagerAopProxyRootConfig is kept for further replacement when the plugin is unloaded.
+         */
 /*
         if (null != this.advancedLdapSynchronizationManager &&
                 null != this.advancedLdapUserManager &&
