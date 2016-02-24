@@ -1,5 +1,6 @@
 package com.davidkoudela.crucible.lifecycle;
 
+import com.atlassian.fisheye.web.HeaderUtil;
 import com.cenqua.fisheye.AppConfig;
 import com.cenqua.fisheye.config.RootConfig;
 import com.cenqua.fisheye.user.UserManager;
@@ -9,6 +10,9 @@ import com.davidkoudela.crucible.tasks.AdvancedLdapSynchronizationManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
+import sun.misc.Unsafe;
+
+import java.lang.reflect.Field;
 
 /**
  * {@link AdvancedLdapLifecycleService} provides a service for managing plugin's Lifecycle events like startup or shutdown.
@@ -24,6 +28,21 @@ public class AdvancedLdapLifecycleService implements InitializingBean, Disposabl
     UserManager userManagerAopProxyInPlugin = null;
     UserManager userManagerAopProxyRootConfig = null;
     RootConfig rootConfig = null;
+
+    private static final Unsafe unsafe;
+    static
+    {
+        try
+        {
+            Field field = Unsafe.class.getDeclaredField("theUnsafe");
+            field.setAccessible(true);
+            unsafe = (Unsafe)field.get(null);
+        }
+        catch (Exception e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -48,6 +67,7 @@ public class AdvancedLdapLifecycleService implements InitializingBean, Disposabl
                 null != this.userManagerAopProxyInPlugin) {
             this.userManagerAopProxyRootConfig = getRootConfig().getUserManager();
             getRootConfig().setUserManager(this.advancedLdapUserManager);
+            replaceUserManagerInHeaderUtil(this.advancedLdapUserManager);
         }
 */
     }
@@ -57,6 +77,7 @@ public class AdvancedLdapLifecycleService implements InitializingBean, Disposabl
 /*
         getRootConfig().setUserManager(this.userManagerAopProxyRootConfig);
         this.advancedLdapUserManager.restoreUserManager(this.userManagerAopProxyRootConfig);
+        replaceUserManagerInHeaderUtil(this.userManagerAopProxyRootConfig);
 */
         log.info("**************************** AdvancedLdap: plugin unloaded ****************************");
     }
@@ -76,6 +97,23 @@ public class AdvancedLdapLifecycleService implements InitializingBean, Disposabl
 
     public void setUserManager(UserManager userManager) {
         this.userManagerAopProxyInPlugin = userManager;
+    }
+
+    protected void replaceUserManagerInHeaderUtil(UserManager userManager) throws NoSuchFieldException {
+        /**
+         * Whole FECRU uses AppConfig.getsConfig().getUserManager() for accessing the UserManager
+         * except HeaderUtil. HeaderUtil keeps the UserManager in a static final variable.
+         * HeaderUtil is used in the web parts of the FECRU.
+         * To be able to track also the web part, the UserManager must be replaced.
+         *
+         * This is dirty code fixing the issue with the static final variable, otherwise it would be
+         * necessary to restart the FECRU application after the plugin installation. That would not
+         * be very convenient way of the plugin deployment.
+         */
+        final Field fieldToUpdate = HeaderUtil.class.getDeclaredField("userManager");
+        final Object base = unsafe.staticFieldBase(fieldToUpdate);
+        final long offset = unsafe.staticFieldOffset(fieldToUpdate);
+        unsafe.putObject(base, offset, userManager);
     }
 
     protected void setRootConfig(RootConfig rootConfig) {
