@@ -14,6 +14,7 @@ import com.davidkoudela.crucible.statistics.AdvancedLdapGroupUserSyncCount;
  * @since 2015-03-13
  */
 public interface AdvancedLdapUserManager extends UserManager {
+    void restoreUserManager(UserManager userManager);
     void loadUser(UserData userData);
     void loadGroups(AdvancedLdapGroupUserSyncCount advancedLdapGroupUserSyncCount);
     boolean verifyUserCredentials(String username, String password);

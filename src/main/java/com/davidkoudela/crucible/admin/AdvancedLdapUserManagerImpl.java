@@ -64,6 +64,10 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
         log.info("**************************** AdvancedLdapUserManagerImpl START ****************************");
     }
 
+    public void restoreUserManager(UserManager userManager) {
+        this.userManager = userManager;
+    }
+
     @Override
     public void loadUser(UserData userData) {
         this.advancedLdapPluginConfiguration = hibernateAdvancedLdapPluginConfigurationDAO.get();

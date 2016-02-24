@@ -1,5 +1,7 @@
 package com.davidkoudela.crucible.lifecycle;
 
+import com.cenqua.fisheye.AppConfig;
+import com.cenqua.fisheye.config.RootConfig;
 import com.cenqua.fisheye.user.UserManager;
 import com.davidkoudela.crucible.admin.AdvancedLdapUserManager;
 import com.davidkoudela.crucible.persistence.HibernateAdvancedLdapService;
@@ -19,7 +21,9 @@ public class AdvancedLdapLifecycleService implements InitializingBean, Disposabl
     AdvancedLdapUserManager advancedLdapUserManager = null;
     AdvancedLdapSynchronizationManager advancedLdapSynchronizationManager = null;
     HibernateAdvancedLdapService hibernateAdvancedLdapService = null;
-    UserManager userManager = null;
+    UserManager userManagerAopProxyInPlugin = null;
+    UserManager userManagerAopProxyRootConfig = null;
+    RootConfig rootConfig = null;
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -28,9 +32,9 @@ public class AdvancedLdapLifecycleService implements InitializingBean, Disposabl
         if (null != this.advancedLdapSynchronizationManager &&
                 null != this.advancedLdapUserManager &&
                 null != this.hibernateAdvancedLdapService &&
-                null != this.userManager) {
-            this.userManager = AppConfig.getsConfig().getUserManager();
-            AppConfig.getsConfig().setUserManager(this.advancedLdapUserManager);
+                null != this.userManagerAopProxyInPlugin) {
+            this.userManagerAopProxyRootConfig = getRootConfig().getUserManager();
+            getRootConfig().setUserManager(this.advancedLdapUserManager);
         }
 */
     }
@@ -38,8 +42,8 @@ public class AdvancedLdapLifecycleService implements InitializingBean, Disposabl
     @Override
     public void destroy() throws Exception {
 /*
-        AppConfig.getsConfig().setUserManager(this.userManager);
-        AppConfig.getsConfig().setUserManager(null);
+        getRootConfig().setUserManager(this.userManagerAopProxyRootConfig);
+        this.advancedLdapUserManager.restoreUserManager(this.userManagerAopProxyRootConfig);
 */
         log.info("**************************** AdvancedLdap: plugin unloaded ****************************");
     }
@@ -58,6 +62,16 @@ public class AdvancedLdapLifecycleService implements InitializingBean, Disposabl
     }
 
     public void setUserManager(UserManager userManager) {
-        this.userManager = userManager;
+        this.userManagerAopProxyInPlugin = userManager;
+    }
+
+    protected void setRootConfig(RootConfig rootConfig) {
+        this.rootConfig = rootConfig;
+    }
+
+    protected RootConfig getRootConfig() {
+        if (null == this.rootConfig)
+            return AppConfig.getsConfig();
+        return this.rootConfig;
     }
 }
