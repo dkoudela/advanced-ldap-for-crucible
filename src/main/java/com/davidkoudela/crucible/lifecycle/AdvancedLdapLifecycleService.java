@@ -28,6 +28,7 @@ public class AdvancedLdapLifecycleService implements InitializingBean, Disposabl
     UserManager userManagerAopProxyInPlugin = null;
     UserManager userManagerAopProxyRootConfig = null;
     RootConfig rootConfig = null;
+    Boolean enabledUserManagerInjection = false;
 
     private static final Unsafe unsafe;
     static
@@ -60,25 +61,28 @@ public class AdvancedLdapLifecycleService implements InitializingBean, Disposabl
          * the AdvancedLdapUserManager instance ensures tracking all requests for user operations via the plugin.
          * The userManagerAopProxyRootConfig is kept for further replacement when the plugin is unloaded.
          */
-/*
         if (null != this.advancedLdapSynchronizationManager &&
                 null != this.advancedLdapUserManager &&
                 null != this.hibernateAdvancedLdapService &&
-                null != this.userManagerAopProxyInPlugin) {
+                null != this.userManagerAopProxyInPlugin &&
+                enabledUserManagerInjection) {
             this.userManagerAopProxyRootConfig = getRootConfig().getUserManager();
             getRootConfig().setUserManager(this.advancedLdapUserManager);
             replaceUserManagerInHeaderUtil(this.advancedLdapUserManager);
         }
-*/
     }
 
     @Override
     public void destroy() throws Exception {
-/*
-        getRootConfig().setUserManager(this.userManagerAopProxyRootConfig);
-        this.advancedLdapUserManager.restoreUserManager(this.userManagerAopProxyRootConfig);
-        replaceUserManagerInHeaderUtil(this.userManagerAopProxyRootConfig);
-*/
+        if (null != this.advancedLdapSynchronizationManager &&
+                null != this.advancedLdapUserManager &&
+                null != this.hibernateAdvancedLdapService &&
+                null != this.userManagerAopProxyInPlugin &&
+                enabledUserManagerInjection) {
+            getRootConfig().setUserManager(this.userManagerAopProxyRootConfig);
+            this.advancedLdapUserManager.restoreUserManager(this.userManagerAopProxyRootConfig);
+            replaceUserManagerInHeaderUtil(this.userManagerAopProxyRootConfig);
+        }
         log.info("**************************** AdvancedLdap: plugin unloaded ****************************");
     }
 
@@ -124,5 +128,9 @@ public class AdvancedLdapLifecycleService implements InitializingBean, Disposabl
         if (null == this.rootConfig)
             return AppConfig.getsConfig();
         return this.rootConfig;
+    }
+
+    protected void setEnabledUserManagerInjection(Boolean enabledUserManagerInjection) {
+        this.enabledUserManagerInjection = enabledUserManagerInjection;
     }
 }
