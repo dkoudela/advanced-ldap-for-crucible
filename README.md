@@ -9,6 +9,7 @@ This is the Advanced Ldap plugin for Atlassian FishEye/Crucible.
 * All LDAP requests are paged LDAP requests based on Simple Paged Results (RFC 2696 - IETF).
 * Can synchronize Nested LDAP groups
 * Supports LDAP over SSL
+* Log level controlled by UI
 
 For more information see [Documentation](https://github.com/dkoudela/advanced-ldap-for-crucible/wiki)
 
