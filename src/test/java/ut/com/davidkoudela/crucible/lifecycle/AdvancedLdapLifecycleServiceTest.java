@@ -52,7 +52,10 @@ public class AdvancedLdapLifecycleServiceTest extends TestCase {
 
         advancedLdapLifecycleService.afterPropertiesSet();
         assertEquals(this.advancedLdapUserManager, this.rootConfig.getUserManager());
+        Mockito.verify(advancedLdapSynchronizationManager, Mockito.times(1)).updateTimer();
+
         advancedLdapLifecycleService.destroy();
         assertEquals(this.userManager, this.rootConfig.getUserManager());
+        Mockito.verify(advancedLdapSynchronizationManager, Mockito.times(1)).cancelTimer();
     }
 }

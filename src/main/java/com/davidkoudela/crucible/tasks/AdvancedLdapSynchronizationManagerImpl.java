@@ -24,16 +24,12 @@ public class AdvancedLdapSynchronizationManagerImpl implements AdvancedLdapSynch
         this.hibernateAdvancedLdapPluginConfigurationDAO = hibernateAdvancedLdapPluginConfigurationDAO;
         this.advancedLdapTimerTrigger = advancedLdapTimerTrigger;
         this.advancedLdapUserManager = advancedLdapUserManager;
-        updateTimer();
     }
 
     @Override
-    public void updateTimer() {
+    public synchronized void updateTimer() {
         AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = this.hibernateAdvancedLdapPluginConfigurationDAO.get();
-        if (-1 != this.timerIndex) {
-            this.advancedLdapTimerTrigger.deleteTimer(this.timerIndex);
-            this.timerIndex = -1;
-        }
+        cancelTimer();
         if (!advancedLdapPluginConfiguration.getLDAPUrl().isEmpty()) {
             AdvancedLdapSynchronizationTask advancedLdapSynchronizationTask = new AdvancedLdapSynchronizationTask(this.advancedLdapUserManager);
             this.timerIndex = this.advancedLdapTimerTrigger.createTimer(advancedLdapSynchronizationTask, advancedLdapPluginConfiguration.getLDAPSyncPeriod());
@@ -41,11 +37,19 @@ public class AdvancedLdapSynchronizationManagerImpl implements AdvancedLdapSynch
     }
 
     @Override
-    public void runNow() throws Exception {
+    public synchronized void runNow() throws Exception {
         AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = this.hibernateAdvancedLdapPluginConfigurationDAO.get();
         if (!advancedLdapPluginConfiguration.getLDAPUrl().isEmpty()) {
             AdvancedLdapSynchronizationTask advancedLdapSynchronizationTask = new AdvancedLdapSynchronizationTask(this.advancedLdapUserManager);
             this.advancedLdapTimerTrigger.runNow(advancedLdapSynchronizationTask);
+        }
+    }
+
+    @Override
+    public synchronized void cancelTimer() {
+        if (-1 != this.timerIndex) {
+            this.advancedLdapTimerTrigger.deleteTimer(this.timerIndex);
+            this.timerIndex = -1;
         }
     }
 }

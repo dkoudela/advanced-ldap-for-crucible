@@ -64,11 +64,13 @@ public class AdvancedLdapLifecycleService implements InitializingBean, Disposabl
         if (null != this.advancedLdapSynchronizationManager &&
                 null != this.advancedLdapUserManager &&
                 null != this.hibernateAdvancedLdapService &&
-                null != this.userManagerAopProxyInPlugin &&
-                enabledUserManagerInjection) {
-            this.userManagerAopProxyRootConfig = getRootConfig().getUserManager();
-            getRootConfig().setUserManager(this.advancedLdapUserManager);
-            replaceUserManagerInHeaderUtil(this.advancedLdapUserManager);
+                null != this.userManagerAopProxyInPlugin) {
+            if (enabledUserManagerInjection) {
+                this.userManagerAopProxyRootConfig = getRootConfig().getUserManager();
+                getRootConfig().setUserManager(this.advancedLdapUserManager);
+                replaceUserManagerInHeaderUtil(this.advancedLdapUserManager);
+            }
+            this.advancedLdapSynchronizationManager.updateTimer();
         }
     }
 
@@ -77,11 +79,13 @@ public class AdvancedLdapLifecycleService implements InitializingBean, Disposabl
         if (null != this.advancedLdapSynchronizationManager &&
                 null != this.advancedLdapUserManager &&
                 null != this.hibernateAdvancedLdapService &&
-                null != this.userManagerAopProxyInPlugin &&
-                enabledUserManagerInjection) {
-            getRootConfig().setUserManager(this.userManagerAopProxyRootConfig);
-            this.advancedLdapUserManager.restoreUserManager(this.userManagerAopProxyRootConfig);
-            replaceUserManagerInHeaderUtil(this.userManagerAopProxyRootConfig);
+                null != this.userManagerAopProxyInPlugin) {
+            this.advancedLdapSynchronizationManager.cancelTimer();
+            if (enabledUserManagerInjection) {
+                getRootConfig().setUserManager(this.userManagerAopProxyRootConfig);
+                this.advancedLdapUserManager.restoreUserManager(this.userManagerAopProxyRootConfig);
+                replaceUserManagerInHeaderUtil(this.userManagerAopProxyRootConfig);
+            }
         }
         log.info("**************************** AdvancedLdap: plugin unloaded ****************************");
     }

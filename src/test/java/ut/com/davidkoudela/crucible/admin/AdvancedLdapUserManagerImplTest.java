@@ -424,6 +424,13 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
         assertEquals(true, advancedLdapUserManager.verifyUserCredentials("dkoudela", "pwd"));
     }
 
+    @Test
+    public void testRestoreUserManagerForCoverage() {
+        Mockito.when(hibernateAdvancedLdapPluginConfigurationDAO.get()).thenReturn(new AdvancedLdapPluginConfiguration());
+        AdvancedLdapUserManagerImplDummy advancedLdapUserManager = new AdvancedLdapUserManagerImplDummy(this.userManager, this.hibernateAdvancedLdapPluginConfigurationDAO, this.hibernateAdvancedLdapUserDAO, this.advancedLdapLogService);
+        advancedLdapUserManager.restoreUserManager(null);
+    }
+
 
     @Test
     public void testSetGetForCoverage() throws Exception {

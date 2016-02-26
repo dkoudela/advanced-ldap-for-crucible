@@ -98,6 +98,8 @@ public class AdvancedLdapGroupBuilderTest extends TestCase {
         assertEquals(1, advancedLdapGroup.size());
         assertEquals("group", advancedLdapGroup.get(0).getGID());
         assertEquals("Default Group", advancedLdapGroup.get(0).getDisplayName());
+
+        assertEquals(0, this.advancedLdapGroupBuilderDummy.getNonpersonDns().size());
     }
 
     @Test
@@ -118,6 +120,8 @@ public class AdvancedLdapGroupBuilderTest extends TestCase {
 
         advancedLdapGroup.get(0).setUserNames(new ArrayList<String>()); // for better test coverage
         advancedLdapGroup.get(0).getUserNames(); // for better test coverage
+
+        assertEquals(0, this.advancedLdapGroupBuilderDummy.getNonpersonDns().size());
     }
 
     @Test
@@ -138,6 +142,8 @@ public class AdvancedLdapGroupBuilderTest extends TestCase {
 
         assertEquals("product", advancedLdapGroups.get(1).getGID());
         assertEquals("Product Group", advancedLdapGroups.get(1).getDisplayName());
+
+        assertEquals(0, this.advancedLdapGroupBuilderDummy.getNonpersonDns().size());
     }
 
     @Test
@@ -169,6 +175,8 @@ public class AdvancedLdapGroupBuilderTest extends TestCase {
         assertEquals("dkoudela", advancedLdapGroups.get(0).getPersonList().get(1).getUid());
         assertEquals("dkoudela@example.com", advancedLdapGroups.get(0).getPersonList().get(1).getEmail());
         assertEquals("David Koudela", advancedLdapGroups.get(0).getPersonList().get(1).getDisplayName());
+
+        assertEquals(0, this.advancedLdapGroupBuilderDummy.getNonpersonDns().size());
     }
 
     @Test
@@ -198,5 +206,6 @@ public class AdvancedLdapGroupBuilderTest extends TestCase {
         assertEquals("Default Group", advancedLdapGroups.get(0).getDisplayName());
 
         assertEquals(0, advancedLdapGroups.get(0).getPersonList().size());
+        assertEquals(0, this.advancedLdapGroupBuilderDummy.getNonpersonDns().size());
     }
 }

@@ -36,9 +36,37 @@ public class AdvancedLdapSynchronizationManagerImplTest extends TestCase {
 
         AdvancedLdapSynchronizationManager advancedLdapSynchronizationManager =
                 new AdvancedLdapSynchronizationManagerImpl(hibernateAdvancedLdapPluginConfigurationDAO, advancedLdapTimerTrigger, advancedLdapUserManager);
-        Mockito.verify(advancedLdapTimerTrigger).createTimer(argumentCaptorTimerTask.capture(), argumentCaptorTimerPeriod.capture());
+        Mockito.verify(advancedLdapTimerTrigger, Mockito.never()).createTimer(argumentCaptorTimerTask.capture(), argumentCaptorTimerPeriod.capture());
+
+        advancedLdapSynchronizationManager.updateTimer();
+        Mockito.verify(advancedLdapTimerTrigger, Mockito.times(1)).createTimer(argumentCaptorTimerTask.capture(), argumentCaptorTimerPeriod.capture());
     }
 
+    @Test
+    public void testCreateAndCancelTimer() {
+        AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = new AdvancedLdapPluginConfiguration();
+        advancedLdapPluginConfiguration.setLDAPUrl("url");
+        HibernateAdvancedLdapPluginConfigurationDAO hibernateAdvancedLdapPluginConfigurationDAO = Mockito.mock(HibernateAdvancedLdapPluginConfigurationDAO.class);
+        AdvancedLdapTimerTrigger advancedLdapTimerTrigger = Mockito.mock(AdvancedLdapTimerTrigger.class);
+        AdvancedLdapUserManager advancedLdapUserManager = Mockito.mock(AdvancedLdapUserManager.class);
+
+        Mockito.when(hibernateAdvancedLdapPluginConfigurationDAO.get()).thenReturn(advancedLdapPluginConfiguration);
+        ArgumentCaptor<TimerTask> argumentCaptorTimerTask = ArgumentCaptor.forClass(TimerTask.class);
+        ArgumentCaptor<Long> argumentCaptorTimerPeriod = ArgumentCaptor.forClass(Long.class);
+        Mockito.when(advancedLdapTimerTrigger.createTimer(argumentCaptorTimerTask.capture(), argumentCaptorTimerPeriod.capture())).thenReturn(1);
+
+        AdvancedLdapSynchronizationManager advancedLdapSynchronizationManager =
+                new AdvancedLdapSynchronizationManagerImpl(hibernateAdvancedLdapPluginConfigurationDAO, advancedLdapTimerTrigger, advancedLdapUserManager);
+        Mockito.verify(advancedLdapTimerTrigger, Mockito.never()).createTimer(argumentCaptorTimerTask.capture(), argumentCaptorTimerPeriod.capture());
+
+        advancedLdapSynchronizationManager.updateTimer();
+        Mockito.verify(advancedLdapTimerTrigger, Mockito.times(1)).createTimer(argumentCaptorTimerTask.capture(), argumentCaptorTimerPeriod.capture());
+
+        advancedLdapSynchronizationManager.cancelTimer();
+        Mockito.verify(advancedLdapTimerTrigger, Mockito.times(1)).deleteTimer(ArgumentCaptor.forClass(Integer.class).capture());
+    }
+
+    @Test
     public void testRunNow() throws Exception {
         AdvancedLdapPluginConfiguration advancedLdapPluginConfiguration = new AdvancedLdapPluginConfiguration();
         advancedLdapPluginConfiguration.setLDAPUrl("url");
@@ -53,7 +81,7 @@ public class AdvancedLdapSynchronizationManagerImplTest extends TestCase {
 
         AdvancedLdapSynchronizationManager advancedLdapSynchronizationManager =
                 new AdvancedLdapSynchronizationManagerImpl(hibernateAdvancedLdapPluginConfigurationDAO, advancedLdapTimerTrigger, advancedLdapUserManager);
-        Mockito.verify(advancedLdapTimerTrigger).createTimer(argumentCaptorTimerTask.capture(), argumentCaptorTimerPeriod.capture());
+        Mockito.verify(advancedLdapTimerTrigger, Mockito.never()).createTimer(argumentCaptorTimerTask.capture(), argumentCaptorTimerPeriod.capture());
 
         advancedLdapSynchronizationManager.runNow();
         Mockito.verify(advancedLdapTimerTrigger).runNow(argumentCaptorTimerTask.capture());
