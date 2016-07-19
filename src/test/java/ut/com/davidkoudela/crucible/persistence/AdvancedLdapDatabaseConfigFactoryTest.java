@@ -69,7 +69,7 @@ public class AdvancedLdapDatabaseConfigFactoryTest extends TestCase {
     @Test
     public void testGetCrucibleDefaultDatabaseConfig() {
         DatabaseConfig databaseConfigLocal = AdvancedLdapDatabaseConfigFactoryDummy.getCrucibleDefaultDatabaseConfig();
-        assertEquals("org.hibernate.dialect.HSQLDialect", databaseConfigLocal.getDialect());
+        assertEquals("com.cenqua.crucible.hibernate.dialects.FecruHSQLDialect", databaseConfigLocal.getDialect());
         assertEquals("jdbc:hsqldb:file:" + AppConfig.getInstanceDir().getAbsolutePath() + "/var/data/crudb/crucible", databaseConfigLocal.getJdbcURL());
     }
 

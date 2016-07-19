@@ -2,6 +2,7 @@ package com.davidkoudela.crucible.persistence;
 
 import com.cenqua.crucible.hibernate.DBType;
 import com.cenqua.crucible.hibernate.DatabaseConfig;
+import com.cenqua.crucible.hibernate.dialects.FeCruMySQL5InnoDBDialect;
 import com.davidkoudela.crucible.persistence.strategy.HibernateAdvancedLdapPluginConfigurationNoChangeStrategy;
 import com.davidkoudela.crucible.persistence.strategy.HibernateAdvancedLdapPluginConfigurationOracleStrategy;
 import com.davidkoudela.crucible.persistence.strategy.HibernateAdvancedLdapPluginConfigurationPersistenceStrategy;
@@ -79,6 +80,10 @@ public class HibernateSessionFactoryFactory {
         String dialect = databaseConfig.getDialect();
         if (DBType.ORACLE.equals(databaseConfig.getType())) {
             dialect = HibernateAdvancedLdapOracle11gDialect.class.getCanonicalName();
+        } else if (DBType.HSQL.equals(databaseConfig.getType())) {
+            dialect = HibernateAdvancedLdapHSQLDialect.class.getCanonicalName();
+        } else if (DBType.MYSQL.equals(databaseConfig.getType()) && 0 == dialect.compareTo(FeCruMySQL5InnoDBDialect.class.getCanonicalName())) {
+            dialect = HibernateAdvancedLdapMySQL5InnoDBDialect.class.getCanonicalName();
         }
         log.debug("Database dialect: " + dialect);
         return dialect;

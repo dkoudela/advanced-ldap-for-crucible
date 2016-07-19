@@ -2,11 +2,9 @@ package com.davidkoudela.crucible.admin;
 
 import com.atlassian.crucible.spi.data.UserData;
 import com.atlassian.crucible.spi.services.NotFoundException;
-import com.atlassian.extras.common.LicenseException;
 import com.atlassian.fecru.page.Page;
 import com.atlassian.fecru.page.PageRequest;
-import com.atlassian.fecru.user.User;
-import com.atlassian.fecru.user.UserDAO;
+import com.atlassian.fecru.user.FecruUser;
 import com.cenqua.crucible.model.Principal;
 import com.cenqua.fisheye.LicensePolicyException;
 import com.cenqua.fisheye.config.ConfigException;
@@ -29,10 +27,7 @@ import org.apache.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspContext;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Description: Implementation of {@link AdvancedLdapUserManager} providing managed LDAP users with their groups.
@@ -52,14 +47,17 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
     private AdvancedLdapNestedGroupSearchResultBuilder advancedLdapNestedGroupSearchResultBuilder = null;
     private AdvancedLdapBindBuilder advancedLdapBindBuilder = null;
     private HibernateAdvancedLdapUserDAO hibernateAdvancedLdapUserDAO = null;
+    private GroupMembershipManager groupMembershipManager = null;
 
     @org.springframework.beans.factory.annotation.Autowired
     public AdvancedLdapUserManagerImpl(UserManager userManager, HibernateAdvancedLdapPluginConfigurationDAO hibernateAdvancedLdapPluginConfigurationDAO,
-                                       HibernateAdvancedLdapUserDAO hibernateAdvancedLdapUserDAO, AdvancedLdapLogService advancedLdapLogService) {
+                                       HibernateAdvancedLdapUserDAO hibernateAdvancedLdapUserDAO, AdvancedLdapLogService advancedLdapLogService,
+                                       GroupMembershipManager groupMembershipManager) {
         this.userManager = userManager;
         this.hibernateAdvancedLdapPluginConfigurationDAO = hibernateAdvancedLdapPluginConfigurationDAO;
         this.hibernateAdvancedLdapUserDAO = hibernateAdvancedLdapUserDAO;
         this.advancedLdapPluginConfiguration = hibernateAdvancedLdapPluginConfigurationDAO.get();
+        this.groupMembershipManager = groupMembershipManager;
         advancedLdapLogService.setLogLevel(this.advancedLdapPluginConfiguration.getLogLevelAsLevel());
         log.info("**************************** AdvancedLdapUserManagerImpl START ****************************");
     }
@@ -101,12 +99,12 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
             String GID = advancedLdapGroup.getNormalizedGID();
             log.debug("AdvancedLdapUserManagerImpl: GID: " + GID);
             try {
-                if (!this.userManager.builtInGroupExists(GID)) {
+                if (!this.userManager.groupExists(GID)) {
                     log.debug("AdvancedLdapUserManagerImpl: GID added: " + GID);
-                    this.userManager.addBuiltInGroup(GID);
+                    this.userManager.addGroup(GID);
                 }
-                if (!this.userManager.isUserInGroup(GID, advancedLdapPerson.getUid())) {
-                    this.userManager.addUserToBuiltInGroup(GID, advancedLdapPerson.getUid());
+                if (!this.groupMembershipManager.isUserInGroup(GID, advancedLdapPerson.getUid())) {
+                    this.groupMembershipManager.addUserToGroup(GID, advancedLdapPerson.getUid());
                 }
             } catch (Exception e) {
                 log.debug("AdvancedLdapUserManagerImpl: group: " + GID + " failed: " + e);
@@ -143,10 +141,10 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
         for (AdvancedLdapGroup advancedLdapGroup : groups) {
             String GID = advancedLdapGroup.getNormalizedGID();
             log.debug("AdvancedLdapUserManagerImpl: GID: " + GID);
-            if (!this.userManager.builtInGroupExists(GID)) {
+            if (!this.userManager.groupExists(GID)) {
                 log.debug("AdvancedLdapUserManagerImpl: GID added: " + GID);
                 advancedLdapGroupUserSyncCount.incrementGroupCountNew();
-                this.userManager.addBuiltInGroup(GID);
+                this.userManager.addGroup(GID);
             }
 
             for (AdvancedLdapPerson advancedLdapPerson : advancedLdapGroup.getPersonList()) {
@@ -154,13 +152,13 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
                 log.debug("AdvancedLdapUserManagerImpl: UID: " + UID);
                 noDuplicatedUID.add(UID);
                 try {
-                    if (!this.userManager.userExists(UID)) {
+                    if (!this.userManager.existsEnabledUser(UID)) {
                         log.debug("AdvancedLdapUserManagerImpl: UID does not exist in Crucible: " + UID);
                         this.hibernateAdvancedLdapUserDAO.create(UID, advancedLdapPerson.getDisplayName(), advancedLdapPerson.getEmail());
                         advancedLdapGroupUserSyncCount.incrementUserCountNew();
                     }
-                    if (!this.userManager.isUserInGroup(GID, advancedLdapPerson.getUid())) {
-                        this.userManager.addUserToBuiltInGroup(GID, advancedLdapPerson.getUid());
+                    if (!this.groupMembershipManager.isUserInGroup(GID, advancedLdapPerson.getUid())) {
+                        this.groupMembershipManager.addUserToGroup(GID, advancedLdapPerson.getUid());
                         advancedLdapGroupUserSyncCount.incrementAddedUsersToGroupsCount();
                     }
                 } catch (Exception e) {
@@ -171,10 +169,10 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
             }
 
             if (true == advancedLdapPluginConfiguration.isRemovingUsersFromGroupsEnabled()) {
-                for (String userInGroup : this.userManager.getUsersInGroup(GID)) {
+                for (FecruUser userInGroup : this.groupMembershipManager.getUsersInGroup(GID)) {
                     try {
-                        if (false == advancedLdapGroup.isUIDInPersonList(userInGroup)) {
-                            this.userManager.removeUserFromBuiltInGroup(GID, userInGroup);
+                        if (false == advancedLdapGroup.isUIDInPersonList(userInGroup.getUsername())) {
+                            this.groupMembershipManager.removeUserFromGroup(GID, userInGroup.getUsername());
                             advancedLdapGroupUserSyncCount.incrementRemovedUsersFromGroupsCount();
                         }
                     } catch (Exception e) {
@@ -265,13 +263,8 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
     /** Implement the origin interface to be able act as {@link UserManager} */
 
     @Override
-    public long countActiveUsers(UserSearchCriteria userSearchCriteria) {
-        return this.userManager.countActiveUsers(userSearchCriteria);
-    }
-
-    @Override
-    public void notifyLicenseUpdate() {
-        this.userManager.notifyLicenseUpdate();
+    public void resetFailedLoginAttempts(String s) {
+        this.userManager.resetFailedLoginAttempts(s);
     }
 
     @Override
@@ -281,7 +274,7 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
 
     @Override
     public UserLogin validateCurrentUser(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        return this.userManager.validateCurrentUser(httpServletRequest,httpServletResponse);
+        return this.userManager.validateCurrentUser(httpServletRequest, httpServletResponse);
     }
 
     @Override
@@ -296,12 +289,12 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
 
     @Override
     public LoginCookie preCookUrl(HttpServletRequest httpServletRequest, String s, boolean b) {
-        return this.userManager.preCookUrl(httpServletRequest,s,b);
+        return this.userManager.preCookUrl(httpServletRequest, s, b);
     }
 
     @Override
-    public UserLogin login(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, String s, String s2, boolean b) throws LicensePolicyException {
-        return this.userManager.login(httpServletRequest,httpServletResponse,s,s2,b);
+    public UserLogin login(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, String s, String s1, boolean b) throws LicensePolicyException {
+        return this.userManager.login(httpServletRequest, httpServletResponse, s, s1, b);
     }
 
     @Override
@@ -311,27 +304,17 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
 
     @Override
     public UserLogin login(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, LoginCookieToken loginCookieToken) {
-        return this.userManager.login(httpServletRequest,httpServletResponse,loginCookieToken);
-    }
-
-    @Override
-    public void synchroniseUsers() throws Exception {
-        this.userManager.synchroniseUsers();
-    }
-
-    @Override
-    public void synchroniseUsers(boolean b) throws Exception {
-        this.userManager.synchroniseUsers(b);
+        return this.userManager.login(httpServletRequest, httpServletResponse, loginCookieToken);
     }
 
     @Override
     public UserLogin tryRequestDelegatedLogin(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws LicensePolicyException {
-        return this.userManager.tryRequestDelegatedLogin(httpServletRequest,httpServletResponse);
+        return this.userManager.tryRequestDelegatedLogin(httpServletRequest, httpServletResponse);
     }
 
     @Override
-    public UserLogin createTrustedUserLogin(String s, boolean b, boolean b2) throws LicensePolicyException {
-        return this.userManager.createTrustedUserLogin(s,b,b2);
+    public UserLogin createTrustedUserLogin(String s, boolean b, boolean b1) throws LicensePolicyException {
+        return this.userManager.createTrustedUserLogin(s, b, b1);
     }
 
     @Override
@@ -341,17 +324,17 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
 
     @Override
     public void logout(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        this.userManager.logout(httpServletRequest,httpServletResponse);
+        this.userManager.logout(httpServletRequest, httpServletResponse);
     }
 
     @Override
-    public void logout2(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, boolean b, boolean b2) {
-        this.userManager.logout2(httpServletRequest,httpServletResponse,b,b2);
+    public void logout2(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, boolean b, boolean b1) {
+        this.userManager.logout2(httpServletRequest, httpServletResponse, b, b1);
     }
 
     @Override
-    public void logout2User(String s, boolean b, boolean b2) {
-        this.userManager.logout2User(s,b,b2);
+    public void logout2User(String s, boolean b, boolean b1) {
+        this.userManager.logout2User(s, b, b1);
     }
 
     @Override
@@ -365,188 +348,98 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
     }
 
     @Override
-    public List<String> getAllActiveUsernames() {
-        return this.userManager.getAllActiveUsernames();
+    public List<String> getAllEnabledUsernames() {
+        return this.userManager.getAllEnabledUsernames();
     }
 
     @Override
-    public List<String> getAllFishEyeEnabledUsernames() {
-        return this.userManager.getAllFishEyeEnabledUsernames();
+    public Iterable<String> getAllLicensedUsernames() {
+        return this.userManager.getAllLicensedUsernames();
     }
 
     @Override
-    public List<String> getAllCrucibleEnabledUsernames() {
-        return this.userManager.getAllCrucibleEnabledUsernames();
+    public boolean groupExists(String s) {
+        return this.userManager.groupExists(s);
     }
 
     @Override
-    public List<User> getUsersWithTextPrefix(String s) {
-        return this.userManager.getUsersWithTextPrefix(s);
-    }
-
-    @Override
-    public List<User> getUsersWithTextPrefix(String s, UserDAO.UserSet userSet, int i) {
-        return this.userManager.getUsersWithTextPrefix(s, userSet, i);
-    }
-
-    @Override
-    public Iterable<GroupOfUsers> getGroupsWithTextPrefix(String s, int i, int i2) {
-        return this.userManager.getGroupsWithTextPrefix(s,i,i2);
-    }
-
-    @Override
-    public boolean filterUserByTextPrefix(User user, String s) {
-        return this.userManager.filterUserByTextPrefix(user,s);
-    }
-
-    @Override
-    public List<String> getGroupsForUser(String s) {
-        return this.userManager.getGroupsForUser(s);
-    }
-
-    @Override
-    public Page<String> getGroupsForUser(String s, PageRequest pageRequest) {
-        return this.userManager.getGroupsForUser(s,pageRequest);
-    }
-
-    @Override
-    public boolean isUserInGroup(String s, String s2) {
-        return this.userManager.isUserInGroup(s,s2);
-    }
-
-    @Override
-    public Map<String, GroupInfo> getGroupInfos() {
-        return this.userManager.getGroupInfos();
-    }
-
-    @Override
-    public GroupInfo getGroupInfo(String s) {
+    public Optional<GroupInfo> getGroupInfo(String s) {
         return this.userManager.getGroupInfo(s);
     }
 
     @Override
-    public List<String> getExternalGroupNames() {
-        return this.userManager.getExternalGroupNames();
+    public GroupInfo addGroup(String s) {
+        return this.userManager.addGroup(s);
     }
 
     @Override
-    public boolean builtInGroupExists(String s) {
-        return this.userManager.builtInGroupExists(s);
+    public void deleteGroup(String s) {
+        this.userManager.deleteGroup(s);
     }
 
     @Override
-    public void addBuiltInGroup(String s) {
-        this.userManager.addBuiltInGroup(s);
+    public List<FecruUser> getLicensedUsers() {
+        return this.userManager.getLicensedUsers();
     }
 
     @Override
-    public void deleteBuiltInGroup(String s) {
-        this.userManager.deleteBuiltInGroup(s);
-    }
-
-    @Override
-    public void addUserToBuiltInGroup(String s, String s2) {
-        this.userManager.addUserToBuiltInGroup(s,s2);
-    }
-
-    @Override
-    public void removeUserFromBuiltInGroup(String s, String s2) {
-        this.userManager.removeUserFromBuiltInGroup(s,s2);
-    }
-
-    @Override
-    public List<String> getUsersInGroup(String s) {
-        return this.userManager.getUsersInGroup(s);
-    }
-
-    @Override
-    public Page<String> getUsersInGroup(String s, PageRequest pageRequest) {
-        return this.userManager.getUsersInGroup(s,pageRequest);
-    }
-
-    @Override
-    public List<User> getActiveUsers() {
-        return this.userManager.getActiveUsers();
-    }
-
-    @Override
-    public Page<User> searchUsers(UserSearchCriteria userSearchCriteria, PageRequest pageRequest) {
-        return this.userManager.searchUsers(userSearchCriteria,pageRequest);
+    public Page<FecruUser> searchUsers(UserSearchCriteria userSearchCriteria, PageRequest pageRequest) {
+        return this.userManager.searchUsers(userSearchCriteria, pageRequest);
     }
 
     @Override
     public Page<GroupInfo> searchGroups(GroupSearchCriteria groupSearchCriteria, PageRequest pageRequest) {
-        return this.userManager.searchGroups(groupSearchCriteria,pageRequest);
+        return this.userManager.searchGroups(groupSearchCriteria, pageRequest);
     }
 
     @Override
-    public User getImplicitUserForCommitter(String s) {
-        return this.userManager.getImplicitUserForCommitter(s);
+    public void renameUser(String s, String s1) {
+        this.userManager.renameUser(s, s1);
     }
 
     @Override
-    public List<User> getFishEyeUsers() {
-        return this.userManager.getFishEyeUsers();
+    public FecruUser addUser(String s, String s1, String s2, String s3, boolean b) throws LicensePolicyException {
+        return this.userManager.addUser(s, s1, s2, s3, b);
     }
 
     @Override
-    public List<User> getCrucibleUsers() {
-        return this.userManager.getCrucibleUsers();
+    public void changePassword(String s, String s1) {
+        this.userManager.changePassword(s, s1);
     }
 
     @Override
-    public int getActiveUsersCount() {
-        return this.userManager.getActiveUsersCount();
+    public void requestPasswordReset(String s, String s1) {
+        this.userManager.requestPasswordReset(s, s1);
     }
 
     @Override
-    public int getFishEyeUsersCount() {
-        return this.userManager.getFishEyeUsersCount();
+    public void resetPassword(String s, String s1) {
+        this.userManager.resetPassword(s, s1);
     }
 
     @Override
-    public int getCrucibleUsersCount() {
-        return this.userManager.getCrucibleUsersCount();
+    public boolean canUpdateUser(String s) {
+        return this.userManager.canUpdateUser(s);
     }
 
     @Override
-    public void renameUser(String s, String s2) {
-        this.userManager.renameUser(s,s2);
+    public void updateUser(String s, String s1, String s2) {
+        this.userManager.updateUser(s, s1, s2);
     }
 
     @Override
-    public User addUser(User user, String s) throws LicensePolicyException {
-        return this.userManager.addUser(user,s);
+    public boolean existsLicensedUser(String s) {
+        return this.userManager.existsLicensedUser(s);
     }
 
     @Override
-    public void changePassword(User user, String s) {
-        this.userManager.changePassword(user,s);
+    public boolean existsEnabledUser(String s) {
+        return this.userManager.existsEnabledUser(s);
     }
 
     @Override
-    public void requestPasswordReset(User user, String s) {
-        this.userManager.requestPasswordReset(user,s);
-    }
-
-    @Override
-    public void resetPassword(User user, String s) {
-        this.userManager.resetPassword(user,s);
-    }
-
-    @Override
-    public void updateUser(User user) {
-        this.userManager.updateUser(user);
-    }
-
-    @Override
-    public boolean userExists(String s) {
-        return this.userManager.userExists(s);
-    }
-
-    @Override
-    public User ensureUserExists(String s) throws NotFoundException {
-        return this.userManager.ensureUserExists(s);
+    public Optional<FecruUser> getEnabledUser(String s) {
+        return this.userManager.getEnabledUser(s);
     }
 
     @Override
@@ -555,22 +448,22 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
     }
 
     @Override
-    public User getActiveUser(String s) {
-        return this.userManager.getActiveUser(s);
+    public FecruUser getLicensedUser(String s) {
+        return this.userManager.getLicensedUser(s);
     }
 
     @Override
-    public User getActiveUser(int i) {
-        return this.userManager.getActiveUser(i);
+    public FecruUser getLicensedUser(int i) {
+        return this.userManager.getLicensedUser(i);
     }
 
     @Override
-    public User getUser(String s) {
+    public FecruUser getUser(String s) {
         return this.userManager.getUser(s);
     }
 
     @Override
-    public User getUserById(int i) {
+    public FecruUser getUserById(int i) {
         return this.userManager.getUserById(i);
     }
 
@@ -580,8 +473,8 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
     }
 
     @Override
-    public void deleteUser(User user) {
-        this.userManager.deleteUser(user);
+    public void deleteUserFully(String s) {
+        this.userManager.deleteUserFully(s);
     }
 
     @Override
@@ -590,33 +483,23 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
     }
 
     @Override
-    public boolean deleteMultipleUsersAndRemoveCommitterMappings(List<String> strings) {
-        return this.userManager.deleteMultipleUsersAndRemoveCommitterMappings(strings);
+    public boolean deleteMultipleUsersAndRemoveCommitterMappings(List<String> list) {
+        return this.userManager.deleteMultipleUsersAndRemoveCommitterMappings(list);
     }
 
     @Override
-    public void deactivateUser(User user) {
-        this.userManager.deactivateUser(user);
-    }
-
-    @Override
-    public void deactivateUser(User user, boolean b) {
-        this.userManager.deactivateUser(user,b);
+    public void deleteUser(String s, boolean b) {
+        this.userManager.deleteUser(s, b);
     }
 
     @Override
     public boolean hasPermissionToAccess(Principal principal, RepositoryHandle repositoryHandle) {
-        return this.userManager.hasPermissionToAccess(principal,repositoryHandle);
+        return this.userManager.hasPermissionToAccess(principal, repositoryHandle);
     }
 
     @Override
     public boolean isCrucibleEnabled(String s) {
         return this.userManager.isCrucibleEnabled(s);
-    }
-
-    @Override
-    public void setCrucibleEnabled(String s, boolean b) throws LicenseException {
-        this.userManager.setCrucibleEnabled(s,b);
     }
 
     @Override
@@ -635,42 +518,42 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
     }
 
     @Override
-    public User getUserFor(Principal principal) {
+    public FecruUser getUserFor(Principal principal) {
         return this.userManager.getUserFor(principal);
     }
 
     @Override
-    public boolean isValidPassword(String s, String s2) {
-        return this.userManager.isValidPassword(s,s2);
-    }
-
-    @Override
-    public String encodePassword(String s) {
-        return this.userManager.encodePassword(s);
+    public boolean isValidPassword(String s, String s1) {
+        return this.userManager.isValidPassword();
     }
 
     @Override
     public Auth getAuthenticationProvider() {
-        return this.userManager.getAuthenticationProvider();
+        return null;
     }
 
     @Override
     public boolean isUserNameValid(String s) {
-        return this.userManager.isUserNameValid(s);
+        return false;
     }
 
     @Override
     public boolean isGroupNameValid(String s) {
-        return this.userManager.isGroupNameValid(s);
+        return false;
     }
 
     @Override
     public boolean isAdminGroup(String s) {
-        return this.userManager.isAdminGroup(s);
+        return false;
     }
 
     @Override
     public void setAdminGroup(String s, boolean b) {
-        this.userManager.setAdminGroup(s,b);
+
+    }
+
+    @Override
+    public boolean isPasswordlessAuthenticationEnabled() {
+        return false;
     }
 }

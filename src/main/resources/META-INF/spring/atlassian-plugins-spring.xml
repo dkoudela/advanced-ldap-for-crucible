@@ -56,6 +56,9 @@
         <constructor-arg>
             <ref bean="advancedLdapLogService" />
         </constructor-arg>
+        <constructor-arg>
+            <ref bean="groupMembershipManager" />
+        </constructor-arg>
     </bean>
 
     <bean id="advancedLdapSynchronizationManager" name="AdvancedLdapSynchronizationManager" class="com.davidkoudela.crucible.tasks.AdvancedLdapSynchronizationManagerImpl">

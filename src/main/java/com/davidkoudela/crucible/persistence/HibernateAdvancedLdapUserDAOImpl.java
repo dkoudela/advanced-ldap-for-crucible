@@ -1,8 +1,11 @@
 package com.davidkoudela.crucible.persistence;
 
-import com.atlassian.fecru.user.User;
-import com.atlassian.fecru.user.UserDAO;
-import com.atlassian.fecru.user.UserDAOImpl;
+import com.atlassian.crowd.embedded.api.User;
+import com.atlassian.crowd.embedded.impl.ImmutableUser;
+import com.atlassian.fecru.user.FecruUser;
+import com.atlassian.fecru.user.FecruUserDAO;
+import com.atlassian.fecru.user.FecruUserDAOImpl;
+import com.atlassian.fecru.user.crowd.FecruCrowdDirectoryService;
 import com.cenqua.crucible.hibernate.HibernateUtilCurrentSessionProvider;
 import com.cenqua.fisheye.user.UserManager;
 import org.springframework.stereotype.Component;
@@ -18,34 +21,32 @@ import org.springframework.stereotype.Component;
 @Component("advancedLdapUserDAO")
 public class HibernateAdvancedLdapUserDAOImpl implements HibernateAdvancedLdapUserDAO {
     private UserManager userManager;
-    private UserDAO userDAO;
+    private FecruUserDAO userDAO;
 
     @org.springframework.beans.factory.annotation.Autowired
     public HibernateAdvancedLdapUserDAOImpl(UserManager userManager) {
         this.userManager = userManager;
+        // FecruCrowdDirectoryService
     }
 
     @Override
     public void create(String uid, String displayName, String email) {
-        com.atlassian.fecru.user.User  user = new User(uid);
-        user.setDisplayName(displayName);
-        user.setEmail(email);
-        user.setAuthType(User.AuthType.LDAP);
-        user.setFisheyeEnabled(true);
-        UserDAO userDAO = getUserDAO();
-        userDAO.create(user);
-        this.userManager.setCrucibleEnabled(uid, true);
+        FecruUser fecruUser = new FecruUser(uid);
+        User user = new ImmutableUser(1, uid, displayName, email, true);
+        fecruUser.setBackingCrowdUser(user);
+        FecruUserDAO userDAO = getUserDAO();
+        userDAO.create(fecruUser);
     }
 
-    protected UserDAO getUserDAO() {
+    protected FecruUserDAO getUserDAO() {
         if (null != this.userDAO)
             return this.userDAO;
-        UserDAOImpl userDAOImpl = new UserDAOImpl();
+        FecruUserDAOImpl userDAOImpl = new FecruUserDAOImpl();
         userDAOImpl.setCurrentSessionProvider(new HibernateUtilCurrentSessionProvider());
         return userDAOImpl;
     }
 
-    protected void setUserDAO(UserDAO userDAO) {
+    protected void setUserDAO(FecruUserDAO userDAO) {
         this.userDAO = userDAO;
     }
 }

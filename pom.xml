@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.davidkoudela.crucible</groupId>
     <artifactId>advanced-ldap-for-crucible</artifactId>
-    <version>1.7</version>
+    <version>3.0</version>
 
     <organization>
         <name>David Koudela</name>
@@ -446,10 +446,12 @@
     </build>
 
     <properties>
+        <fecru.version>4.1.1-20160708100607</fecru.version>
+        <fecru.data.version>4.1.1-20160708100607</fecru.data.version>
         <!--fecru.version>3.10.1-20151028191103</fecru.version>
         <fecru.data.version>3.10.1-20151028191103</fecru.data.version-->
-        <fecru.version>3.8.0-20150427140019</fecru.version>
-        <fecru.data.version>3.8.0-20150427140019</fecru.data.version>
+        <!--fecru.version>3.8.0-20150427140019</fecru.version>
+        <fecru.data.version>3.8.0-20150427140019</fecru.data.version-->
         <amps.version>6.2.3</amps.version>
         <plugin.testrunner.version>1.2.0</plugin.testrunner.version>
         <powermock.version>1.6.4</powermock.version>

@@ -9,5 +9,5 @@ package com.davidkoudela.crucible.persistence;
  * @since 2015-06-21
  */
 public interface HibernateAdvancedLdapUserDAO {
-    public abstract void create(String uid, String displayName, String email);
+    void create(String uid, String displayName, String email);
 }
