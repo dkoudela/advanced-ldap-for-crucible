@@ -524,36 +524,36 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
 
     @Override
     public boolean isValidPassword(String s, String s1) {
-        return this.userManager.isValidPassword();
+        return this.userManager.isValidPassword(s, s1);
     }
 
     @Override
     public Auth getAuthenticationProvider() {
-        return null;
+        return this.userManager.getAuthenticationProvider();
     }
 
     @Override
     public boolean isUserNameValid(String s) {
-        return false;
+        return this.userManager.isUserNameValid(s);
     }
 
     @Override
     public boolean isGroupNameValid(String s) {
-        return false;
+        return this.userManager.isGroupNameValid(s);
     }
 
     @Override
     public boolean isAdminGroup(String s) {
-        return false;
+        return this.userManager.isAdminGroup(s);
     }
 
     @Override
     public void setAdminGroup(String s, boolean b) {
-
+        this.userManager.setAdminGroup(s, b);
     }
 
     @Override
     public boolean isPasswordlessAuthenticationEnabled() {
-        return false;
+        return this.userManager.isPasswordlessAuthenticationEnabled();
     }
 }
