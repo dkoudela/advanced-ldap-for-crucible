@@ -26,7 +26,7 @@ public class AdvancedLdapSynchronizationTask extends TimerTask {
 
     @Override
     public void run() {
-        Stopwatch timer = new Stopwatch();
+        Stopwatch timer = Stopwatch.createUnstarted();
         timer.start();
         log.info("Timer task started at:" + new Date());
         AdvancedLdapGroupUserSyncCount advancedLdapGroupUserSyncCount = new AdvancedLdapGroupUserSyncCount();
