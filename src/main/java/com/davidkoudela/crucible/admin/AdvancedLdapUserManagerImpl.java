@@ -5,6 +5,7 @@ import com.atlassian.crucible.spi.services.NotFoundException;
 import com.atlassian.fecru.page.Page;
 import com.atlassian.fecru.page.PageRequest;
 import com.atlassian.fecru.user.FecruUser;
+import com.atlassian.fecru.user.GroupName;
 import com.cenqua.crucible.model.Principal;
 import com.cenqua.fisheye.LicensePolicyException;
 import com.cenqua.fisheye.config.ConfigException;
@@ -96,7 +97,7 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
         AdvancedLdapPerson advancedLdapPerson = persons.get(0);
 
         for (AdvancedLdapGroup advancedLdapGroup : advancedLdapPerson.getGroupList()) {
-            String GID = advancedLdapGroup.getNormalizedGID();
+            GroupName GID = GroupName.create(advancedLdapGroup.getNormalizedGID());
             log.debug("AdvancedLdapUserManagerImpl: GID: " + GID);
             try {
                 if (!this.userManager.groupExists(GID)) {
@@ -139,7 +140,7 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
         advancedLdapGroupUserSyncCount.setNestedGroupCount(advancedLdapNestedGroupSearchResultBuilder.getNestedGroups().size());
         Set<String> noDuplicatedUID = new HashSet<String>();
         for (AdvancedLdapGroup advancedLdapGroup : groups) {
-            String GID = advancedLdapGroup.getNormalizedGID();
+            GroupName GID = GroupName.create(advancedLdapGroup.getNormalizedGID());
             log.debug("AdvancedLdapUserManagerImpl: GID: " + GID);
             if (!this.userManager.groupExists(GID)) {
                 log.debug("AdvancedLdapUserManagerImpl: GID added: " + GID);
@@ -358,23 +359,23 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
     }
 
     @Override
-    public boolean groupExists(String s) {
-        return this.userManager.groupExists(s);
+    public boolean groupExists(GroupName var1) {
+        return this.userManager.groupExists(var1);
     }
 
     @Override
-    public Optional<GroupInfo> getGroupInfo(String s) {
-        return this.userManager.getGroupInfo(s);
+    public Optional<GroupInfo> getGroupInfo(GroupName var1) {
+        return this.userManager.getGroupInfo(var1);
     }
 
     @Override
-    public GroupInfo addGroup(String s) {
-        return this.userManager.addGroup(s);
+    public GroupInfo addGroup(GroupName var1) {
+        return this.userManager.addGroup(var1);
     }
 
     @Override
-    public void deleteGroup(String s) {
-        this.userManager.deleteGroup(s);
+    public void deleteGroup(GroupName var1) {
+        this.userManager.deleteGroup(var1);
     }
 
     @Override
@@ -443,8 +444,8 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
     }
 
     @Override
-    public GroupInfo ensureGroupExists(String s) throws NotFoundException {
-        return this.userManager.ensureGroupExists(s);
+    public GroupInfo ensureGroupExists(GroupName var1) throws NotFoundException {
+        return this.userManager.ensureGroupExists(var1);
     }
 
     @Override
@@ -543,13 +544,13 @@ public class AdvancedLdapUserManagerImpl implements AdvancedLdapUserManager {
     }
 
     @Override
-    public boolean isAdminGroup(String s) {
-        return this.userManager.isAdminGroup(s);
+    public boolean isAdminGroup(GroupName var1) {
+        return this.userManager.isAdminGroup(var1);
     }
 
     @Override
-    public void setAdminGroup(String s, boolean b) {
-        this.userManager.setAdminGroup(s, b);
+    public void setAdminGroup(GroupName var1, boolean b) {
+        this.userManager.setAdminGroup(var1, b);
     }
 
     @Override

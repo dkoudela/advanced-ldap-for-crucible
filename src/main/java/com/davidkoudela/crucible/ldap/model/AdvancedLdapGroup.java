@@ -1,6 +1,6 @@
 package com.davidkoudela.crucible.ldap.model;
 
-import com.cenqua.fisheye.user.UserManager;
+import com.atlassian.fecru.user.GroupName;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +23,8 @@ public class AdvancedLdapGroup {
     }
 
     public String getNormalizedGID() {
-        String normalizedGID = this.GID;
-        String[] dictionary = normalizedGID.split(UserManager.GROUPNAME_PATTERN.pattern());
+        String normalizedGID = this.GID.toLowerCase();
+        String[] dictionary = normalizedGID.split(GroupName.GROUPNAME_PATTERN.pattern());
         if (0 != dictionary.length) {
             for (String replaceChar : dictionary) {
                 if (!replaceChar.isEmpty())

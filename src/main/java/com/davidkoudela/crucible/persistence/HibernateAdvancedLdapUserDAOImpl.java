@@ -1,5 +1,8 @@
 package com.davidkoudela.crucible.persistence;
 
+import com.atlassian.crowd.embedded.api.CrowdDirectoryService;
+import com.atlassian.crowd.embedded.api.Directory;
+import com.atlassian.crowd.embedded.api.DirectoryType;
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.crowd.embedded.impl.ImmutableUser;
 import com.atlassian.fecru.user.FecruUser;
@@ -9,6 +12,8 @@ import com.atlassian.fecru.user.crowd.FecruCrowdDirectoryService;
 import com.cenqua.crucible.hibernate.HibernateUtilCurrentSessionProvider;
 import com.cenqua.fisheye.user.UserManager;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * Description: Implementation of {@link HibernateAdvancedLdapUserDAO} representing the Data Access Object class
@@ -22,17 +27,24 @@ import org.springframework.stereotype.Component;
 public class HibernateAdvancedLdapUserDAOImpl implements HibernateAdvancedLdapUserDAO {
     private UserManager userManager;
     private FecruUserDAO userDAO;
+    private Long directoryId = -1L;
 
     @org.springframework.beans.factory.annotation.Autowired
-    public HibernateAdvancedLdapUserDAOImpl(UserManager userManager) {
+    public HibernateAdvancedLdapUserDAOImpl(UserManager userManager/*, FecruCrowdDirectoryService crowdDirectoryService*/) {
         this.userManager = userManager;
-        // FecruCrowdDirectoryService
+        /*List<Directory> directories = crowdDirectoryService.findAllDirectories();
+        for (Directory directory : directories) {
+            if (DirectoryType.INTERNAL == directory.getType()) {
+                directoryId = directory.getId();
+                break;
+            }
+        }*/
     }
 
     @Override
     public void create(String uid, String displayName, String email) {
         FecruUser fecruUser = new FecruUser(uid);
-        User user = new ImmutableUser(1, uid, displayName, email, true);
+        User user = new ImmutableUser(directoryId, uid, displayName, email, true);
         fecruUser.setBackingCrowdUser(user);
         FecruUserDAO userDAO = getUserDAO();
         userDAO.create(fecruUser);

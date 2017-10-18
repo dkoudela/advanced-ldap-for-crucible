@@ -115,7 +115,7 @@ public class AdvancedLdapGroupBuilderTest extends TestCase {
         List<AdvancedLdapGroup> advancedLdapGroup = this.advancedLdapGroupBuilderDummy.getGroups();
         assertEquals(1, advancedLdapGroup.size());
         assertEquals("Wrong group!containing%strange#symbols+intentionally", advancedLdapGroup.get(0).getGID());
-        assertEquals("Wrong-group-containing-strange-symbols-intentionally", advancedLdapGroup.get(0).getNormalizedGID());
+        assertEquals("wrong-group-containing-strange-symbols-intentionally", advancedLdapGroup.get(0).getNormalizedGID());
         assertEquals("Wrong Product Group", advancedLdapGroup.get(0).getDisplayName());
 
         advancedLdapGroup.get(0).setUserNames(new ArrayList<String>()); // for better test coverage

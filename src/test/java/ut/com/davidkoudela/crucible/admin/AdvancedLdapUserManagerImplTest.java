@@ -5,6 +5,7 @@ import com.atlassian.crucible.spi.services.NotFoundException;
 import com.atlassian.fecru.page.Page;
 import com.atlassian.fecru.page.PageRequest;
 import com.atlassian.fecru.user.FecruUser;
+import com.atlassian.fecru.user.GroupName;
 import com.cenqua.crucible.model.Principal;
 import com.cenqua.fisheye.LicensePolicyException;
 import com.cenqua.fisheye.config.ConfigException;
@@ -60,7 +61,7 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
     private static ArgumentCaptor<SearchRequest> argumentCaptorSearchRequest;
     private static ArgumentCaptor<AdvancedLdapPersonBuilder> argumentCaptorAdvancedLdapPersonBuilder;
     private static ArgumentCaptor<AdvancedLdapGroupBuilder> argumentCaptorAdvancedLdapGroupBuilder;
-    private static ArgumentCaptor<String> argumentCaptorGID;
+    private static ArgumentCaptor<GroupName> argumentCaptorGID;
     private static ArgumentCaptor<AdvancedLdapPerson> argumentCaptorAdvancedLdapPerson;
     private static UserData userData;
     private static HibernateAdvancedLdapUserDAO hibernateAdvancedLdapUserDAO;
@@ -141,7 +142,7 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
         this.argumentCaptorSearchRequest = ArgumentCaptor.forClass(SearchRequest.class);
         this.argumentCaptorAdvancedLdapPersonBuilder = ArgumentCaptor.forClass(AdvancedLdapPersonBuilder.class);
         this.argumentCaptorAdvancedLdapGroupBuilder = ArgumentCaptor.forClass(AdvancedLdapGroupBuilder.class);
-        this.argumentCaptorGID = ArgumentCaptor.forClass(String.class);
+        this.argumentCaptorGID = ArgumentCaptor.forClass(GroupName.class);
         this.argumentCaptorAdvancedLdapPerson = ArgumentCaptor.forClass(AdvancedLdapPerson.class);
         this.userData = new UserData();
         this.userData.setUserName("dkoudela");
@@ -228,10 +229,10 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
 
         advancedLdapUserManager.loadUser(this.userData);
 
-        Mockito.verify(this.userManager, Mockito.times(1)).groupExists("group");
-        Mockito.verify(this.userManager, Mockito.times(1)).addGroup("group");
-        Mockito.verify(this.groupMembershipManager, Mockito.times(1)).isUserInGroup("group", "dkoudela");
-        Mockito.verify(this.groupMembershipManager, Mockito.times(1)).addUserToGroup("group", "dkoudela");
+        Mockito.verify(this.userManager, Mockito.times(1)).groupExists(GroupName.create("group"));
+        Mockito.verify(this.userManager, Mockito.times(1)).addGroup(GroupName.create("group"));
+        Mockito.verify(this.groupMembershipManager, Mockito.times(1)).isUserInGroup(GroupName.create("group"), "dkoudela");
+        Mockito.verify(this.groupMembershipManager, Mockito.times(1)).addUserToGroup(GroupName.create("group"), "dkoudela");
     }
 
 
@@ -284,10 +285,10 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
 
         advancedLdapUserManager.loadGroups(advancedLdapGroupUserSyncCount);
 
-        Mockito.verify(this.userManager, Mockito.times(1)).groupExists("group");
-        Mockito.verify(this.userManager, Mockito.times(1)).addGroup("group");
-        Mockito.verify(this.groupMembershipManager, Mockito.times(0)).isUserInGroup("group", "dkoudela");
-        Mockito.verify(this.groupMembershipManager, Mockito.times(0)).addUserToGroup("group", "dkoudela");
+        Mockito.verify(this.userManager, Mockito.times(1)).groupExists(GroupName.create("group"));
+        Mockito.verify(this.userManager, Mockito.times(1)).addGroup(GroupName.create("group"));
+        Mockito.verify(this.groupMembershipManager, Mockito.times(0)).isUserInGroup(GroupName.create("group"), "dkoudela");
+        Mockito.verify(this.groupMembershipManager, Mockito.times(0)).addUserToGroup(GroupName.create("group"), "dkoudela");
     }
 
     @Test
@@ -307,12 +308,12 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
 
         advancedLdapUserManager.loadGroups(advancedLdapGroupUserSyncCount);
 
-        Mockito.verify(this.userManager, Mockito.times(1)).groupExists("group");
-        Mockito.verify(this.userManager, Mockito.times(1)).addGroup("group");
+        Mockito.verify(this.userManager, Mockito.times(1)).groupExists(GroupName.create("group"));
+        Mockito.verify(this.userManager, Mockito.times(1)).addGroup(GroupName.create("group"));
         Mockito.verify(this.hibernateAdvancedLdapUserDAO, Mockito.times(1)).create(ArgumentCaptor.forClass(String.class).capture(),
                 ArgumentCaptor.forClass(String.class).capture(), ArgumentCaptor.forClass(String.class).capture());
-        Mockito.verify(this.groupMembershipManager, Mockito.times(1)).isUserInGroup("group", "dkoudela");
-        Mockito.verify(this.groupMembershipManager, Mockito.times(1)).addUserToGroup("group", "dkoudela");
+        Mockito.verify(this.groupMembershipManager, Mockito.times(1)).isUserInGroup(GroupName.create("group"), "dkoudela");
+        Mockito.verify(this.groupMembershipManager, Mockito.times(1)).addUserToGroup(GroupName.create("group"), "dkoudela");
     }
 
     @Test
@@ -334,18 +335,18 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
         Mockito.when(hibernateAdvancedLdapPluginConfigurationDAO.get()).thenReturn(advancedLdapPluginConfiguration);
         Mockito.when(this.advancedLdapNestedGroupBuilder.getGroups()).thenReturn(this.advancedLdapGroups2);
         Mockito.doNothing().when(this.advancedLdapConnector).ldapPagedSearch(this.argumentCaptorSearchRequest.capture(), this.argumentCaptorAdvancedLdapGroupBuilder.capture());
-        Mockito.when(this.groupMembershipManager.getUsersInGroup(ArgumentCaptor.forClass(String.class).capture())).thenReturn(usersInGroup);
+        Mockito.when(this.groupMembershipManager.getUsersInGroup(ArgumentCaptor.forClass(GroupName.class).capture())).thenReturn(usersInGroup);
         AdvancedLdapGroupUserSyncCount advancedLdapGroupUserSyncCount = new AdvancedLdapGroupUserSyncCount();
 
         advancedLdapUserManager.loadGroups(advancedLdapGroupUserSyncCount);
 
-        Mockito.verify(this.userManager, Mockito.times(1)).groupExists("group");
-        Mockito.verify(this.userManager, Mockito.times(1)).addGroup("group");
+        Mockito.verify(this.userManager, Mockito.times(1)).groupExists(GroupName.create("group"));
+        Mockito.verify(this.userManager, Mockito.times(1)).addGroup(GroupName.create("group"));
         Mockito.verify(this.hibernateAdvancedLdapUserDAO, Mockito.times(1)).create(ArgumentCaptor.forClass(String.class).capture(),
                 ArgumentCaptor.forClass(String.class).capture(), ArgumentCaptor.forClass(String.class).capture());
-        Mockito.verify(this.groupMembershipManager, Mockito.times(1)).isUserInGroup("group", "dkoudela");
-        Mockito.verify(this.groupMembershipManager, Mockito.times(1)).addUserToGroup("group", "dkoudela");
-        Mockito.verify(this.groupMembershipManager, Mockito.times(1)).removeUserFromGroup("group", "okoudela");
+        Mockito.verify(this.groupMembershipManager, Mockito.times(1)).isUserInGroup(GroupName.create("group"), "dkoudela");
+        Mockito.verify(this.groupMembershipManager, Mockito.times(1)).addUserToGroup(GroupName.create("group"), "dkoudela");
+        Mockito.verify(this.groupMembershipManager, Mockito.times(1)).removeUserFromGroup(GroupName.create("group"), "okoudela");
     }
 
 
@@ -589,22 +590,22 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
         }
 
         @Override
-        public boolean groupExists(String s) {
+        public boolean groupExists(GroupName var1) {
             return false;
         }
 
         @Override
-        public Optional<GroupInfo> getGroupInfo(String s) {
+        public Optional<GroupInfo> getGroupInfo(GroupName var1) {
             return null;
         }
 
         @Override
-        public GroupInfo addGroup(String s) {
+        public GroupInfo addGroup(GroupName var1) {
             return null;
         }
 
         @Override
-        public void deleteGroup(String s) {
+        public void deleteGroup(GroupName var1) {
 
         }
 
@@ -674,7 +675,7 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
         }
 
         @Override
-        public GroupInfo ensureGroupExists(String s) throws NotFoundException {
+        public GroupInfo ensureGroupExists(GroupName var1) throws NotFoundException {
             return null;
         }
 
@@ -774,12 +775,12 @@ public class AdvancedLdapUserManagerImplTest extends TestCase {
         }
 
         @Override
-        public boolean isAdminGroup(String s) {
+        public boolean isAdminGroup(GroupName var1) {
             return false;
         }
 
         @Override
-        public void setAdminGroup(String s, boolean b) {
+        public void setAdminGroup(GroupName var1, boolean b) {
 
         }
 

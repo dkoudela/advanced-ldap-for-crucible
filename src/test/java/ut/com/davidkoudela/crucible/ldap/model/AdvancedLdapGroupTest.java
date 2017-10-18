@@ -16,60 +16,60 @@ public class AdvancedLdapGroupTest extends TestCase {
     public void testGetNormalizedGIDBSpace() {
         AdvancedLdapGroup advancedLdapGroup = new AdvancedLdapGroup();
         advancedLdapGroup.setGID("New Group with space symbol");
-        assertEquals("New-Group-with-space-symbol", advancedLdapGroup.getNormalizedGID());
+        assertEquals("new-group-with-space-symbol", advancedLdapGroup.getNormalizedGID());
     }
     @Test
     public void testGetNormalizedGIDBExclamation() {
         AdvancedLdapGroup advancedLdapGroup = new AdvancedLdapGroup();
         advancedLdapGroup.setGID("New Group with ! symbol");
-        assertEquals("New-Group-with---symbol", advancedLdapGroup.getNormalizedGID());
+        assertEquals("new-group-with---symbol", advancedLdapGroup.getNormalizedGID());
     }
     @Test
     public void testGetNormalizedGIDLeftBracket() {
         AdvancedLdapGroup advancedLdapGroup = new AdvancedLdapGroup();
         advancedLdapGroup.setGID("New Group with ( symbol");
-        assertEquals("New-Group-with---symbol", advancedLdapGroup.getNormalizedGID());
+        assertEquals("new-group-with---symbol", advancedLdapGroup.getNormalizedGID());
     }
     @Test
     public void testGetNormalizedGIDRightBracket() {
         AdvancedLdapGroup advancedLdapGroup = new AdvancedLdapGroup();
         advancedLdapGroup.setGID("New Group with ) symbol");
-        assertEquals("New-Group-with---symbol", advancedLdapGroup.getNormalizedGID());
+        assertEquals("new-group-with---symbol", advancedLdapGroup.getNormalizedGID());
     }
     @Test
     public void testGetNormalizedGIDAt() {
         AdvancedLdapGroup advancedLdapGroup = new AdvancedLdapGroup();
         advancedLdapGroup.setGID("New Group with @ symbol");
-        assertEquals("New-Group-with-@-symbol", advancedLdapGroup.getNormalizedGID());
+        assertEquals("new-group-with-@-symbol", advancedLdapGroup.getNormalizedGID());
     }
     @Test
     public void testGetNormalizedGIDDash() {
         AdvancedLdapGroup advancedLdapGroup = new AdvancedLdapGroup();
         advancedLdapGroup.setGID("New Group with - symbol");
-        assertEquals("New-Group-with---symbol", advancedLdapGroup.getNormalizedGID());
+        assertEquals("new-group-with---symbol", advancedLdapGroup.getNormalizedGID());
     }
     @Test
     public void testGetNormalizedGIDSharp() {
         AdvancedLdapGroup advancedLdapGroup = new AdvancedLdapGroup();
         advancedLdapGroup.setGID("New Group with # symbol");
-        assertEquals("New-Group-with---symbol", advancedLdapGroup.getNormalizedGID());
+        assertEquals("new-group-with---symbol", advancedLdapGroup.getNormalizedGID());
     }
     @Test
     public void testGetNormalizedGIDDollar() {
         AdvancedLdapGroup advancedLdapGroup = new AdvancedLdapGroup();
         advancedLdapGroup.setGID("New Group with $ symbol");
-        assertEquals("New-Group-with---symbol", advancedLdapGroup.getNormalizedGID());
+        assertEquals("new-group-with---symbol", advancedLdapGroup.getNormalizedGID());
     }
     @Test
     public void testGetNormalizedGIDPercent() {
         AdvancedLdapGroup advancedLdapGroup = new AdvancedLdapGroup();
         advancedLdapGroup.setGID("New Group with % symbol");
-        assertEquals("New-Group-with---symbol", advancedLdapGroup.getNormalizedGID());
+        assertEquals("new-group-with---symbol", advancedLdapGroup.getNormalizedGID());
     }
     @Test
     public void testGetNormalizedGIDCaret() {
         AdvancedLdapGroup advancedLdapGroup = new AdvancedLdapGroup();
         advancedLdapGroup.setGID("New Group with ^ symbol");
-        assertEquals("New-Group-with---symbol", advancedLdapGroup.getNormalizedGID());
+        assertEquals("new-group-with---symbol", advancedLdapGroup.getNormalizedGID());
     }
 }
