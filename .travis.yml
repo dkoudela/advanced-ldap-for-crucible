@@ -17,6 +17,7 @@ before_install:
     - wget http://davidkoudela.cz/github/Common/keys/pubkey.txt -O /tmp/pubkey.txt
     - gpg --import /tmp/pubkey.txt
     - export DEBUG_LOG=/tmp/debug.log
+    - export BUILD_LOG=/tmp/build.log
 # Download dependent jar files which are not available in any Maven repositories
     - wget http://davidkoudela.cz/github/AdvancedLdapForCrucible/libs/sqljdbc4.jar  -O /tmp/sqljdbc4.jar
     - wget http://davidkoudela.cz/github/AdvancedLdapForCrucible/libs/sqljdbc41.jar -O /tmp/sqljdbc41.jar
@@ -30,6 +31,7 @@ install:
     - atlas-mvn install:install-file -Dfile=/tmp/sqljdbc4.jar  -Dpackaging=jar -DgroupId=com.microsoft.sqlserver -DartifactId=sqljdbc4  -Dversion=4.0
     - atlas-mvn install:install-file -Dfile=/tmp/sqljdbc41.jar -Dpackaging=jar -DgroupId=com.microsoft.sqlserver -DartifactId=sqljdbc41 -Dversion=4.1
 # Setup the global Git hooks for Git LFS
+    - sudo chmod 0777 "$HOME/.gitconfig"
     - git lfs install
 
 script:
@@ -38,7 +40,8 @@ script:
 # Unit tests are part of the Integration tests.
 # It is kept only for further test downgrade
 #    - sudo atlas-unit-test
-    - sudo atlas-integration-test
+# Integration tests
+    - sudo atlas-integration-test | tee $BUILD_LOG |sed -f .logfilter.txt
 
 after_success:
 # Create GIT tag
@@ -64,6 +67,9 @@ after_script:
 # Encrypt and upload the debug log
     - gpg --output $DEBUG_LOG.pgp -r $GPGEMAIL --trust-model always --encrypt $DEBUG_LOG
     - curl --ftp-create-dirs --ftp-ssl-control --insecure -T $DEBUG_LOG.pgp "$REPOSITORYURL/$REPO_SUBDIR/"
+# Encrypt and upload the build log
+    - gpg --output $BUILD_LOG.pgp -r $GPGEMAIL --trust-model always --encrypt $BUILD_LOG
+    - curl --ftp-create-dirs --ftp-ssl-control --insecure -T $BUILD_LOG.pgp "$REPOSITORYURL/$REPO_SUBDIR/"
 
 branches:
     except:

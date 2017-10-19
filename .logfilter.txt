@@ -1,0 +1,2 @@
+/^\[INFO\] \tat/d
+/^Downloading: /d
